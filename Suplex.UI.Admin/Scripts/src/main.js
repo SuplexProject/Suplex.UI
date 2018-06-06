@@ -419,7 +419,8 @@ function switchView( e ) {
 }
 
 $(document).ready(function () {
-    init();
+    init()
+    $( "html" ).removeClass( "no-fouc" )
 })
 
 //function togglePanel(e) {

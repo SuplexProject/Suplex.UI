@@ -227,3 +227,7 @@ label.k-textbox {   /* to make display only field look like kendo textbox */
     color:#fff;
     margin-bottom:5px;
 }
+.no-fouc #securityPrincipalsView,
+.no-fouc #secureObjectsView {
+    visibility: hidden;
+}

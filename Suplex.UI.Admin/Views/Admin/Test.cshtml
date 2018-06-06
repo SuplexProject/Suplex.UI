@@ -1,0 +1,33 @@
+﻿@using Suplex.UI.Modules.Admin.ViewModels
+@using Kendo.Mvc.UI
+@using Microsoft.AspNetCore.Html
+@using Microsoft.Extensions.FileProviders
+@{
+    ViewBag.Title = "test";
+}
+
+<div id="lb1"></div>
+<div id="lb2"></div>
+
+<script>
+    $("#lb1").kendoListBox({
+        dataSource: [],
+        connectWith: "lb2",
+        draggable: true,
+        dropSources: ["lb2"],
+        toolbar: {
+            tools: ["transferTo", "transferFrom"],
+            position: "right"
+        },
+    })
+
+    $("#lb2").kendoListBox({
+        dataSource: ["abc", "def"],
+        connectWith: "lb1",
+        draggable: true,
+        dropSources: ["lb1"]
+        //template: "<div>#:name#</div>"
+    });
+
+
+</script>

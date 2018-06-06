@@ -1,0 +1,229 @@
+﻿/* general */
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+/* hides placeholder when input gets the focus - not tested */
+input:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+/* FF 4-18 */
+input:focus:-moz-placeholder {
+    color: transparent;
+}
+/* FF 19+ */
+input:focus::-moz-placeholder {
+    color: transparent;
+}
+/* IE 10+ */
+input:focus:-ms-input-placeholder {
+    color: transparent;
+}
+
+input::-webkit-input-placeholder {
+    font-style: italic;
+}
+/* FF 4-18 */
+input:-moz-placeholder {
+    font-style: italic;
+}
+/* FF 19+ */
+input::-moz-placeholder {
+    font-style: italic;
+}
+/* IE 10+ */
+input:-ms-input-placeholder {
+    font-style: italic;
+}
+
+/* tool bars */
+#tbMain, #tbSp {
+    margin-bottom: -1px;
+}
+
+.icon-user {
+    /*background-image: url('/Images.user-16x16.png');*/
+    background: url('/Images.spicons-sprite.png') 0px 0px;
+    margin-right: 2px;
+}
+
+.k-state-disabled .icon-user {
+    /*background-image: url('/Images.user-16x16_disabled.png');*/
+    background: url('/Images.spicons-sprite.png') 0px -16px;
+}
+
+.icon-group {
+    /*background-image: url('/Images.users-16x16.png');*/
+    background: url('/Images.spicons-sprite.png') 0px -64px;
+    margin-right: 2px;
+}
+
+.k-state-disabled .icon-group {
+    /*background-image: url('/Images.users-16x16_disabled.png');*/
+    background: url('/Images.spicons-sprite.png') 0px -80px;
+}
+
+.icon-user-del {
+    /*background-image: url('/Images.user-del-16x16.png');*/
+    background: url('/Images.spicons-sprite.png') 0px -32px;
+    margin-right: 2px;
+}
+
+.k-state-disabled .icon-user-del {
+    /*background-image: url('/Images.user-del-16x16_disabled.png');*/
+    background: url('/Images.spicons-sprite.png') 0px -48px;
+}
+
+.icon-group-ext {
+    /*background-image: url('/Images.users-16x16_ext.png');*/
+    background: url('/Images.spicons-sprite.png') 0px -96px;
+    margin-right: 2px;
+}
+
+.k-state-disabled .icon-group-ext {
+    /*background-image: url('/Images.users-16x16_ext_disabled.png');*/
+    background: url('/Images.spicons-sprite.png') 0px -112px;
+}
+
+/* styles for show errors on editors */
+.error {
+    border: 1px solid #f66;
+    margin-bottom: 5px;
+}
+.error h2 {
+    background-color: #f66;
+    color: #fff;
+}
+.error h2, .error div {
+    padding: 5px;
+}
+
+/* styles for file select dialog */
+#tvSelectFile, #tvSaveFileAs {
+    height: 300px;
+}
+
+#tvSelectFile .k-sprite,
+#tvSaveFileAs .k-sprite {
+        background-image: url(/Images.fileicons-sprite.png);
+    }
+
+.folder {
+    background-position: 0 -16px;
+}
+
+.file {
+    background-position: 0 -80px; /*-48px*/
+}
+
+/* security principals tool bar */
+#securityPrincipalsView {
+    position:relative;      /* required for kendo ui progress to work */
+}
+#tbSp .k-button,
+#tbSp .k-textbox,
+#tbSo .k-button {
+    margin: 0px 0.2em;    /* follow kendo tool bar, couldnt use kendo toolbar bcos mvvm binding is only at toolbar widget level not individual items on the toolbar */
+}
+
+#tbSp .k-textbox {
+    margin-top:-1px;  /* to make the box align properly to the buttons */
+} 
+/* styles for security principals grid */
+#grdSecurityPrincipals .k-dirty {
+    display:none;   /* don't show dirty flag */
+}
+#grdSecurityPrincipals .k-footer-template {
+    display: none;
+}
+
+#grdSecurityPrincipals.k-grid tr+.k-grouping-row td {
+    border-top-width: 1px
+}
+
+/* styles for security principal editor */
+#spEditor input,
+#spEditor textarea,
+#soEditor input,
+#soEditor textarea {
+    width:100%;
+}
+#spEditorError,
+#soEditorError{
+    margin-bottom: 5px;
+}
+textarea.k-textbox {
+    padding-left: 0.571em; /* to align with kendo input textbox which sets text-indent to this value. without this setting, text starts close to the border of the text area*/
+    padding-right: 0.571em;
+}
+label.k-textbox {   /* to make display only field look like kendo textbox */
+    padding: .17857143em 0;
+    line-height: 1.65em;
+    text-indent: .571em;
+    border-color: transparent;
+}
+#memberOfSection .k-listbox,
+#membersSection .k-listbox {
+    width: 335px;
+    height: 320px;
+    margin-right: 1px;
+}
+#notMemberOfSection .k-listbox,
+#nonMembersSection .k-listbox {
+    width: 300px;
+    height: 320px;
+}
+
+.groupMembership label {
+    font-weight: bold;
+}
+.groupMembership label,
+.groupMembership input {
+    margin-bottom: 5px;
+    display: inline-block;
+    width: 300px;
+}
+#tlGroupHierarchy {
+    width: 640px;
+}
+
+
+/* styles for generic form elements*/
+.formElement{
+    clear:both;
+}
+.formElement .formLabel, 
+.formElement .formInput {
+    float: left;
+    margin-bottom: 5px;
+}
+.formElement .formLabel {
+    display: inline-block;    
+    width: 120px;
+    text-align: right;
+    padding-right: 25px;
+    padding-bottom: 7px;
+    padding-top: 7px;
+}
+.formElement .formInput {
+    width: 400px;
+}
+.formElement .formInput .k-checkbox-label,
+.formElement .formInput .k-radio-label {
+    margin-top: 7px;
+}
+/* accordion */
+.accordion {
+    margin-bottom: 5px;
+}
+.accordion h2 {
+    padding:5px;
+    background-color:#7ea700;   /* kendo theme */
+    color:#fff;
+    margin-bottom:5px;
+}

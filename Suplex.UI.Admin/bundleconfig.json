@@ -1,0 +1,24 @@
+﻿// Configure bundling and minification for the project.
+// More info at https://go.microsoft.com/fwlink/?LinkId=808241
+[
+  {
+    "outputFileName": "Styles/admin.min.css",
+    // An array of relative input file paths. Globbing patterns supported
+    "inputFiles": [
+      "Styles/admin.css"
+    ]
+  },
+  {
+    "outputFileName": "Scripts/admin.min.js",
+    "inputFiles": [
+      "Scripts/admin.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    },
+    // Optionally generate .map file
+    "sourceMap": false
+  }
+]

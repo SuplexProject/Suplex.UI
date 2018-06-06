@@ -1,0 +1,320 @@
+﻿@using Suplex.UI.Modules.Admin.ViewModels
+@using Kendo.Mvc.UI
+@using Microsoft.AspNetCore.Html
+@using Microsoft.Extensions.FileProviders
+@using Kendo.Mvc.TagHelpers
+@{
+    ViewBag.Title = "Admin";
+}
+
+<kendo-toolbar id="tbMain">
+    <toolbar-items>
+        <item type="CommandType.Button" id="btnNewFile" icon="file-add" title="New Suplex File Store" click="SUPLEXUI.btnNewFileClick" />
+        <item type="CommandType.Button" id="btnOpenFile" icon="folder-open" title="Open Suplex File Store" click="SUPLEXUI.btnOpenFileClick" />
+        <item type="CommandType.SplitButton" id="btnSaveFile" icon="save" title="Save Suplex File Store" click="SUPLEXUI.btnSaveFileClick">
+            <menu-buttons>
+                <toolbar-button id="btnSaveFileAs" text="Save As" />
+                <toolbar-button text="Save Signed File" />
+            </menu-buttons>
+        </item>
+        <item type="CommandType.Separator" />
+        <item type="CommandType.ButtonGroup">
+            <buttons>
+                <toolbar-button id="btnShowSecureObjects" text="Secure Objects" togglable="true" group="selectView" toggle="SUPLEXUI.switchView" />
+                <toolbar-button id="btnShowSecurityPrincipals" text="Users/Groups" togglable="true" group="selectView" toggle="SUPLEXUI.switchView" />
+            </buttons>
+        </item>
+    </toolbar-items>
+</kendo-toolbar>
+
+<div id="securityPrincipalsView" data-bind="visible: visible">
+    <div id="tbSp" class="k-block" style="padding: 4px 0;">
+        <input class="k-textbox" id="txtSecurityPrincipalsFilter" placeholder="Filter" />
+        @(Html.Kendo().Button().Name("btnNewUser").HtmlAttributes(new { type = "button" }).SpriteCssClass("icon-user").Content("New User").Events(e => e.Click("SUPLEXUI.btnNewUserClick")))
+        <!-- Comment tag placed here to remove the extra space between the 2 buttons
+        -->
+        @(Html.Kendo().Button().Name("btnNewGroup").HtmlAttributes(new { type = "button" }).SpriteCssClass("icon-group").Content("New Group").Events(e => e.Click("SUPLEXUI.btnNewGroupClick")))
+        <!-- Comment tag placed here to remove the extra space between the 2 buttons
+        -->
+        @(Html.Kendo().Button().Name("btnDeleteSecurityPrincipal").HtmlAttributes(new { type = "button", data_bind = "enabled: securityPrincipalSelected" }).SpriteCssClass("icon-user-del").Content("Delete Security Principal").Events(e => e.Click("SUPLEXUI.btnDeleteSecurityPrincipalClick")))
+    </div>
+    <kendo-splitter name="spltrSecurityPrincipals" orientation="SplitterOrientation.Horizontal" style="height:640px;">
+        <pane size="500px" scrollable="true" collapsible="true">
+            <div style="margin:5px;">
+                @(Html.Kendo().Grid<SecurityPrincipalVM>()
+                                                    .Name("grdSecurityPrincipals")
+                                                    .AutoBind(false)
+                                                    .Selectable(s => s.Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                                                    .Columns(columns =>
+                                                    {
+                                                        columns.Bound(u => u.UId).Hidden();
+                                                        columns.Bound(u => u.Name).Width(120).ClientTemplate("<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>");
+                                                        columns.Bound(u => u.Description);
+                                                        columns.Bound(u => u.Source).ClientGroupHeaderTemplate("#= value #: #= count #").Hidden();
+                                                    })
+                                                    .DataSource(ds => ds
+                                                        .Ajax()
+                                                        .ServerOperation(false)     //Paging, sorting, filtering, and grouping will be done client-side
+                                                        .Read(read => read.Action("GetSecurityPrincipals", "Admin").Type(HttpVerbs.Get))
+                                                        .Group(groups =>
+                                                        {
+                                                            groups.AddDescending(u => u.Source);
+                                                        })
+                                                        .Aggregates(ag =>
+                                                        {
+                                                            ag.Add(p => p.Source).Count();
+                                                        })
+                                                        .Sort(s => s.Add("Name").Ascending())
+                                                        .Events(e => e.Error("SUPLEXUI.dataSourceError"))
+                                                        .Model(m => m.Id(r => r.UId))
+                                                    )
+                        //.Events(e => e
+                        //        .Change("SUPLEXUI.grdSecurityPrincipalsChange")
+                        //        .DataBound("SUPLEXUI.grdSecurityPrincipalsDataBound"))
+                )
+
+            </div>
+        </pane>
+        <pane>
+            <div id="spEditor" style="margin:5px;min-width:650px;" data-bind="visible: editor.visible">
+                <div class="clearfix" style="margin-bottom:0.6em;">
+                    <div style="float:right;margin-right:10px;">
+                        @(Html.Kendo().Button()
+                                                                            .Name("btnSaveSecurityPrincipal")
+                                                                            .Content("Save")
+                                                                            .HtmlAttributes(new { type = "button", data_bind = "enabled: editor.hasChanges" })
+                                                                            .Events(e => e.Click("SUPLEXUI.btnSaveSecurityPrincipalClick")))
+
+                        @(Html.Kendo().Button()
+                                                                            .Name("btnDiscardSecurityPrincipal")
+                                                                            .Content("Discard")
+                                                                            .HtmlAttributes(new { type = "button", data_bind = "enabled: editor.hasChanges" })
+                                                                            .Events(e => e.Click("SUPLEXUI.btnDiscardSecurityPrincipalClick")))
+
+
+                    </div>
+                    <h2 class="k-header" style="line-height:30px;font-weight:600;"><span data-bind="visible: editor.model.IsUser">User : </span><span data-bind="invisible: editor.model.IsUser">Group : </span><span data-bind="text: editor.model.Name"></span><span data-bind="visible: editor.hasChanges" style="color:red">*</span></h2>
+
+                </div>
+                <div class="accordion">
+                    <h2 class="k-link k-header">
+                        <span class="k-icon k-i-arrow-chevron-up"></span>
+                        Properties
+                    </h2>
+                    <div class="k-content">
+                        <div class="formElement">
+                            <div class="formLabel">Name</div>
+                            <div class="formInput">
+                                <input id="name" name="name" class="k-textbox" data-bind="value: editor.model.Name, events: {  keyup: editor.raiseChange }" data-value-update="keyup" required data-required-msg="Name field is required" />
+                                <span class="k-invalid-msg" data-for="name"></span>
+                            </div>
+                        </div>
+                        <div class="formElement">
+                            <div class="formLabel">Description</div>
+                            <div class="formInput">
+                                <textarea class="k-textbox" data-bind="value: editor.model.Description, events: {  keyup: editor.raiseChange }" data-value-update="keyup" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="formElement" data-bind="invisible: editor.model.IsUser">
+                            <div class="formLabel">Mask</div>
+                            <div class="formInput">
+                                <label class="k-textbox" readonly data-bind="text: editor.model.Mask" />
+                            </div>
+                        </div>
+                        <div class="formElement">
+                            <div class="formLabel">Built-In</div>
+                            <div class="formInput">
+                                <input type="checkbox" name="isBuiltIn" id="isBuiltIn" class="k-checkbox" data-bind="checked: editor.model.IsBuiltIn, events: {change: editor.raiseChange}" />
+                                <label class="k-checkbox-label" for="isBuiltIn">Yes</label>
+                            </div>
+                        </div>
+                        <div class="formElement">
+                            <div class="formLabel">Status</div>
+                            <div class="formInput">
+                                <input type="radio" name="isEnabled" id="statusIsEnabled" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
+                                <label class="k-radio-label" for="statusIsEnabled">Enabled</label>
+                                <input type="radio" name="isEnabled" id="statusIsDisabled" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
+                                <label class="k-radio-label" for="statusIsDisabled">Disabled</label>
+                            </div>
+                        </div>
+                        <div class="formElement" data-bind="invisible: editor.model.IsUser">
+                            <div class="formLabel">Type</div>
+                            <div class="formInput">
+                                <input type="radio" name="isLocal" id="typeIsLocal" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsLocal, events: {change: editor.raiseChange}" />
+                                <label class="k-radio-label" for="typeIsLocal">Local (Suplex)</label>
+                                <input type="radio" name="isLocal" id="typeIsExternal" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsLocal, events: {change: editor.raiseChange}" />
+                                <label class="k-radio-label" for="typeIsExternal">External (AD, LDAP, etc)</label>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+
+                <div class="error" data-bind="visible: editor.hasError">
+                    <h2>Errors</h2>
+                    <div id="spEditorError"></div>
+                </div>
+                <div class="accordion" data-bind="visible: editor.model.IsUser">
+                    <h2 class="k-link k-header">
+                        <span class="k-icon k-i-arrow-chevron-up"></span>
+                        Group Membership
+                    </h2>
+                    <div class="k-content groupMembership">
+                        <div id="memberOfSection" style="width:335px;display:inline-block;">
+                            <label for="lbMemberOf">Member Of</label>
+                            <input class="k-textbox" id="txtMemberOfFilter" placeholder="Filter" />
+                            <select id="lbMemberOf"></select>
+                        </div>
+                        <div id="notMemberOfSection" style="width:300px;display:inline-block;">
+                            <label for="lbNotMemberOf">Not Member Of</label>
+                            <input class="k-textbox" id="txtNotMemberOfFilter" placeholder="Filter" />
+                            <select id="lbNotMemberOf"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion" data-bind="visible: editor.isLocalGroup">
+                    <h2 class="k-link k-header">
+                        <span class="k-icon k-i-arrow-chevron-up"></span>
+                        Group Membership
+                    </h2>
+                    <div class="k-content groupMembership">
+                        <div id="membersSection" style="width:335px;display:inline-block;">
+                            <label for="lbMembers">Members</label>
+                            <input class="k-textbox" id="txtMembersFilter" placeholder="Filter" />
+                            <select id="lbMembers"></select>
+                        </div>
+                        <div id="nonMembersSection" style="width:300px;display:inline-block;">
+                            <label for="lbNonMembers">Non Members</label>
+                            <input class="k-textbox" id="txtNonMembersFilter" placeholder="Filter" />
+                            <select id="lbNonMembers"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion" data-bind="invisible: editor.model.IsUser">
+                    <h2 class="k-link k-header">
+                        <span class="k-icon k-i-arrow-chevron-up"></span>
+                        Group Hierarchy
+                    </h2>
+                    <div class="k-content">
+                        <div id="tlGroupHierarchy" style="width:650px"></div>
+                    </div>
+                </div>
+            </div>
+        </pane>
+    </kendo-splitter>
+</div>
+
+<div id="secureObjectsView" data-bind="visible: visible">
+    <div id="tbSo" class="k-block" style="padding: 4px 0;">
+        @(Html.Kendo().Button().Name("btnNewSecureObject").HtmlAttributes(new { type = "button" }).Content("New Secure Object").Events(e => e.Click("SUPLEXUI.btnNewSecureObjectClick")))
+        @(Html.Kendo().Button().Name("btnDeleteSecureObject").HtmlAttributes(new { type = "button", data_bind = "enabled: secureObjectSelected" }).Content("Delete Secure Object").Events(e => e.Click("SUPLEXUI.btnDeleteSecureObjectsClick")))
+        @(Html.Kendo().Button().Name("btnExpandAllSecureObjects").HtmlAttributes(new { type = "button" }).Icon("plus").Content("Expand All").Events(e => e.Click("SUPLEXUI.btnExpandAllSecureObjectsClick")))
+        @(Html.Kendo().Button().Name("btnCollapseAllSecureObjects").HtmlAttributes(new { type = "button" }).Icon("plus").Content("Collapse All").Events(e => e.Click("SUPLEXUI.btnCollapseAllSecureObjectsClick")))
+    </div>
+    <kendo-splitter name="spltrSecureObjects" orientation="SplitterOrientation.Horizontal" style="height:640px;">
+        <pane size="500px" scrollable="true" collapsible="true">
+            <div style="margin:5px;">
+                @(Html.Kendo().TreeView()
+                                                .Name("tvSecureObjects")
+                                                .AutoBind(false)
+                                                .DragAndDrop(true)
+                                                .DataTextField("UniqueName")
+                                                .Events(e => e.Change("SUPLEXUI.tvSecureObjectsChange"))
+                                                .DataSource(ds => ds
+                                                    .Read(r => r.Action("GetSecureObjectTreeItems", "Admin"))
+                                                    .Model(m => m.Id("UId").HasChildren("HasChildren"))
+                                                    )
+                )
+            </div>
+        </pane>
+        <pane>
+            <div id="soEditor" style="margin:5px;min-width:650px;" data-bind="visible: editor.visible">
+                <div class="clearfix" style="margin-bottom:0.6em;">
+                    <div style="float:right;margin-right:10px;">
+                        @(Html.Kendo().Button()
+                                                                                                    .Name("btnSaveSecurityObject")
+                                                                                                    .Content("Save")
+                                                                                                    .HtmlAttributes(new { type = "button", data_bind = "enabled: editor.hasChanges" })
+                                                                                                    .Events(e => e.Click("SUPLEXUI.btnSaveSecureObjectClick")))
+
+                        @(Html.Kendo().Button()
+                                                                                                    .Name("btnDiscardSecureObject")
+                                                                                                    .Content("Discard")
+                                                                                                    .HtmlAttributes(new { type = "button", data_bind = "enabled: editor.hasChanges" })
+                                                                                                    .Events(e => e.Click("SUPLEXUI.btnDiscardSecureObjectClick")))
+
+
+                    </div>
+                    <h2 class="k-header" style="line-height:30px;font-weight:600;"><span>Secure Object : </span><span data-bind="text: editor.model.UniqueName"></span><span data-bind="visible: editor.hasChanges" style="color:red">*</span></h2>
+                </div>
+                <div class="accordion">
+                    <h2 class="k-link k-header">
+                        <span class="k-icon k-i-arrow-chevron-up"></span>
+                        Properties
+                    </h2>
+                    <div class="k-content">
+                        <div class="formElement">
+                            <div class="formLabel">Unique Name</div>
+                            <div class="formInput">
+                                <input id="uniqueName" name="uniqueName" class="k-textbox" data-bind="value: editor.model.UniqueName, events: {  keyup: editor.raiseChange }" data-value-update="keyup" required data-required-msg="Unique Name field is required" />
+                                <span class="k-invalid-msg" data-for="uniqueName"></span>
+                            </div>
+                        </div>
+                        <div class="formElement clearfix">
+                            <div class="formLabel">Description</div>
+                            <div class="formInput">
+                                <textarea class="k-textbox" data-bind="value: editor.model.Description, events: {  keyup: editor.raiseChange }" data-value-update="keyup" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion">
+                    <h2 class="k-link k-header">
+                        <span class="k-icon k-i-arrow-chevron-up"></span>
+                        Permissions
+                    </h2>
+                    <div class="k-content">
+
+                    </div>
+
+                </div>
+                <div class="accordion">
+                    <h2 class="k-link k-header">
+                        <span class="k-icon k-i-arrow-chevron-up"></span>
+                        Audit
+                    </h2>
+                    <div class="k-content">
+
+                    </div>
+
+                </div>
+                <div class="accordion">
+                    <h2 class="k-link k-header">
+                        <span class="k-icon k-i-arrow-chevron-up"></span>
+                        Security Inheritance Settings
+                    </h2>
+                    <div class="k-content">
+
+                    </div>
+
+                </div>
+            </div>
+        </pane>
+    </kendo-splitter>
+</div>
+
+
+<div id="dlgSelectFile"></div>
+<div id="dlgSaveFileAs"></div>
+<div id="noti"></div>
+
+<style>
+</style>
+@section Scripts {
+    @*<script src="~/Scripts.admin.min.js"></script>*@
+    <script src="~/Scripts.dist.bundle.js"></script>
+}
+@section Styles {
+    <link href="~/Styles.admin.min.css" rel="stylesheet" />
+}
+

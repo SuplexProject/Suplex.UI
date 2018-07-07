@@ -1,22 +1,27 @@
-﻿import * as ID from "./ids.js"
-import { showNotification, getActionUrl, showYesNoCancelDialog } from "./utils"
+﻿import * as ID from "./ids"
+import * as constants from "./constants"
+import { notifySuccess, notifyError, getActionUrl, showYesNoCancelDialog, blockUI, unblockUI, isValidFileName } from "./utils"
 import { setupSecurityPrincipals, showSecurityPrincipals, hideSecurityPrincipals, resetSecurityPrincipals, loadSecurityPrincipals, verifySaveChanges as spVerifySaveChanges } from "./sp"
 import { setupSecureObjects, hideSecureObjects, showSecureObjects, resetSecureObjects, loadSecureObjectsTree } from "./so"
 
-var suplexStore = {
+var _$tbMain = $( ID.TB_MAIN )
+
+var mainVM = new kendo.observable( {
     fileName: null,
     hasChanges: false,
     init: function () {
         this.fileName = null
         this.hasChanges = false
     },
-    setChange: function (trueorfalse) {
+    setChange: function ( trueorfalse ) {
         this.hasChanges = trueorfalse
-    }    
-}
+    }
+} )
+var originalWindowTitle = document.title;
 
 // https://www.telerik.com/blogs/how-to-do-javascript-alerts-without-being-a-jerk
 // create the widgets once, and store a reference to it so it can be used again and again
+// resolve(fileName) or reject() when no file selected
 var selectFile = ( function () {
     var dfd
     var fileName
@@ -51,14 +56,21 @@ var selectFile = ( function () {
         visible: false,
         title: "Open File",
         closable: true,
-        modal: false,
+        modal: true,
         content: "<div id='tvSelectFile'></div>",
         open: function () {
+            $("body").addClass("no-scroll")     // stops background from scrolling when dialog is open
             if ( dsFileExplorer.data().length == 0 )
                 dsFileExplorer.read()
         },
         close: function () {
-            dfd.resolve( fileName )
+            $( "body" ).removeClass( "no-scroll" )
+            if ( fileName == null ) {
+                dfd.reject()
+            }
+            else {
+                dfd.resolve( fileName )
+            }
         },
         actions: [
             {
@@ -87,7 +99,7 @@ var selectFile = ( function () {
             {
                 text: 'Refresh',
                 action: function () {
-                    console.log( "Refreshing file explorer" )
+                    console.log( "-- Refreshing file explorer" )
                     dsFileExplorer.read()
                     return false
                 }
@@ -113,7 +125,8 @@ var selectFile = ( function () {
 }() )
 
 
-var getSaveAsPath = ( function () {
+// resolve(fileName) or reject() when no file selected
+var selectSaveAsFileName = ( function () {
     var dfd
     var fileName
 
@@ -141,44 +154,62 @@ var getSaveAsPath = ( function () {
         }
     } )
 
-    var $dlgSaveFileAs = $( ID.DLG_SAVE_FILE_AS )
-    var k$dlgSaveFileAs = $dlgSaveFileAs.kendoDialog( {
+    var $dlgSaveAs = $( ID.DLG_SAVE_AS )
+    var k$dlgSaveAs = $dlgSaveAs.kendoDialog( {
         width: "400px",
         visible: false,
         title: "Save As",
         closable: true,
-        modal: false,
-        content: "<div id='tvSaveFileAs'></div><div style='margin-top:20px'><label>File name </label>&npsp;&npsp;<input id='txtSaveFileAsPath' class='k-textbox' /><label>.splx</label></div>",
+        modal: true,
+        content: "<div id='tvSaveAs'></div><div style='margin-top:20px'><label>File name </label>&nbsp;&nbsp;<input id='txtSaveAsName' class='k-textbox' /><label>" + constants.FILE_EXTENSION + "</label></div>",
         open: function () {
+            $( "body" ).addClass( "no-scroll" )     // stops background from scrolling when dialog is open
             if ( dsFileExplorer.data().length == 0 )
                 dsFileExplorer.read()
         },
         close: function () {
-            dfd.resolve( fileName )
+            $( "body" ).removeClass( "no-scroll" )     
+            if ( fileName == null ) {
+                dfd.reject()
+            }
+            else {
+                dfd.resolve( fileName )
+            }
         },
         actions: [
             {
                 text: 'OK', 
                 primary: true,
                 action: function () {
-                    var ok = false
-                    var selected = k$tvSaveFileAs.select()
-                    var item = k$tvSaveFileAs.dataItem( selected )
-                    // to do:
-                    // if item is a file, get the folder name of the selected file
-                    // combine folder name with file name found in the textbox
-                    if ( item ) {
-                        if ( $txtSaveFileAsPath.val().length != 0 ) {
-                            ok = true
-                            fileName = item.Path
-                        }
-                        else {
-                            kendo.alert( "Enter a file name" )
-                        }
+                    var ok = false                    
+                    var fn = $txtSaveAsName.val().trim()
+                    fn = fn.substr( 0, fn.lastIndexOf( '.' ) ) || fn
+                    $txtSaveAsName.val( fn )
+                    var selected = k$tvSaveAs.select()
+                    // file name specified?
+                    if ( fn.length == 0 ) {
+                        kendo.alert( "Choose a folder and enter a file name" )
+                    }
+                    else if ( !isValidFileName( fn ) ) {
+                        kendo.alert( "File name is not valid" )
+                    }
+                    else if ( selected.length == 0 ) {
+                        kendo.alert( "Choose a folder and enter a file name" )
                     }
                     else {
-                        kendo.alert( "Select a file or folder" )
+                        // file name entered, something is selected
+                        var item = k$tvSaveAs.dataItem( selected )
+                        var folder = null
+                        if ( item.Type == "File" ) {
+                            folder = k$tvSaveAs.dataItem( k$tvSaveAs.parent( selected ) ).Path
+                        }
+                        else {
+                            folder = item.Path
+                        }
+                        fileName = folder + fn + constants.FILE_EXTENSION
+                        ok = true
                     }
+                                        
                     return ok
                 }
             },
@@ -186,7 +217,7 @@ var getSaveAsPath = ( function () {
             {
                 text: 'Refresh',
                 action: function () {
-                    console.log( "Refreshing file explorer" )
+                    console.log( "-- Refreshing file explorer" )
                     dsFileExplorer.read()
                     return false
                 }
@@ -194,30 +225,30 @@ var getSaveAsPath = ( function () {
         ]
     } ).getKendoDialog()
 
-    var $tvSaveFileAs = $( ID.TREEVIEW_SAVE_FILE_AS )
-    var $txtSaveFileAsPath = $( ID.TXT_SAVE_FILE_AS_PATH )
-    var k$tvSaveFileAs = $tvSaveFileAs.kendoTreeView( {
+    var $tvSaveAs = $( ID.TREEVIEW_SAVE_AS )
+    var $txtSaveAsName = $( ID.TXT_SAVE_AS_NAME )
+    var k$tvSaveAs = $tvSaveAs.kendoTreeView( {
         autoBind: false,
         dataSource: dsFileExplorer,
         dataTextField: "Name",
         change: function ( e ) {
-            console.log( this.select() )
+            //console.log( this.select() )
             var selected = this.select()
             var item = this.dataItem( selected )
             if ( item )
                 if ( item.Type == "File" ) {
                     // get the base name, minus extension, and populate the file name text box
-                    var fileName = item.fileName
-                    $txtSaveFileAsPath.val( fileName.substr( 0, x.lastIndexOf(',')) || fileName )
+                    var name = item.Name
+                    $txtSaveAsName.val( name.substr( 0, name.lastIndexOf('.')) || name )
                 }
         }
     } ).getKendoTreeView()
 
     return function () {
-        console.log( "In getSaveAsPath..." )
+        console.log( "In selectSaveAsFileName..." )
         dfd = $.Deferred()
         fileName = null
-        k$dlgSaveFileAs.open()
+        k$dlgSaveAs.open()
 
         return dfd.promise()
     }
@@ -229,7 +260,7 @@ function init() {
     setupVariables()
     setupEventHandlers()
 
-    //kendo.bind(document.body, mainVm)
+    kendo.bind( _$tbMain, mainVM)
     setupSecurityPrincipals()
     setupSecureObjects()
 
@@ -238,7 +269,8 @@ function init() {
     $( 'input' ).attr( 'autocorrect', 'off' );
 
     // default to this view    
-    $( ID.BTN_SHOW_SECURITY_PRINCIPALS ).click()
+    //$( ID.BTN_SHOW_SECURITY_PRINCIPALS ).click()
+    $( ID.BTN_SHOW_SECURE_OBJECTS ).click()
 }
 
 
@@ -255,12 +287,13 @@ function setupVariables() {
 function setupEventHandlers() {
     $( ".accordion h2" ).click( function () {
         $( this ).next().toggle()
-        $( this ).find( "span" ).toggleClass( "k-i-arrow-chevron-up k-i-arrow-chevron-down" )
+        //$( this ).find( "span:first-child" ).toggleClass( "k-i-arrow-chevron-up k-i-arrow-chevron-down" )
+        $( this ).find( "span.k-i-arrow-chevron-up, span.k-i-arrow-chevron-down" ).toggleClass( "k-i-arrow-chevron-up k-i-arrow-chevron-down" )
     } )
 }
 function openFile( fileName ) {
     console.log( "In openFile..." )
-    console.log( "File name: " + fileName )
+    console.log( "-- File name: " + fileName )
 
     if ( !fileName ) return
 
@@ -269,15 +302,22 @@ function openFile( fileName ) {
         url: getActionUrl("OpenFile", "Admin"),
         data: { 'fileName': fileName },
         dataType: 'json'
-    } ).done( function ( data, textStatus, xhr) {
-        suplexStore.init()
-        suplexStore.fileName = fileName
-        resetSecurityPrincipals()
-        loadSecurityPrincipals()
-        resetSecureObjects()
-        loadSecureObjectsTree()
-    } ).fail( function ( xhr, textStatus, errorThrown) {
-        showNotification("There was a problem reading the file", "error")
+    } ).done( function ( data, textStatus, xhr ) {
+        if ( data.Status == constants.SUCCESS ) {
+            mainVM.init()
+            mainVM.set( "fileName", fileName )
+
+            setWindowTitle( fileName )
+            resetSecurityPrincipals()
+            loadSecurityPrincipals()
+            resetSecureObjects()
+            loadSecureObjectsTree()
+        }
+        else {
+            notifyError( data.Message )
+        }
+        } ).fail( function ( xhr, textStatus, errorThrown ) {
+        notifyError( "There was a problem opening the file" )
     })
 }
 
@@ -287,17 +327,21 @@ function newFile() {
         method: 'POST',
         url: getActionUrl( "NewFile", "Admin" ),
         dataType: 'json'
-    } ).done( function ( data, textStatus, xhr ) {
-        if ( data.Status != "success" ) {
-            showNotification( "Unable to initialize suplex store", "error" )
+    } )
+    .done( function ( data, textStatus, xhr ) {
+        if ( data.Status != constants.SUCCESS ) {
+            notifyError( "Unable to initialize suplex store" )
         }
         else {
-            suplexStore.init()
+            mainVM.init()
+            
+            setWindowTitle()
             resetSecurityPrincipals()
             resetSecureObjects()
         }
-        } ).fail( function ( xhr, textStatus, errorThrown ) {
-        showNotification( "Unable to initialize suplex store", "error" )
+    } )
+    .fail( function ( xhr, textStatus, errorThrown ) {
+        notifyError( "Unable to initialize suplex store" )
         console.log( xhr )
     } )
 }
@@ -307,48 +351,27 @@ function btnNewFileClick( e ) {
     spVerifySaveChanges()
         .then( function ( proceed ) {
             //return ( proceed ? soVerifySaveChanges() : $.Deferred.resolve( false ) )
-            return ( proceed ? $.Deferred().resolve( true ) : $.Deferred().resolve( false ) )
+            return ( proceed )   // to revisit after secure object is done
         } )
         .then( function ( proceed ) {
-            return ( proceed ? verifySaveChangesToStore() : $.Deferred().resolve( false ) )
+            return ( proceed ? verifySaveChangesToStore() : false )
         } )
         .then( function ( proceed ) {
             if ( proceed ) {
-                newFile().then( openFile )
+                newFile()
             }
         } )
-    /// end
-    //if (verifySaveChangesToStore()) {
-    //    $.ajax({
-    //        async: false,
-    //        method: 'POST',
-    //        url: getActionUrl("NewFile", "Admin"),
-    //        dataType: 'json'
-    //    }).done(function (data, textStatus, xhr) {
-    //        if (data.Status != "success") {
-    //            showNotification("Unable to initialize suplex store", "error")
-    //        }
-    //        else {
-    //            suplexStore.init()
-    //            resetSecurityPrincipalsView()
-    //            refreshSecurityPrincipalsGrid()
-
-    //        }
-    //    }).fail(function (xhr, textStatus, errorThrown) {
-    //        showNotification("Unable to initialize suplex store", "error")
-    //        console.log(xhr)
-    //    })
-    //}
 }
 function btnOpenFileClick( e ) {
     console.log("In btnOpenFileClick...")
     spVerifySaveChanges()
         .then( function ( proceed ) {
             //return ( proceed ? soVerifySaveChanges() : $.Deferred.resolve( false ) )
-            return ( proceed ? $.Deferred().resolve( true ) : $.Deferred().resolve( false ) )
+            //return ( proceed ? $.Deferred().resolve( true ) : $.Deferred().resolve( false ) )
+            return ( proceed )  // for now do this. need to go thru when Secure Object is ready
         } )
         .then( function ( proceed ) {
-            return ( proceed ? verifySaveChangesToStore() : $.Deferred().resolve( false ) )
+            return ( proceed ? verifySaveChangesToStore() : false )
         })
         .then( function ( proceed ) {
             if ( proceed ) {
@@ -363,37 +386,54 @@ function btnSaveFileClick( e ) {
     switch ( e.id ) {
         case "": break
         case "btnSaveFile":
-            console.log("in save file")
-            if ( suplexStore.fileName != null ) {
-                
+            console.log( "-- save" )
+            if ( mainVM.get( "fileName" ) != null ) { 
+                blockUI()
+                saveFile().always( unblockUI )
+                break
             }
-            // don't break, let it flow to save as
+        
         case "btnSaveFileAs":
-            // new file
-            console.log("in save file as")
-            getSaveAsPath().then( function ( fileName ) {
-                console.log( fileName )
-            } )
+            console.log( "-- save file as" )            
+            selectSaveAsFileName()
+                .then( function ( fileName ) {
+                    blockUI()
+                    return saveFile( fileName )
+                } )
+                .always( unblockUI )
+            
             break
     }
 }
 
+// resolve(true) if discard changes or save successful
+// resolve(false) if save failed or cancel selected
 function verifySaveChangesToStore() {
     console.log("In verifySaveChangesToStore...")
     var dfd = $.Deferred()
-    if ( !suplexStore.hasChanges ) {
+    console.log( mainVM.get( "hasChanges" ) )
+    if ( !mainVM.get( "hasChanges" ) ) { 
         dfd.resolve( true )
     }
-    else {
-        var message = "Save changes to " + (suplexStore.fileName ? suplexStore.fileName : "file store") + "?"
+    else {        
+        var isNewFile = mainVM.get( "fileName" ) ? false : true 
+        var message = "Save changes to " + ( isNewFile ? "NewFile" : mainVM.get( "fileName" ) ) + "?"
         $.when( showYesNoCancelDialog( "Save changes?", message ) ).then( function ( response ) {
-            if ( response ) {
-                getSaveAsPath().then( function ( fileName ) {
-                    console.log(fileName)
-                } )
-                // do the save here
-                // for now return true
-                dfd.resolve(true)
+            console.log( "-- Response is " + response )
+            switch ( response ) {
+                case 1: // save
+                    var promise = isNewFile ? selectSaveAsFileName() : $.Deferred().resolve()
+                    promise.then( saveFile ).then( function ( saveResult ) { dfd.resolve( saveResult ) } )
+
+                    break
+                case 2: // discard
+                    dfd.resolve( true )
+
+                    break
+                case 3: // cancel action
+                    dfd.resolve( false )
+
+                    break
             }
         } )
     }
@@ -401,6 +441,48 @@ function verifySaveChangesToStore() {
     return dfd.promise()
 }
 
+// resolve(true) when file save is successful, resolve(false) if otherwise
+function saveFile( fileName ) {
+    console.log( "In saveFile..." )
+    console.log( "-- File name: " + fileName )
+
+    var data = fileName ? null : { fileName: fileName } 
+    var dfd = $.Deferred()
+
+    $.ajax( {
+        method: 'POST',
+        url: getActionUrl( "SaveFile", "Admin" ),
+        data: data, //{ fileName: fileName } ,
+        dataType: 'json'
+    } )
+    .then(
+       function ( data ) {
+           if ( data.Status == constants.SUCCESS ) {
+               if ( fileName ) {
+                   mainVM.init()
+                   mainVM.set( "fileName", fileName )
+                   setWindowTitle( fileName )                
+               }
+               else {
+                   mainVM.setChange( false )
+               } 
+                
+                notifySuccess( "File " + mainVM.get( "fileName" ) + " saved successfully" )
+                dfd.resolve( true )
+            }
+            else {
+                notifyError( data.Message )
+                dfd.resolve( false )
+            }
+        },
+        function ( jqXHR, textStatus, errorThrown ) {
+            let msg = decipherJqXhrError( jqXHR, textStatus )
+            notifyError( "An error has occurred while saving file " + ( fileName ? fileName : mainVM.get("fileName") ) + ".<br/>" + "Error: " + msg )
+            dfd.resolve( false )
+        } )
+
+    return dfd.promise()
+}
 function switchView( e ) {
     console.log( "In switchView..." )
     switch ( e.id ) {
@@ -418,6 +500,10 @@ function switchView( e ) {
     }
 }
 
+function setWindowTitle( fileName ) {
+    document.title = originalWindowTitle + " " + fileName
+}
+
 $(document).ready(function () {
     init()
     $( "html" ).removeClass( "no-fouc" )
@@ -429,7 +515,7 @@ $(document).ready(function () {
 //    console.log( this )
 //    console.log( $(this).next().toggle())
 //}
-export { btnOpenFileClick, btnNewFileClick, btnSaveFileClick, switchView, suplexStore } 
+export { btnOpenFileClick, btnNewFileClick, btnSaveFileClick, switchView, mainVM } 
 
-export { getSecurityPrincipalIconClass, btnNewUserClick, btnNewGroupClick, btnSaveSecurityPrincipalClick, btnDiscardSecurityPrincipalClick, btnDeleteSecurityPrincipalClick } from "./sp"
-export { tvSecureObjectsChange, btnNewSecureObjectClick, btnDeleteSecureObjectsClick, btnExpandAllSecureObjectsClick, btnCollapseAllSecureObjectsClick } from "./so"
+export { getSecurityPrincipalIconClass, spBtnNewUserClick, spBtnNewGroupClick, spBtnSaveClick, spBtnDiscardClick, spBtnDeleteClick } from "./sp"
+export { soTvChange, soBtnNewClick, soBtnDeleteClick, soBtnExpandAllClick, soBtnCollapseAllClick, soBtnDiscardClick } from "./so"

@@ -5,12 +5,12 @@ using Suplex.Security.Principal;
 
 namespace Suplex.UI.Modules.Admin.MappingProfiles
 {
-    public class SPEditorVMProfile : Profile
+    public class SecurityPrincipalEditorVMProfile : Profile
     {
-        public SPEditorVMProfile()
+        public SecurityPrincipalEditorVMProfile()
         {
-            CreateMap<User, SPEditorVM>().ReverseMap();
-            CreateMap<Group, SPEditorVM>() 
+            CreateMap<User, SecurityPrincipalEditorVM>().ReverseMap();
+            CreateMap<Group, SecurityPrincipalEditorVM>() 
                 .ForMember(d => d.Mask, o => o.ResolveUsing(s => 
                     {
                         return MaskConverter.ByteArrayToString(s.Mask);
@@ -22,7 +22,7 @@ namespace Suplex.UI.Modules.Admin.MappingProfiles
                         //}
                         //return sb.ToString().TrimEnd(separator.ToCharArray());
                     }));
-            CreateMap<SPEditorVM, Group>()
+            CreateMap<SecurityPrincipalEditorVM, Group>()
                 .ForMember(d => d.Mask, o => o.ResolveUsing(s =>
                 {
                     return MaskConverter.StringToByteArray(s.Mask);

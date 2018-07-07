@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Suplex.UI.Modules.Admin.ViewModels
 {
-    public class SPEditorVM
+    public class SecurityPrincipalEditorVM
     {
         public Guid? UId { get; set; }
 

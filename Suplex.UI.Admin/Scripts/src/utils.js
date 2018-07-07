@@ -1,4 +1,15 @@
-﻿
+﻿export function notifyError( msg, allowHideAfter, autoHideAfter ) {
+    showNotification( msg, "error", allowHideAfter, autoHideAfter)
+}
+export function notifyInfo( msg, allowHideAfter, autoHideAfter ) {
+    showNotification( msg, "info", allowHideAfter, autoHideAfter )
+}
+export function notifySuccess( msg, allowHideAfter, autoHideAfter ) {
+    showNotification( msg, "success", allowHideAfter, autoHideAfter )
+}
+export function notifyWarning( msg, allowHideAfter, autoHideAfter ) {
+    showNotification( msg, "warning", allowHideAfter, autoHideAfter )
+}
 export function showNotification (msg, msgType, allowHideAfter, autoHideAfter) {
     if (allowHideAfter === undefined) allowHideAfter = 10000
     if (autoHideAfter === undefined) autoHideAfter = 15000
@@ -30,11 +41,11 @@ export function dataSourceError(e) {
     //console.log(e);
     // e.status can be null, "timeout", "error", "abort", and "parsererror"
     // e.errorThrown is the textual portion of the HTTP status
-    if (e) {
+    if ( e ) {
         var msg = decipherJqXhrError(e.xhr, e.status);
-        if (e.errors) {
-            $.each(e.errors, function (key, value) {
-                if ('errors' in value) {
+        if ( e.errors ) {
+            $.each( e.errors, function ( key, value ) {
+                if ( 'errors' in value ) {
                     $.each(value.errors, function () {
                         msg += this + "\n";
                     });
@@ -42,7 +53,7 @@ export function dataSourceError(e) {
             });
         }
         //noti.error("Request failed. " + "\n" + msg);
-        showNotification(msg, "error");
+        notifyError( msg )
     }
 }    
 
@@ -152,4 +163,11 @@ export function blockUI() {
 
 export function unblockUI() {
     kendo.ui.progress( $( document.body ), false );
+}
+
+export function isValidFileName( fileName ) {
+    return true
+}
+export function isPowerOfTwo( x ) {
+    return ( ( x & ( x - 1 ) ) == 0 ) ? true : false
 }

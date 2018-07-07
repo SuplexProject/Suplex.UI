@@ -30,6 +30,9 @@ namespace Suplex.UI.Modules.Admin.Controllers
         private int _maskSize;
         private static FileStore _fileStore;
         private static MemoryDal _dal;
+        private static List<RightVM> _rights = null;
+        private static List<EnumVM> _auditTypes = null;
+        private static Dictionary<string, Object> _secureObjectDefaults = null;
         const string SUCCESS = "success";
         const string ERROR = "error";
         public Admin(IConfiguration configuration, ILogger<Admin> logger, IHostingEnvironment hostingEnvironment, IMapper mapper)
@@ -42,45 +45,12 @@ namespace Suplex.UI.Modules.Admin.Controllers
             _hostingEnvironment = hostingEnvironment;
             _mapper = mapper;
 
-            #region testing
-            //FileStore s = new FileStore();
-            //List<User> u = new List<User>()
-            //{
-            //    new User{ Name = "u1", IsBuiltIn = true, IsEnabled = true, IsLocal = true },
-            //    new User{ Name = "u2", IsBuiltIn = false, IsEnabled = true, IsLocal = false },
-            //    new User{ Name = "u3", IsBuiltIn = true, IsEnabled = false, IsLocal = true }
-            //};
+            _auditTypes = _auditTypes ?? EnumHelpers.ToList(typeof(AuditType));
 
-            //List<Group> g = new List<Group>()
-            //{
-            //    new Group {Name = "g1", IsEnabled=true, IsLocal=true},
-            //    new Group {Name = "g2", IsEnabled=false, IsLocal=true},
-            //    new Group {Name = "g3", IsEnabled=false, IsLocal=true},
-            //    new Group {Name = "ext1", IsEnabled=false, IsLocal=false},
-            //};
-            //GroupMembershipItem mu1 = new GroupMembershipItem
-            //{
-            //    GroupUId = g[0].UId.Value,
-            //    MemberUId = u[0].UId.Value,
-            //    IsMemberUser = true
-            //};
-            //GroupMembershipItem mg1 = new GroupMembershipItem
-            //{
-            //    GroupUId = g[0].UId.Value,
-            //    MemberUId = g[1].UId.Value,
-            //    IsMemberUser = false
-            //};
-            //List<GroupMembershipItem> gm = new List<GroupMembershipItem>
-            //{
-            //    mu1, mg1
-            //};            
-            //List<Security.AclModel.SecureObject> so = new List<Security.AclModel.SecureObject>();
-            //s.Users = u;
-            //s.Groups = g;
-            //s.GroupMembership = gm;
-            //s.SecureObjects = so;
-            //s.ToYamlFile(@"c:\temp\test2.splx");
-            #endregion
+            _rights = _rights ?? SetupRightsValues();
+
+            _secureObjectDefaults = _secureObjectDefaults ?? SetupSecureObjectDefaults();
+
         }
 
         public IActionResult Index()
@@ -99,6 +69,51 @@ namespace Suplex.UI.Modules.Admin.Controllers
         {
             return View();
         }
+        public Dictionary<string, Object> SetupSecureObjectDefaults()
+        {
+            Dictionary<string, Object> defaultValues = new Dictionary<string, Object>();
+
+            SecureObject so = new SecureObject();
+            defaultValues.Add("IsEnabled", so.IsEnabled);
+            defaultValues.Add("DaclAllowInherit", so.Security.DaclAllowInherit);
+            defaultValues.Add("SaclAllowInherit", so.Security.SaclAllowInherit);
+            int defAuditTypeFilter = (int)so.Security.SaclAuditTypeFilter;
+            defaultValues.Add("SaclAuditTypeFilter", defAuditTypeFilter); //.ToStringArray());
+            int[] defAuditTypeFilterArray = Enum.GetValues(typeof(AuditType)).Cast<int>().Where(i => (i & defAuditTypeFilter) == i).ToArray();
+            defaultValues.Add("SaclAuditTypeFilterArray", defAuditTypeFilterArray);
+            AccessControlEntry<FileSystemRight> dacl = new AccessControlEntry<FileSystemRight>();
+            defaultValues.Add("DaclAllowed", dacl.Allowed);
+            defaultValues.Add("DaclInheritable", dacl.Inheritable);
+            AccessControlEntryAudit<FileSystemRight> sacl = new AccessControlEntryAudit<FileSystemRight>();
+            defaultValues.Add("SaclAllowed", sacl.Allowed);
+            defaultValues.Add("SaclInheritable", sacl.Inheritable);
+            defaultValues.Add("SaclDenied", sacl.Denied);
+
+            return defaultValues;
+        }
+        public List<RightVM> SetupRightsValues()
+        {
+            List<Type> types = new List<Type>() { typeof(UIRight), typeof(RecordRight), typeof(FileSystemRight), typeof(SynchronizationRight) };
+            List<RightVM> rights = new List<RightVM>();
+            foreach (Type t in types)
+            {
+                rights.AddRange(EnumHelpers.ToList(t).Select(s => new RightVM { RightType = t.GetFriendlyRightTypeName(), RightId = s.Id, RightName = s.Name }).OrderBy(o => o.RightType).ThenByDescending(o => o.RightId).ToList());
+            }
+            return rights;
+        }
+        public IActionResult GetRights()
+        {
+            return Json(_rights);
+        }
+        public IActionResult GetAuditTypes()
+        {
+            return Json(_auditTypes);
+        }
+        public IActionResult GetSecureObjectDefaults()
+        {
+            return Json(_secureObjectDefaults);
+        }
+        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
         public IActionResult GetDirectoryContents(string path)
         {
             // need to deal with unauthorised access?
@@ -123,24 +138,13 @@ namespace Suplex.UI.Modules.Admin.Controllers
                         .Where(d => ((d.Attributes & FileAttributes.Directory) == FileAttributes.Directory) || (d.Extension == ".splx"))
                         .Select(entry => new FileSystemObjectVM()
                         {
-                            Path = Path.Combine(dir, entry.Name), //path != null ? Path.Combine(path, entry.Name) : entry.Name,
+                            Path = Path.Combine(dir, (entry is DirectoryInfo ? entry.Name + Path.DirectorySeparatorChar : entry.Name)), // if is directory append directory separator at the end
                             Name = entry.Name,
                             Type = (entry is DirectoryInfo ? FileSystemObjectType.Folder : FileSystemObjectType.File),
                             HasChildren = entry is DirectoryInfo
                         }).ToList();
 
             return Json(entries);
-        }
-
-        public IActionResult GetSecurityPrincipals([DataSourceRequest] DataSourceRequest request)
-        {
-            IList<Group> groups = _dal.Store.Groups;
-            IList<User> users = _dal.Store.Users;
-
-            List<SecurityPrincipalVM> sp = _mapper.Map<IList<User>, List<SecurityPrincipalVM>>(users);
-            sp.AddRange(_mapper.Map<IList<Group>, List<SecurityPrincipalVM>>(groups));
-
-            return Json(sp.ToDataSourceResult(request));
         }
 
         public IActionResult NewFile()
@@ -152,11 +156,14 @@ namespace Suplex.UI.Modules.Admin.Controllers
             r.Status = SUCCESS;
             return Json(r);
         }
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult OpenFile(string fileName)
         {
-            _logger.LogInformation($"In OpenFile({fileName})");
+            _logger.LogInformation($"In OpenFile({nameof(fileName)}:{fileName})");
 
-            ResponseVM r = new ResponseVM();
+            bool ok = false;
+
+            ResponseVM r = null;
 
             if (!string.IsNullOrWhiteSpace(fileName) && System.IO.File.Exists(fileName))
             {
@@ -166,42 +173,84 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 {
                     _fileStore = FileStore.FromYamlFile(fileName);
                     _dal = _fileStore.Dal;
-                    r.Status = SUCCESS;
+                    ok = true;                    
                 }
                 catch (Exception ex)
                 {
-                    r.Status = "failed";
-                    r.Message = ex.Message;
+                    _logger.LogError(ex, $"Error opening file {fileName}");                    
                 }
             }
+            else
+            {
+                _logger.LogError($"Error opening file {fileName}. File not found.");
+            }
+            r = new ResponseVM()
+            {
+                Status = ok ? SUCCESS : ERROR,
+                Message = ok ? null : $"There is a problem opening file {fileName}"
+            };
             return Json(r);
         }
+        [HttpPost]
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult SaveFile(string fileName = null)
+        {
+            bool ok = false;
+            _logger.LogInformation($"In SaveFile({nameof(fileName)}:{fileName})");
+            ResponseVM r = null;
+            
+            try
+            {
+                if (string.IsNullOrWhiteSpace(fileName) && string.IsNullOrWhiteSpace(_fileStore.CurrentPath))
+                    throw new ArgumentException("File name not provided");
 
+                if (!string.IsNullOrWhiteSpace(fileName))
+                    _fileStore.ToYamlFile(fileName);
+                else
+                    _fileStore.ToYamlFile();
+                ok = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error saving file {fileName}");
+            }
+            r = new ResponseVM()
+            {
+                Status = ok ? SUCCESS : ERROR,
+                Message = ok ? null : $"There is a problem saving to file {fileName}"
+            };
+            return Json(r);
+        }
+        #region Security Principals
+        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        public IActionResult GetSecurityPrincipals([DataSourceRequest] DataSourceRequest request)
+        {
+            IList<Group> groups = _dal.Store.Groups;
+            IList<User> users = _dal.Store.Users;
+
+            List<SecurityPrincipalListItemVM> sp = _mapper.Map<IList<User>, List<SecurityPrincipalListItemVM>>(users);
+            sp.AddRange(_mapper.Map<IList<Group>, List<SecurityPrincipalListItemVM>>(groups));
+
+            return Json(sp.ToDataSourceResult(request));
+        }
+        #endregion
+
+        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
         public IActionResult GetUserByUId(Guid uId)
         {
             _logger.LogInformation($"In GetUserByUId({nameof(uId)}:{uId})");
 
-            SPEditorVM sp = null;
+            SecurityPrincipalEditorVM sp = null;
             ResponseVM r = null;
             try
             {
                 // get user
                 User u = _dal.GetUserByUId(uId);
-                sp = _mapper.Map<User, SPEditorVM>(u);
+                sp = _mapper.Map<User, SecurityPrincipalEditorVM>(u);
 
-                // get member of and non member of 
-                // below 2 lines will be removed once store.GroupMembership bug is resolved
-                //List<GroupMembershipItem> gm = _dal.GetGroupMembership(uId).ToList();
-                //MembershipList<Group> memberList = gm.GetMemberOf(u, _dal.Store.Groups.ToList());
-
-                // manual resolve to ensure member and group fields are not null
-                // we want to also force resolve so that changes we have made will be reflected in the group and member fields
-                _dal.Store.GroupMembership.Resolve(_dal.Store.Groups.ToList(), _dal.Store.Users.ToList(), true);
-                MembershipList<Group> memberList = _dal.Store.GroupMembership.GetMemberOf(u, _dal.Store.Groups.ToList());
+                MembershipList<Group> memberList = _dal.GetGroupMembershipListOf(u, true);
                 List<MemberVM> memberOf = _mapper.Map<List<Group>, List<MemberVM>>(memberList.MemberList);
                 List<MemberVM> notMemberOf = _mapper.Map<List<Group>, List<MemberVM>>(memberList.NonMemberList);
-
-
                 r = new ResponseVM()
                 {
                     Status = SUCCESS,
@@ -225,7 +274,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
         {
             _logger.LogInformation($"In GetNewUser()");
 
-            SPEditorVM sp = null;
+            SecurityPrincipalEditorVM sp = null;
             ResponseVM r = null;
             //List<Group> g = null;
             try
@@ -233,7 +282,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 // cannot instantiate a new User at this stage. We don't want to have the GUId set at this stage
                 //User u = new User();
                 //sp = _mapper.Map<User, SPEditorVM>(u);
-                sp = new SPEditorVM() { IsUser = true, IsEnabled = true };
+                sp = new SecurityPrincipalEditorVM() { IsUser = true, IsEnabled = true };
 
                 // exclude external groups
                 List<Group> allGroups = _dal.Store.Groups.Where(g => g.IsLocal).ToList();
@@ -258,12 +307,13 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
         [HttpPost]
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult SaveUser([FromBody] UserSaveVM userSave)
         {
             bool ok = false;
             _logger.LogInformation($"In SaveUser({nameof(userSave)}:{userSave})");
 
-            SPEditorVM user = userSave.User;
+            SecurityPrincipalEditorVM user = userSave.User;
             List<MemberVM> toAdd = userSave.MembersOfToAdd;
             List<MemberVM> toRemove = userSave.MembersOfToRemove;
             try
@@ -294,7 +344,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                         user.UId = Guid.NewGuid();
                     }
 
-                    User u = _mapper.Map<SPEditorVM, User>(user);
+                    User u = _mapper.Map<SecurityPrincipalEditorVM, User>(user);
                     _dal.UpsertUser(u);
 
                     List<GroupMembershipItem> groupMembershipToAdd = new List<GroupMembershipItem>();
@@ -345,23 +395,20 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
 
-
+        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
         public IActionResult GetGroupByUId(Guid uId)
         {
 
             _logger.LogInformation($"In GetGroupByUId({nameof(uId)}:{uId})");
-            // public IEnumerable<GroupMembershipItem> GetGroupMembers(Guid groupUId, bool includeDisabledMembers = false)
-            SPEditorVM sp = null;
+            
+            SecurityPrincipalEditorVM sp = null;
             ResponseVM r = null;
             try
             {
                 Group g = _dal.GetGroupByUId(uId);
-                sp = _mapper.Map<Group, SPEditorVM>(g);
+                sp = _mapper.Map<Group, SecurityPrincipalEditorVM>(g);
 
-                List<SecurityPrincipalBase> allPrincipals = _dal.Store.Users.Cast<SecurityPrincipalBase>().Concat(_dal.Store.Groups.Cast<SecurityPrincipalBase>()).ToList();
-                // for now resolve the group and member fields manually
-                _dal.Store.GroupMembership.Resolve(_dal.Store.Groups.ToList(), _dal.Store.Users.ToList(), true);  // force resolve as changes to SP not reflected in group membership
-                MembershipList<SecurityPrincipalBase> memberList = _dal.Store.GroupMembership.GetGroupMembers(g, allPrincipals);
+                MembershipList<SecurityPrincipalBase> memberList = _dal.GetGroupMembershipList(g, true);
                 List<MemberVM> members = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>(memberList.MemberList);
                 List<MemberVM> nonMembers = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>(memberList.NonMemberList);
 
@@ -371,6 +418,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                     .Select(i => new GroupHierarchyVM { GroupUId = null, MemberUId = i.GroupUId, Name = i.Group.Name, Description = i.Group.Description, IsEnabled = i.Group.IsEnabled, IsLocal = i.Group.IsLocal, IsUser = i.Group.IsUser }).ToList();
 
                 List<GroupHierarchyVM> gh = _mapper.Map<List<GroupMembershipItem>, List<GroupHierarchyVM>>(gm);
+                
                 gh.AddRange(rootnodes);
 
                 r = new ResponseVM()
@@ -396,14 +444,14 @@ namespace Suplex.UI.Modules.Admin.Controllers
         {
             _logger.LogInformation($"In GetNewGroup()");
 
-            SPEditorVM sp = null;
+            SecurityPrincipalEditorVM sp = null;
             ResponseVM r = null;
             try
             {
                 // cannot instantiate a new User at this stage. We don't want to have the GUId set at this stage
                 //Group g = new Group();
                 //sp = _mapper.Map<Group, SPEditorVM>(g);
-                sp = new SPEditorVM() { IsUser = false, IsEnabled = true };
+                sp = new SecurityPrincipalEditorVM() { IsUser = false, IsEnabled = true };
 
                 // non members = all security principals
                 List<MemberVM> nonMembers = _mapper.Map<List<Group>, List<MemberVM>>(_dal.Store.Groups.ToList());
@@ -427,11 +475,12 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
         [HttpPost]
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult SaveGroup([FromBody] GroupSaveVM groupSave)
         {
             bool ok = false;
             _logger.LogInformation($"In SaveGroup({nameof(groupSave)}:{groupSave})");
-            SPEditorVM group = groupSave.Group;
+            SecurityPrincipalEditorVM group = groupSave.Group;
             List<MemberVM> toAdd = groupSave.MembersToAdd;
             List<MemberVM> toRemove = groupSave.MembersToRemove;
             try
@@ -471,7 +520,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                         }
                     }
 
-                    Group g = _mapper.Map<SPEditorVM, Group>(group);
+                    Group g = _mapper.Map<SecurityPrincipalEditorVM, Group>(group);
                     _dal.UpsertGroup(g);
 
                     if (g.IsLocal)
@@ -537,6 +586,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
         }
 
         [HttpPost]
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult DeleteUser(Guid uId)
         {
             string error = null;
@@ -569,6 +619,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
         [HttpPost]
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult DeleteGroup(Guid uId)
         {
             string error = null;
@@ -601,42 +652,127 @@ namespace Suplex.UI.Modules.Admin.Controllers
             };
             return Json(r);
         }
-        [HttpPost]
-        public IActionResult SaveFile(string fileName = null)
+        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        public IActionResult GetAllTrustees()
         {
-            bool ok = false;
-            _logger.LogInformation($"In SaveFile({nameof(fileName)}:{fileName})");
-            ResponseVM r = null;
+            _logger.LogInformation($"In GetAllTrustees()");
+
+            List<TrusteeVM> trustees = _mapper.Map<IList<Group>, List<TrusteeVM>>(_dal.Store.Groups);
+
+            return Json(trustees);
+        }
+
+        #region Secure Objects
+        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        public IActionResult GetSecureObjectTreeItems(Guid? uId)
+        {
+            _logger.LogInformation($"In GetSecureObjectTreeItems({nameof(uId)}:{uId})");
+            List<SecureObjectTreeItemVM> secureObjectTreeItems = null;
             try
             {
-                _fileStore.ToYamlFile();
-                ok = true;
+                if (uId == null)
+                {
+                    secureObjectTreeItems = _dal.Store.SecureObjects.Where(s => s.ParentUId == null)
+                        .Select(so => new SecureObjectTreeItemVM { UId = so.UId, UniqueName = so.UniqueName, HasChildren = (so.Children.Count > 0 ? true : false) }).ToList();
+                }
+                else
+                {
+                    secureObjectTreeItems = _dal.GetSecureObjectByUId(uId.Value, true).Children.OfType<SecureObject>().Select(item => new SecureObjectTreeItemVM { UId = item.UId, UniqueName = item.UniqueName, HasChildren = (item.Children.Count > 0 ? true : false) }).ToList();
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error saving file {fileName}");
+                _logger.LogError(ex, $"Error getting secure object {uId}");
+                secureObjectTreeItems = new List<SecureObjectTreeItemVM>();
             }
-            r = new ResponseVM()
-            {
-                Status = ok ? SUCCESS : ERROR,
-                Message = ok ? null : $"There is a problem saving to file store"
-            };
-            return Json(r);
-        }
-        public IActionResult GetSecureObjectTreeItems(Guid? uId)
-        {
-            List<SecureObjectTreeItemVM> secureObjectTreeItems = null;
-            if (uId == null)
-            {
-                secureObjectTreeItems = _dal.Store.SecureObjects.Where(s => s.ParentUId == null)
-                    .Select(so => new SecureObjectTreeItemVM { UId = so.UId, UniqueName = so.UniqueName, HasChildren = (so.Children.Count > 0 ? true : false) }).ToList();
-            }
-            else
-            {
-                secureObjectTreeItems = _dal.GetSecureObjectByUId(uId.Value, true).Children.Select(item => new SecureObjectTreeItemVM { UId = item.UId, UniqueName = item.UniqueName, HasChildren = (item.Children.Count > 0 ? true : false) }).ToList();
-            }
-            
             return Json(secureObjectTreeItems);
         }
+        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        public IActionResult GetSecureObjectByUId(Guid uId)
+        {
+            _logger.LogInformation($"In GetSecureObjectByUId({nameof(uId)}:{uId})");
+            ResponseVM r = null;
+
+            try
+            {
+                SecureObject so = (SecureObject)_dal.GetSecureObjectByUId(uId, includeDisabled: true);
+                SecureObjectEditorVM editorVM = _mapper.Map<SecureObject, SecureObjectEditorVM>(so);
+                // use this if using automapper is too difficult
+                //editorVM.Security.Dacl = so.Security.Dacl.Select(x => new DaclVM() { UId = x.UId, TrusteeUId = x.TrusteeUId, Allowed = x.Allowed, Inheritable = x.Inheritable, RightType = x.RightData.FriendlyTypeName, Right = x.RightData.Name.Split(new string[] { ", " }, StringSplitOptions.None) }).ToList();
+
+                r = new ResponseVM()
+                {
+                    Status = SUCCESS,
+                    Data = editorVM
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting secure object {uId}");
+                r = new ResponseVM()
+                {
+                    Status = ERROR,
+                    Message = $"An error has occurred while retrieving secure object {uId}."
+                };
+            }
+            return Json(r);
+            //return Json(r, new JsonSerializerSettings()
+            //{
+            //    Converters = new List<Newtonsoft.Json.JsonConverter>
+            //    {
+            //    new Newtonsoft.Json.Converters.StringEnumConverter()
+            //    }
+            //});
+        }
+        //public IActionResult GetRightTypes()
+        //{
+        //    if (_rightTypes == null)
+        //    {
+        //        List<Type> types = new List<Type>() { typeof(UIRight), typeof(RecordRight), typeof(FileSystemRight), typeof(SynchronizationRight) };
+        //        _rightTypes = new List<RightTypeVM>();
+
+        //        foreach (Type t in types)
+        //        {
+        //            //_rightTypes.Add(new RightTypeVM { RightType = t.GetFriendlyRightTypeName(), Rights = Enum.GetNames(t) });
+        //            _rightTypes.Add(new RightTypeVM { RightType = t.GetFriendlyRightTypeName(), Rights = EnumHelpers.EnumToList(t) });
+        //        }
+        //    }
+        //    return Json(_rightTypes);
+        //}
+        
+        // not required anymore since we pre-send all the defaults to the client at the start
+        public IActionResult GetNewSecureObject()
+        {
+            _logger.LogInformation($"In GetNewSecureObject()");
+            SecureObjectEditorVM soDTO = null;
+            ResponseVM r = null;
+
+            try
+            {
+                
+                SecureObject so = new SecureObject();
+                soDTO = _mapper.Map<SecureObject, SecureObjectEditorVM>(so);
+                soDTO.UId = null;   // we want the UId to be null first to indicate it is a new record
+
+                r = new ResponseVM()
+                {
+                    Status = SUCCESS,
+                    Data = soDTO
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving information for new secure object");
+                r = new ResponseVM()
+                {
+                    Status = ERROR,
+                    Message = $"There is a problem retrieving information for new secure object"
+                };
+            }
+            return Json(r);
+        }
+
+        #endregion
+
     }
-}
+    }

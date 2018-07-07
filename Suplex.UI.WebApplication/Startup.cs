@@ -61,10 +61,15 @@ namespace Suplex.UI.WebApplication
 
             // Add framework services.
             var mvcBuilder = services
+                                .AddResponseCaching()       // required for responsecache attribute VaryByQueryKeys
                                 .AddMvc()
                                 // Maintain property names during serialization. See:
                                 // https://github.com/aspnet/Announcements/issues/194
-                                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+                                .AddJsonOptions(options =>
+                                {
+                                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                                    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                                });
 
             foreach (var assembly in assemblies)
             {
@@ -117,6 +122,8 @@ namespace Suplex.UI.WebApplication
             app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
             app.UseStaticFiles();
+
+            app.UseResponseCaching();
 
             foreach (Assembly assembly in ModuleManager.Assemblies)
             {

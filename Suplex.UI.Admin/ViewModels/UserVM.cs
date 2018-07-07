@@ -7,13 +7,13 @@ namespace Suplex.UI.Modules.Admin.ViewModels
 {
     public class UserVM
     {
-        public SPEditorVM User { get; set; }
+        public SecurityPrincipalEditorVM User { get; set; }
         public List<MemberVM> MemberOf { get; set; }
         public List<MemberVM> NotMemberOf { get; set; }
     }
     public class UserSaveVM
     {
-        public SPEditorVM User { get; set; }
+        public SecurityPrincipalEditorVM User { get; set; }
         public List<MemberVM> MembersOfToAdd { get; set; }
         public List<MemberVM> MembersOfToRemove { get; set; }
     }

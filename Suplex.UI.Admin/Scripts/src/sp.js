@@ -1,33 +1,34 @@
 ﻿import differenceBy from 'lodash/differenceBy'   // gives you a smaller size than doing import difference from 'lodash'. It seems you can do the same thing with ES6 using Array.filter
 import debounce from 'lodash/debounce'
-import * as ID from "./ids.js"
-import { suplexStore } from "./main"
-import { getActionUrl, decipherJqXhrError, showNotification, dataSourceError, showYesNoCancelDialog, showYesNoDialog, blockUI, unblockUI } from "./utils"
+import * as ID from "./ids"
+import * as constants from "./constants"
+import { mainVM } from "./main"
+import { getActionUrl, decipherJqXhrError, dataSourceError, showYesNoCancelDialog, showYesNoDialog, blockUI, unblockUI, notifyError, notifyInfo, notifySuccess } from "./utils"
 
-var _$securityPrincipalsView = $( ID.SECURITY_PRINCIPALS_VIEW )
-var _$spltrSecurityPrincipals = $( ID.SPLITTER_SECURITY_PRINCIPALS )
-var _$grdSecurityPrincipals = $( ID.GRID_SECURITY_PRINCIPALS )
+var _$spView = $( ID.SP_VIEW )
+var _$spSpltr = $( ID.SP_SPLITTER )
+var _$spGrd = $( ID.SP_GRID )
 var _$spEditor = $( ID.SP_EDITOR )
 var _$spEditorError = $( ID.SP_EDITOR_ERROR )
-var _$lbMemberOf = $( ID.LISTBOX_MEMBER_OF )
-var _$lbNotMemberOf = $( ID.LISTBOX_NOT_MEMBER_OF )
-var _$lbMembers = $( ID.LISTBOX_MEMBERS )
-var _$lbNonMembers = $( ID.LISTBOX_NON_MEMBERS )
-var _$tlGroupHierarchy = $( ID.TREELIST_GROUP_HIERARCHY )
-var _$txtSecurityPrincipalsFilter = $( ID.TXT_SECURITY_PRINCIPALS_FILTER )
-var _$txtMemberOfFilter = $( ID.TXT_MEMBER_OF_FILTER )
-var _$txtNotMemberOfFilter = $( ID.TXT_NOT_MEMBER_OF_FILTER )
-var _$txtMembersFilter = $( ID.TXT_MEMBERS_FILTER )
-var _$txtNonMembersFilter = $( ID.TXT_NON_MEMBERS_FILTER )
+var _$spLbMemberOf = $( ID.SP_LISTBOX_MEMBER_OF )
+var _$spLbNotMemberOf = $( ID.SP_LISTBOX_NOT_MEMBER_OF )
+var _$spLbMembers = $( ID.SP_LISTBOX_MEMBERS )
+var _$spLbNonMembers = $( ID.SP_LISTBOX_NON_MEMBERS )
+var _$spTlGroupHierarchy = $( ID.SP_TREELIST_GROUP_HIERARCHY )
+var _$spTxtGrdFilter = $( ID.SP_TXT_GRD_FILTER )
+var _$spTxtMemberOfFilter = $( ID.SP_TXT_MEMBER_OF_FILTER )
+var _$spTxtNotMemberOfFilter = $( ID.SP_TXT_NOT_MEMBER_OF_FILTER )
+var _$spTxtMembersFilter = $( ID.SP_TXT_MEMBERS_FILTER )
+var _$spTxtNonMembersFilter = $( ID.SP_TXT_NON_MEMBERS_FILTER )
 
 var _validator
 
-var _k$grdSecurityPrincipals = null
-var _k$lbMemberOf = null
-var _k$lbNotMemberOf = null
-var _k$lbMembers = null
-var _k$lbNonMembers = null
-var _k$tlGroupHierarchy = null
+var _k$spGrd = null
+var _k$spLbMemberOf = null
+var _k$spLbNotMemberOf = null
+var _k$spLbMembers = null
+var _k$spLbNonMembers = null
+var _k$spTlGroupHierarchy = null
 
 var _memberOfOriginal = []
 var _membersOriginal = []
@@ -77,14 +78,21 @@ var spVM = new kendo.observable({
                 return false
             }
         },
-        reset: function () {
-            this.set( "visible", false ) 
+        reset: function ( showEditor ) {
+            if ( showEditor == undefined ) {
+                showEditor = false
+            }
+            if ( showEditor != this.get( "visible" ) ) {
+                this.set( "visible", showEditor ) 
+            }
+            // this.set( "visible", false ) 
             this.set( "hasChanges", false )
             this.set( "hasError", false )
             this.set( "model", new _spEditorModel() )
         },
         raiseChange: function ( e ) {
             var that = this
+            if ( that.editor.get( "hasChanges") ) return
             that.editor.set( "hasChanges", true )
         }
     },    
@@ -99,20 +107,22 @@ var spVM = new kendo.observable({
 })
 
 // functions to set view model fields
-function setError (trueorfalse) {
+function setError( trueorfalse ) {
+    if ( spVM.editor.get( "hasError" ) == trueorfalse ) return
     spVM.editor.set("hasError", trueorfalse)
 }
-function setChange (trueorfalse) {
+function setChange( trueorfalse ) {
+    if ( spVM.editor.get( "hasChanges" ) == trueorfalse ) return
     spVM.editor.set("hasChanges", trueorfalse)
 }
-function showEditor (show) {
+function showEditor( show ) {
+    if ( spVM.editor.get( "visible" ) == show ) return
     spVM.editor.set("visible", show)
 }
 
 export function setupSecurityPrincipals() {
-    kendo.bind(_$securityPrincipalsView, spVM)
+    kendo.bind(_$spView, spVM)
 
-    //setupDataSources()
     setupWidgets()
 
     setupVariables()
@@ -122,58 +132,57 @@ export function setupSecurityPrincipals() {
 }
 
 function setupWidgets() {
-    //grdSecurityPrincipalsCreate()
     
-    _$lbMemberOf.kendoListBox( {
+    _$spLbMemberOf.kendoListBox( {
         dataSource: [],
-        connectWith: "lbNotMemberOf",
+        connectWith: "spLbNotMemberOf",
         toolbar: {
             tools: ["transferTo", "transferFrom"],
             position: "right"
         },
         //draggable: true,      // true allows items within the same listbox to be reordered. we don't want that as we want items to be sorted
-        dropSources: ["lbNotMemberOf"],
+        dropSources: ["spLbNotMemberOf"],
         dataTextField: "Name",
         dataValueField: "UId",
         template: "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
-        add: lbMemberOfAdd,
-        remove: lbMemberOfRemove
+        add: spLbMemberOfAdd,
+        remove: spLbMemberOfRemove
     })
 
-    _$lbNotMemberOf.kendoListBox({
+    _$spLbNotMemberOf.kendoListBox({
         dataSource: [],
         dataTextField: "Name",
         dataValueField: "UId",
         template: "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
         //draggable: true,      // true allows items within the same listbox to be reordered. we don't want that as we want items to be sorted
-        dropSources: ["lbMemberOf"],
-        add: lbNotMemberOfAdd
+        dropSources: ["spLbMemberOf"],
+        add: spLbNotMemberOfAdd
     })
 
-    _$lbMembers.kendoListBox( {
+    _$spLbMembers.kendoListBox( {
         dataSource: [],
-        connectWith: "lbNonMembers",
+        connectWith: "spLbNonMembers",
         toolbar: {
             tools: ["transferTo", "transferFrom"],
             position: "right"
         },
         draggable: true,        // true allows items within the same listbox to be reordered. we don't want that as we want items to be sorted
-        dropSources: ["lbNonMembers"],
+        dropSources: ["spLbNonMembers"],
         dataTextField: "Name",
         dataValueField: "UId",
         template: "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
-        add: lbMembersAdd,
-        remove: lbMembersRemove
+        add: spLbMembersAdd,
+        remove: spLbMembersRemove
     } )
 
-    _$lbNonMembers.kendoListBox( {
+    _$spLbNonMembers.kendoListBox( {
         dataSource: [],
         dataTextField: "Name",
         dataValueField: "UId",
         template: "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
         draggable: true,        // true allows items within the same listbox to be reordered. we don't want that as we want items to be sorted
-        dropSources: ["lbMembers"],
-        add: lbNonMembersAdd
+        dropSources: ["spLbMembers"],
+        add: spLbNonMembersAdd
     } )
 
     _validator = _$spEditor.kendoValidator({
@@ -183,7 +192,7 @@ function setupWidgets() {
         }
     } ).data( "kendoValidator" )
 
-    _$tlGroupHierarchy.kendoTreeList( {
+    _$spTlGroupHierarchy.kendoTreeList( {
         dataSource: {
             data: [],
             schema: {
@@ -211,76 +220,76 @@ function setupEventHandlers() {
     $( window ).resize( debounce( resizeSplitter, 500 ) ) 
 
     // click comes after grid change event
-    _$grdSecurityPrincipals.on( 'click', 'tbody tr', grdSecurityPrincipalsClick )
+    _$spGrd.on( 'click', 'tbody tr', spGrdClick )
 
     // security principals filter
-    _$txtSecurityPrincipalsFilter.on("input", function (e) {
+    _$spTxtGrdFilter.on("input", function (e) {
         e.preventDefault()
         //var value = $(e.target).val()
         var searchString = $(this).val()
         if (searchString.length > 0) { // there is text
-            _k$grdSecurityPrincipals.dataSource.filter(
+            _k$spGrd.dataSource.filter(
                 { field: "Name", operator: "contains", value: searchString })
         }
         else {
-            _k$grdSecurityPrincipals.dataSource.filter({})
+            _k$spGrd.dataSource.filter({})
         }
 
     })
     // member of filter
-    _$txtMemberOfFilter.on("input", function (e) {
+    _$spTxtMemberOfFilter.on("input", function (e) {
         e.preventDefault()
         var searchString = $(this).val()
         if (searchString.length > 0) {
-            _k$lbMemberOf.dataSource.filter({ field: "Name", operator: "contains", value: searchString })
+            _k$spLbMemberOf.dataSource.filter({ field: "Name", operator: "contains", value: searchString })
         }
         else {
-            _k$lbMemberOf.dataSource.filter({})
+            _k$spLbMemberOf.dataSource.filter({})
         }
     })
     // not member of filter
-    _$txtNotMemberOfFilter.on("input", function (e) {
+    _$spTxtNotMemberOfFilter.on("input", function (e) {
         e.preventDefault()
         var searchString = $(this).val()
         if (searchString.length > 0) {
-            _k$lbNotMemberOf.dataSource.filter({ field: "Name", operator: "contains", value: searchString })
+            _k$spLbNotMemberOf.dataSource.filter({ field: "Name", operator: "contains", value: searchString })
         }
         else {
-            _k$lbNotMemberOf.dataSource.filter({})
+            _k$spLbNotMemberOf.dataSource.filter({})
         }
     } )
     // members filter
-    _$txtMembersFilter.on( "input", function ( e ) {
+    _$spTxtMembersFilter.on( "input", function ( e ) {
         e.preventDefault()
         var searchString = $( this ).val()
         if ( searchString.length > 0 ) {
-            _k$lbMembers.dataSource.filter( { field: "Name", operator: "contains", value: searchString } )
+            _k$spLbMembers.dataSource.filter( { field: "Name", operator: "contains", value: searchString } )
         }
         else {
-            _k$lbMembers.dataSource.filter( {} )
+            _k$spLbMembers.dataSource.filter( {} )
         }
     } )
     // non members filter
-    _$txtNonMembersFilter.on( "input", function ( e ) {
+    _$spTxtNonMembersFilter.on( "input", function ( e ) {
         e.preventDefault()
         var searchString = $( this ).val()
         if ( searchString.length > 0 ) {
-            _k$lbNonMembers.dataSource.filter( { field: "Name", operator: "contains", value: searchString } )
+            _k$spLbNonMembers.dataSource.filter( { field: "Name", operator: "contains", value: searchString } )
         }
         else {
-            _k$lbNonMembers.dataSource.filter( {} )
+            _k$spLbNonMembers.dataSource.filter( {} )
         }
     } )
 
 }
 
 function setupVariables() {
-    _k$grdSecurityPrincipals = _$grdSecurityPrincipals.data('kendoGrid')
-    _k$lbMemberOf = _$lbMemberOf.data('kendoListBox')
-    _k$lbNotMemberOf = _$lbNotMemberOf.data( 'kendoListBox' )
-    _k$lbMembers = _$lbMembers.data( 'kendoListBox' )
-    _k$lbNonMembers = _$lbNonMembers.data( 'kendoListBox' )
-    _k$tlGroupHierarchy = _$tlGroupHierarchy.data('kendoTreeList')
+    _k$spGrd = _$spGrd.data('kendoGrid')
+    _k$spLbMemberOf = _$spLbMemberOf.data('kendoListBox')
+    _k$spLbNotMemberOf = _$spLbNotMemberOf.data( 'kendoListBox' )
+    _k$spLbMembers = _$spLbMembers.data( 'kendoListBox' )
+    _k$spLbNonMembers = _$spLbNonMembers.data( 'kendoListBox' )
+    _k$spTlGroupHierarchy = _$spTlGroupHierarchy.data('kendoTreeList')
 }
 
 function resizeSplitter() {
@@ -290,16 +299,16 @@ function resizeSplitter() {
     var bottom = 25 // height occupied below splitter
     var height = $( window ).height() - ( top + bottom )    
     height = (height <= 0 ) ? 100 : height    
-    _$spltrSecurityPrincipals.height(height)
+    _$spSpltr.height(height)
 
-    //_$spltrSecurityPrincipals.trigger( "resize" )
-    //_$spltrSecurityPrincipals.data('kendoSplitter').trigger( "resize" )
-    _$spltrSecurityPrincipals.data('kendoSplitter').resize()
+    //_$spSpltr.trigger( "resize" )
+    //_$spSpltr.data('kendoSplitter').trigger( "resize" )
+    _$spSpltr.data('kendoSplitter').resize()
 }
 export function resetSecurityPrincipals() {
     spVM.reset()
     resetEditor( false )
-    _k$grdSecurityPrincipals.dataSource.data([])
+    _k$spGrd.dataSource.data([])
 }
 export function showSecurityPrincipals() {
     if (!spVM.get("visible"))
@@ -312,16 +321,16 @@ export function hideSecurityPrincipals() {
 }
 
 export function loadSecurityPrincipals() {
-    var ds = _k$grdSecurityPrincipals.dataSource
+    var ds = _k$spGrd.dataSource
     ds.read()
 }
 
-export function grdSecurityPrincipalsClick( e ) {
-    console.log( "In grdSecurityPrincipalsClick..." )
+export function spGrdClick( e ) {
+    console.log( "In spGrdClick..." )
 
     // var selectedItem = e.sender.dataItem(this.select())
     // click event is triggered after change event. so by now we would have the selected row
-    var selectedItem = _k$grdSecurityPrincipals.dataItem( _k$grdSecurityPrincipals.select() )    // or _k$grdSecurityPrincipals.select()[0] ?
+    var selectedItem = _k$spGrd.dataItem( _k$spGrd.select() )    // or _k$spGrd.select()[0] ?
     console.log(selectedItem)
     
     if ( !selectedItem ) return
@@ -331,7 +340,7 @@ export function grdSecurityPrincipalsClick( e ) {
     }
     /// changes start here
     verifySaveChanges().then( function ( proceed ) {
-        console.log( proceed )
+        console.log( "-- " + proceed )
         if ( proceed ) {
             selectSecurityPrincipalGridItem(selectedItem.UId)   // verifySaveChanges() could have cleared/changed the selection
             resetEditor( true )
@@ -346,15 +355,15 @@ export function grdSecurityPrincipalsClick( e ) {
             }
             promise
                 .done( function ( data ) {
-                    if ( data.Status == "success" ) {
+                    if ( data.Status == constants.SUCCESS ) {
                         populateEditor( data )
                     }
                     else {
-                        showNotification( "There is a problem retrieving " + ( selectedItem.IsUser ? "user" : "group" ) + " information", "error" )
+                        notifyError( "There is a problem retrieving " + ( selectedItem.IsUser ? "user" : "group" ) + " information" )
                     }
                 } )
                 .fail( function ( jqXHR, textStatus, errorThrown ) {
-                    showNotification( "There is a problem retrieving " + ( selectedItem.IsUser ? "user" : "group" ) + " information", "error" )
+                    notifyError( "There is a problem retrieving " + ( selectedItem.IsUser ? "user" : "group" ) + " information" )
                 } )
         }
         else {
@@ -364,9 +373,9 @@ export function grdSecurityPrincipalsClick( e ) {
     })
 }
 
-export function grdSecurityPrincipalsDataBound( e ) {
-    console.log( "In grdSecurityPrincipalsDataBound..." )
-}
+//export function spGrdDataBound( e ) {
+//    console.log( "In spGrdDataBound..." )
+//}
 
 export function verifySaveChanges() {
 
@@ -423,7 +432,7 @@ export function verifySaveChanges() {
                     }
                     else {
                         // failed client validation
-                        showNotification( "Please correct the error(s) on the form first.", "error" )
+                        notifyError( "Please correct the error(s) on the form first." )
                         dfd.resolve( false )
                     }
                     break
@@ -456,25 +465,25 @@ function populateEditor( data ) {
         if ( data.Data.User ) {
             spVM.editor.set( "model", data.Data.User )
             _memberOfOriginal = JSON.parse( JSON.stringify( data.Data.MemberOf ) )  // clone
-            _k$lbMemberOf.dataSource.data( data.Data.MemberOf )
-            _k$lbNotMemberOf.dataSource.data( data.Data.NotMemberOf )
+            _k$spLbMemberOf.dataSource.data( data.Data.MemberOf )
+            _k$spLbNotMemberOf.dataSource.data( data.Data.NotMemberOf )
         }
         else if ( data.Data.Group ) {
             spVM.editor.set( "model", data.Data.Group )
             _membersOriginal = JSON.parse( JSON.stringify( data.Data.Members ) )  // clone
-            _k$lbMembers.dataSource.data( data.Data.Members )
-            _k$lbNonMembers.dataSource.data( data.Data.NonMembers )
-            _k$tlGroupHierarchy.dataSource.data( data.Data.GroupHierarchy )
+            _k$spLbMembers.dataSource.data( data.Data.Members )
+            _k$spLbNonMembers.dataSource.data( data.Data.NonMembers )
+            _k$spTlGroupHierarchy.dataSource.data( data.Data.GroupHierarchy )
         }
     }
 }
-function resetEditor(showEditor) {
-    spVM.editor.reset();
-    spVM.editor.set( "visible", showEditor ) 
-    _k$lbMemberOf.dataSource.data([])
-    _k$lbNotMemberOf.dataSource.data( [] )
-    _k$lbMembers.dataSource.data( [] )
-    _k$lbNonMembers.dataSource.data( [] )
+function resetEditor( showEditor ) {
+    spVM.editor.reset( showEditor )
+    //spVM.editor.set( "visible", showEditor ) 
+    _k$spLbMemberOf.dataSource.data([])
+    _k$spLbNotMemberOf.dataSource.data( [] )
+    _k$spLbMembers.dataSource.data( [] )
+    _k$spLbNonMembers.dataSource.data( [] )
     clearEditorErrors()
     _memberOfOriginal = []
     _membersOriginal = []  
@@ -485,8 +494,8 @@ export function getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) {
     return ("k-sprite " + cls + (IsEnabled ? "" : " k-state-disabled"))
 }
 
-export function btnSaveSecurityPrincipalClick(e) {
-    console.log( "In btnSaveSecurityPrincipalClick..." )
+export function spBtnSaveClick(e) {
+    console.log( "In spBtnSaveClick..." )
     if (spVM.editor.model.get("IsUser")) {
         clearEditorErrors()
         if ( validateEditor() ) {
@@ -511,45 +520,45 @@ export function btnSaveSecurityPrincipalClick(e) {
 }
 function notifySaveUserOK(data) {
     console.log("In notifySaveUserOK...")
-    showNotification("User " + data.Data.User.Name + " saved successfully.", "info")
+    notifySuccess( "User " + data.Data.User.Name + " saved successfully." )
     return true
 }
 function notifySaveUserFailed( jqXHR, textStatus, errorThrown ) {
     console.log( "In notifySaveUserFailed..." )
     if ( jqXHR.Data.User ) {
         // reject because of form error
-        showNotification( jqXHR.Data.Message, "error" )
+        notifyError( jqXHR.Data.Message )
     }
     else {
         // reject because of ajax call
         let msg = decipherJqXhrError( jqXHR, textStatus )
-        showNotification( "An error has occurred while saving User." + "<br/>" + "Error: " + msg, "error" )
+        notifyError( "An error has occurred while saving User." + "<br/>" + "Error: " + msg )
     }
     
     return false
 }
 function notifySaveGroupOK( data ) {
     console.log( "In notifySaveGroupOK..." )
-    showNotification( "Group " + data.Data.Group.Name + " saved successfully.", "info" )
+    notifySuccess( "Group " + data.Data.Group.Name + " saved successfully." )
     return true
 }
 function notifySaveGroupFailed( jqXHR, textStatus, errorThrown ) {
     console.log( "In notifySaveGroupFailed..." )
     if ( jqXHR.Data.Group ) {
         // reject because of form error
-        showNotification( jqXHR.Data.Message, "error" )
+        notifyError( jqXHR.Data.Message )
     }
     else {
         // reject from ajax call 
         let msg = decipherJqXhrError( jqXHR, textStatus )
-        showNotification( "An error has occurred while saving Group." + "<br/>" + "Error: " + msg, "error" )
+        notifyError( "An error has occurred while saving Group." + "<br/>" + "Error: " + msg )
     } 
 
     return false
 }
 function checkResponseStatus( data, $formErrorContainer ) {
     console.log("In checkResponseStatus...")
-    if (data.Status != "success") {
+    if ( data.Status != constants.SUCCESS ) {
         if (data.Errors) {
             if ( $formErrorContainer ) {
                 let msg = ""
@@ -574,7 +583,8 @@ function checkResponseStatus( data, $formErrorContainer ) {
 function updateUIPostSave( data ) {
     console.log( "In updateUIPostSave..." )
 
-    suplexStore.setChange( true )
+    mainVM.setChange( true )
+
     var model = null
     if ( data.Data.User ) {
         spVM.set( "selectedUId", data.Data.User.UId )
@@ -604,8 +614,8 @@ function saveUser() {
     console.log( "In saveUser..." )
     // JSON.parse(JSON.stringify()) will clone and remove all the unnecessary functions wrapped inside the array by the kendo widget
     // but it looks like it is not necessary. lodash's differenceBy still works
-    // var memberOf = JSON.parse( JSON.stringify( _k$lbMemberOf.dataSource.data() ) )
-    var memberOf = _k$lbMemberOf.dataSource.data()
+    // var memberOf = JSON.parse( JSON.stringify( _k$spLbMemberOf.dataSource.data() ) )
+    var memberOf = _k$spLbMemberOf.dataSource.data()
     var toAdd = differenceBy( memberOf, _memberOfOriginal, 'UId' )
     var toRemove = differenceBy( _memberOfOriginal, memberOf, 'UId' )
     var def = $.ajax({
@@ -621,7 +631,7 @@ function saveUser() {
 
 function saveGroup() {
     console.log( "In saveGroup..." )
-    var members = _k$lbMembers.dataSource.data()
+    var members = _k$spLbMembers.dataSource.data()
     var toAdd = []
     var toRemove = []
     if ( spVM.editor.model.get( "IsLocal" ) ) {
@@ -667,7 +677,7 @@ function selectSecurityPrincipalGridItem(uId) {
 
     console.log("In selectSecurityPrincipalGridItem...")
     
-    var ds = _k$grdSecurityPrincipals.dataSource
+    var ds = _k$spGrd.dataSource
 
     // explanation from kendo support
     // the grid table row data-uid reflects the uid of the underlying ObservableObject representing the data item
@@ -676,19 +686,19 @@ function selectSecurityPrincipalGridItem(uId) {
     // are re-created with the new data. These uids are not implemented to match the model Id in the datasource
 
     // if is already selected, don't select again
-    var currentSelectedItem = _k$grdSecurityPrincipals.dataItem(_k$grdSecurityPrincipals.select())
+    var currentSelectedItem = _k$spGrd.dataItem(_k$spGrd.select())
     if ( currentSelectedItem )
         if ( currentSelectedItem.UId == uId ) return
 
     var rowuid = ds.get( uId ).uid    
-    console.log("-- Locating row uid " + rowuid)
-    var foundrow = _k$grdSecurityPrincipals.table.find('tr[data-uid="' + rowuid + '"]')
+    // console.log("-- Locating row uid " + rowuid)
+    var foundrow = _k$spGrd.table.find('tr[data-uid="' + rowuid + '"]')
     if (foundrow.length > 0) {
-        console.log("-- Found grid item with UId " + uId)
-        _k$grdSecurityPrincipals.select(foundrow)
+        // console.log("-- Found grid item with UId " + uId)
+        _k$spGrd.select(foundrow)
     }
     else {
-        _k$grdSecurityPrincipals.clearSelection()
+        _k$spGrd.clearSelection()
         console.log("-- Cannot locate grid item with UId " + uId)
     }
 }
@@ -696,7 +706,7 @@ function updateSecurityPrincipalsGrid( gridModel ) {
     console.log( "In updateSecurityPrincipalsGrid..." )
     console.log( gridModel )
 
-    var ds = _k$grdSecurityPrincipals.dataSource
+    var ds = _k$spGrd.dataSource
     
 
     // pushUpdate doesn't seem to work well
@@ -727,14 +737,20 @@ function clearEditorErrors() {
     setError(false)
 }
 
-export function btnDiscardSecurityPrincipalClick (e) {
-    resetEditor(false);
-}
-export function btnNewUserClick( e ) {
-    console.log( "In btnNewUserClick..." )
+export function spBtnDiscardClick (e) {
+    console.log( "In spBtnDiscardClick..." )
 
     verifySaveChanges().then( function ( proceed ) {
-        console.log( "Verify save changes return value: " + proceed )
+        if ( proceed ) {
+            resetEditor( false )
+        }
+    })   
+}
+export function spBtnNewUserClick( e ) {
+    console.log( "In spBtnNewUserClick..." )
+
+    verifySaveChanges().then( function ( proceed ) {
+        //console.log( "-- Verify save changes return value: " + proceed )
 
         if ( proceed ) {
             // go ahead and prepare the editor
@@ -742,16 +758,16 @@ export function btnNewUserClick( e ) {
             spVM.editor.model.set( "IsUser", true )   // ensures the user view is displayed
             getNewUser()
                 .done( function ( data ) {
-                    if ( data.Status == "success" ) {
+                    if ( data.Status == constants.SUCCESS ) {
                         populateEditor( data )
                     }
                     else {
-                        showNotification( "Error retrieving information for new user", "error" )
+                        notifyError( "Error retrieving information for new user" )
                     }
                 } )
                 .fail( function ( jqXHR, textStatus, errorThrown ) {
                     var errorMsg = decipherJqXhrError( jqXHR, textStatus )
-                    showNotification( errorMsg, "error" )
+                    notifyError( errorMsg )
                 } )
                 //.always( function () {
                 //    // unselect grid?
@@ -761,11 +777,11 @@ export function btnNewUserClick( e ) {
     } )
 }
 
-export function btnNewGroupClick( e ) {
-    console.log( "In btnNewGroupClick..." )
+export function spBtnNewGroupClick( e ) {
+    console.log( "In spBtnNewGroupClick..." )
 
     verifySaveChanges().then( function ( proceed ) {
-        console.log( "Verify save changes return value: " + proceed )
+        //console.log( "-- Verify save changes return value: " + proceed )
 
         if ( proceed ) {
             // go on and prepare the editor 
@@ -773,16 +789,16 @@ export function btnNewGroupClick( e ) {
             spVM.editor.model.set( "IsUser", false )    // to make sure the correct fields are displayed
             getNewGroup()
                 .done( function ( data ) {
-                    if ( data.Status == "success" ) {
+                    if ( data.Status == constants.SUCCESS ) {
                         populateEditor( data )
                     }
                     else {
-                        showNotification( "Error retrieving information for new group", "error" )
+                        notifyError( "Error retrieving information for new group" )
                     }
                 } )
                 .fail( function ( jqXHR, textStatus, errorThrown ) {
                     var errorMsg = decipherJqXhrError( jqXHR, textStatus )
-                    showNotification( errorMsg, "error" )
+                    notifyError( errorMsg )
                 } )
                 //.always( function () {
                 //    // unselect grid?
@@ -791,18 +807,16 @@ export function btnNewGroupClick( e ) {
         }
     } )
 }
-export function btnDeleteSecurityPrincipalClick( e ) {
-    console.log( "In btnDeleteSecurityPrincipalClick..." )
+export function spBtnDeleteClick( e ) {
+    console.log( "In spBtnDeleteClick..." )
 
     // get the selected item
-    var itemToDelete = _k$grdSecurityPrincipals.dataItem( _k$grdSecurityPrincipals.select() )
+    var itemToDelete = _k$spGrd.dataItem( _k$spGrd.select() )
     if ( !itemToDelete )
         return
 
-    //var ds = _k$grdSecurityPrincipals.dataSource
-    //ds.get(currentSelectedItem.uId)
     var message = "Are you sure you want to delete " + ( itemToDelete.IsUser ? "User " : "Group " ) + itemToDelete.Name + "?"
-    console.log(message)
+    
     var action = itemToDelete.IsUser ? "DeleteUser" : "DeleteGroup"
     $.when( showYesNoDialog( "Confirm delete?", message ) )        
         .then( function ( response ) {
@@ -813,16 +827,16 @@ export function btnDeleteSecurityPrincipalClick( e ) {
                     .then( function () { return updateUIPostDelete( itemToDelete ) } ) //  doesn't reject, always returns true
                     .then(
                         function () {       // success callback
-                            showNotification( itemToDelete.IsUser ? "User " : "Group " + itemToDelete.Name + " deleted successfully.", "info" )
+                            notifySuccess( itemToDelete.IsUser ? "User " : "Group " + itemToDelete.Name + " deleted successfully." )
                         },
                         function ( jqXHR, textStatus, errorThrown ) {       // failure callback
                             if ( jqXHR.Message ) {
                                 // server handled error
-                                showNotification( jqXHR.Message, "error" )
+                                notifyError( jqXHR.Message )
                             }
                             else {
                                 let msg = decipherJqXhrError( jqXHR, textStatus )
-                                showNotification( "An error has occurred while deleting User." + "<br/>" + "Error: " + msg, "error" )
+                                notifyError( "An error has occurred while deleting " + ( itemToDelete.IsUser ? "User" : "Group" ) + itemToDelete.Name + ".<br/>" + "Error: " + msg )
                             }
                         }
                     )
@@ -834,12 +848,16 @@ export function btnDeleteSecurityPrincipalClick( e ) {
 function updateUIPostDelete( gridDataItem ) {
 
     // remove item from grid
-    var ds = _k$grdSecurityPrincipals.dataSource
+    var ds = _k$spGrd.dataSource
     ds.remove( gridDataItem )
 
     // reset editor & hide it
     resetEditor( false )
+
+    mainVM.setChange( true )
+
     return true
+
 }
 
 function getUser(uId) {
@@ -859,7 +877,6 @@ function getNewUser() {
 }
 function getGroup( uId ) {
     console.log( "In getGroup..." )
-    console.log( uId )
 
     return $.ajax( {        
         method: 'GET',
@@ -876,42 +893,42 @@ function getNewGroup() {
     } )
 }
 
-export function lbMemberOfAdd(e) {
+export function spLbMemberOfAdd(e) {
     //help on how to auto sort
     //https://github.com/telerik/kendo-ui-core/blob/master/docs/knowledge-base/listbox-sort-items-on-add.md
-    console.log("In lbMemberOfAdd...")
+    console.log("In spLbMemberOfAdd...")
     e.preventDefault()
     this.dataSource.data().push(e.dataItems[0])
     this.dataSource.sort({ field: "Name", dir: "asc" })
     setChange(true)
 }
-export function lbMemberOfRemove(e) {
+export function spLbMemberOfRemove(e) {
     setChange(true)
 }
 
-function lbNotMemberOfAdd(e) {
-    console.log("In lbNotMemberOfAdd...")
+function spLbNotMemberOfAdd(e) {
+    console.log("In spLbNotMemberOfAdd...")
     e.preventDefault()
     this.dataSource.data().push(e.dataItems[0])
     this.dataSource.sort({ field: "Name", dir: "asc" })
 }
 
-function lbMembersAdd( e ) {
+function spLbMembersAdd( e ) {
     //help on how to auto sort
     //https://github.com/telerik/kendo-ui-core/blob/master/docs/knowledge-base/listbox-sort-items-on-add.md
-    console.log( "In lbMembersAdd..." )
+    console.log( "In spLbMembersAdd..." )
     e.preventDefault()
     this.dataSource.data().push( e.dataItems[0] )
     this.dataSource.sort( { field: "Name", dir: "asc" } )
     setChange( true )
 }
 
-function lbMembersRemove( e ) {
+function spLbMembersRemove( e ) {
     setChange( true )
 }
 
-function lbNonMembersAdd( e ) {
-    console.log( "In lbNonMembersAdd..." )
+function spLbNonMembersAdd( e ) {
+    console.log( "In spLbNonMembersAdd..." )
     e.preventDefault()
     this.dataSource.data().push( e.dataItems[0] )
     this.dataSource.sort( { field: "Name", dir: "asc" } )

@@ -61,7 +61,7 @@ namespace Suplex.UI.WebApplication
 
             // Add framework services.
             var mvcBuilder = services
-                                .AddResponseCaching()       // required for responsecache attribute VaryByQueryKeys
+                                //.AddResponseCaching()       // required for responsecache attribute VaryByQueryKeys
                                 .AddMvc()
                                 // Maintain property names during serialization. See:
                                 // https://github.com/aspnet/Announcements/issues/194
@@ -123,7 +123,7 @@ namespace Suplex.UI.WebApplication
 
             app.UseStaticFiles();
 
-            app.UseResponseCaching();
+            // app.UseResponseCaching();
 
             foreach (Assembly assembly in ModuleManager.Assemblies)
             {
@@ -142,7 +142,8 @@ namespace Suplex.UI.WebApplication
             });
 
             // Configure Kendo UI
-            app.UseKendo(env);
+            // only required for versions prior to R2 2018
+            // app.UseKendo(env);  
         }
 
         private void LoadModulesFromConfig(List<Assembly> assemblies, List<MenuItem> menuItems)

@@ -383,9 +383,9 @@ function btnOpenFileClick( e ) {
 function btnSaveFileClick( e ) {
     console.log( "In btnSaveFileClick..." )
 
-    switch ( e.id ) {
+    switch ( "#" + e.id ) {
         case "": break
-        case "btnSaveFile":
+        case ID.BTN_SAVE_FILE: // "btnSaveFile":
             console.log( "-- save" )
             if ( mainVM.get( "fileName" ) != null ) { 
                 blockUI()
@@ -393,7 +393,7 @@ function btnSaveFileClick( e ) {
                 break
             }
         
-        case "btnSaveFileAs":
+        case ID.BTN_SAVE_FILE_AS: // "btnSaveFileAs":
             console.log( "-- save file as" )            
             selectSaveAsFileName()
                 .then( function ( fileName ) {
@@ -446,7 +446,7 @@ function saveFile( fileName ) {
     console.log( "In saveFile..." )
     console.log( "-- File name: " + fileName )
 
-    var data = fileName ? null : { fileName: fileName } 
+    var data = fileName ? { fileName: fileName } : null
     var dfd = $.Deferred()
 
     $.ajax( {
@@ -518,4 +518,4 @@ $(document).ready(function () {
 export { btnOpenFileClick, btnNewFileClick, btnSaveFileClick, switchView, mainVM } 
 
 export { getSecurityPrincipalIconClass, spBtnNewUserClick, spBtnNewGroupClick, spBtnSaveClick, spBtnDiscardClick, spBtnDeleteClick } from "./sp"
-export { soTvChange, soBtnNewClick, soBtnDeleteClick, soBtnExpandAllClick, soBtnCollapseAllClick, soBtnDiscardClick } from "./so"
+export { soTvDataBound, soTvDrop, soTvDrag, soBtnNewClick, soBtnDeleteClick, soBtnExpandAllClick, soBtnCollapseAllClick, soBtnSaveClick, soBtnDiscardClick } from "./so"

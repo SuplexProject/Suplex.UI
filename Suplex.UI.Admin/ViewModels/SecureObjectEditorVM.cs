@@ -5,27 +5,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Suplex.UI.Modules.Admin.ViewModels
 {
-    //public class SecureObjectEditorVM
-    //{
-    //    public Guid? UId { get; set; }
-
-    //    [Required]
-    //    public string UniqueName { get; set; }
-    //    public bool IsEnabled { get; set; }
-    //    public Guid? ParentUId { get; set; }
-    //    public SecurityVM Security { get; set; }
-
-    //}
-    //public class SecurityVM
-    //{
-    //    public bool DaclAllowInherit { get; set; }
-    //    public bool SaclAllowInherit { get; set; }
-    //    //public List<AuditTypeVM> SaclAuditTypeFilter { get; set; }
-    //    public string[] SaclAuditTypeFilter { get; set; }
-    //    public List<DaclVM> Dacl { get; set; }
-    //    public List<SaclVM> Sacl { get; set; }
-    //}
-
     public class DaclVM
     {
         public Guid? UId { get; set; }
@@ -33,7 +12,6 @@ namespace Suplex.UI.Modules.Admin.ViewModels
         public bool Allowed { get; set; }
         public bool Inheritable { get; set; }
         public string RightType { get; set; }  // from FriendlyTypeName 
-        //public string[] Right { get; set; }
         public int Right { get; set; }
     }
     public class SaclVM
@@ -44,7 +22,6 @@ namespace Suplex.UI.Modules.Admin.ViewModels
         public bool Denied { get; set; }
         public bool Inheritable { get; set; }
         public string RightType { get; set; } 
-        //public string[] Right { get; set; }
         public int Right { get; set; }
     }
     public class SecureObjectEditorVM
@@ -58,7 +35,6 @@ namespace Suplex.UI.Modules.Admin.ViewModels
 
         public bool DaclAllowInherit { get; set; }
         public bool SaclAllowInherit { get; set; }
-        //public string[] SaclAuditTypeFilter { get; set; }
         public int SaclAuditTypeFilter { get; set; }
 
         public List<DaclVM> Dacl { get; set; }

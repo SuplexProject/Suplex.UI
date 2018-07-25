@@ -28,7 +28,7 @@
     </toolbar-items>
 </kendo-toolbar>
 
-<div id="spView" data-bind="visible: visible">
+<div id="spView" data-bind="visible: visible">    
     <div id="spTb" class="k-block" style="padding: 4px 0;">
         <input class="k-textbox" id="spTxtGrdFilter" placeholder="Filter" />
         @(Html.Kendo().Button().Name("spBtnNewUser").HtmlAttributes(new { type = "button" }).SpriteCssClass("icon-user").Content("New User").Events(e => e.Click("SUPLEXUI.spBtnNewUserClick")))
@@ -39,8 +39,8 @@
         -->
         @(Html.Kendo().Button().Name("spBtnDelete").HtmlAttributes(new { type = "button", data_bind = "enabled: securityPrincipalSelected" }).SpriteCssClass("icon-user-del").Content("Delete Security Principal").Events(e => e.Click("SUPLEXUI.spBtnDeleteClick")))
     </div>
-    <kendo-splitter name="spSpltr" orientation="SplitterOrientation.Horizontal" style="height:640px;">
-        <pane size="500px" scrollable="true" collapsible="true">
+    <kendo-splitter name="spSpltr" orientation="SplitterOrientation.Horizontal">
+        <pane size="445px" scrollable="true" collapsible="true">
             <div style="margin:5px;">
                 @(Html.Kendo().Grid<SecurityPrincipalListItemVM>()
                                                             .Name("spGrd")
@@ -206,46 +206,49 @@
 </div>
 
 <div id="soView" data-bind="visible: visible">
-    <div id="soTb" class="k-block" style="padding: 4px 0;">
+    <kendo-toolbar id="soTb">
+        <toolbar-items>
+            <item type="CommandType.SplitButton" id="soBtnNew" text="New Secure Object" click="SUPLEXUI.soBtnNewClick">
+                <menu-buttons>
+                    <toolbar-button id="soBtnNewTop" text="New Top Level Secure Object" />
+                </menu-buttons>
+            </item>
+            <item type="CommandType.Button" id="soBtnDelete" text="Delete Secure Object" click="SUPLEXUI.soBtnDeleteClick" data-bind="enabled:secureObjectSelected" />
+            <item type="CommandType.Button" id="soBtnExpandAll" icon="plus" text="Expand All" click="SUPLEXUI.soBtnExpandAllClick" />
+            <item type="CommandType.Button" id="soBtnCollapseAll" icon="minus" text="Collapse All" click="SUPLEXUI.soBtnCollapseAllClick" />
+        </toolbar-items>
+    </kendo-toolbar>
+    @*<div id="soTb" class="k-block" style="padding: 4px 0;">
         @(Html.Kendo().Button().Name("soBtnNew").HtmlAttributes(new { type = "button" }).Content("New Secure Object").Events(e => e.Click("SUPLEXUI.soBtnNewClick")))
         @(Html.Kendo().Button().Name("soBtnDelete").HtmlAttributes(new { type = "button", data_bind = "enabled: secureObjectSelected" }).Content("Delete Secure Object").Events(e => e.Click("SUPLEXUI.soBtnDeleteClick")))
         @(Html.Kendo().Button().Name("soBtnExpandAll").HtmlAttributes(new { type = "button" }).Icon("plus").Content("Expand All").Events(e => e.Click("SUPLEXUI.soBtnExpandAllClick")))
         @(Html.Kendo().Button().Name("soBtnCollapseAll").HtmlAttributes(new { type = "button" }).Icon("plus").Content("Collapse All").Events(e => e.Click("SUPLEXUI.soBtnCollapseAllClick")))
-    </div>
-    <kendo-splitter name="soSpltr" orientation="SplitterOrientation.Horizontal" style="height:640px;">
-        <pane size="500px" scrollable="true" collapsible="true">
-            <div style="margin:5px;">
+    </div>*@
+    <kendo-splitter name="soSpltr" orientation="SplitterOrientation.Horizontal">
+        <pane size="445px" scrollable="true" collapsible="true">
+            <div class="wrapper" style="padding:5px;box-sizing:border-box;height:100%">
                 @(Html.Kendo().TreeView()
-                                                        .Name("soTv")
-                                                        .AutoBind(false)
-                                                        .DragAndDrop(true)
-                                                        .DataTextField("UniqueName")
-                                                        .Events(e => e.Change("SUPLEXUI.soTvChange"))
-                                                        .DataSource(ds => ds
-                                                            .Read(r => r.Action("GetSecureObjectTreeItems", "Admin"))
-                                                            .Model(m => m.Id("UId").HasChildren("HasChildren"))
-                                                            )
-                )
+                    .Name("soTv").AutoBind(false).DragAndDrop(true).DataTextField("UniqueName").LoadOnDemand(false).Events(e => e.DataBound("SUPLEXUI.soTvDataBound").Drop("SUPLEXUI.soTvDrop").Drag("SUPLEXUI.soTvDrag"))
+                    .DataSource(ds => ds
+                        .Custom()
+                        .Sort(s => s.Add("UniqueName").Ascending())
+                        .Transport(t => t
+                            .Read(r => r.Action("GetSecureObjectTreeChildren", "Admin")))
+                        .Schema(s => s
+                            .Model(m => m.Id("UId").HasChildren("HasChildren")))
+                        ))
             </div>
         </pane>
         <pane>
             <div></div><!-- do not remove this dummy div. splitter doesnt resize when there is nothing in the pane ie when the below div display is none -->
-            <div id="soEditor" style="margin:5px;min-width:650px;" data-bind="visible: editor.visible">
+            <div id="soEditor" style="margin:5px;min-width:1000px;box-sizing:border-box;" data-bind="visible: editor.visible">
                 <div class="clearfix" style="margin-bottom:0.6em;">
-                    <div style="float:right;margin-right:10px;">
-                        @(Html.Kendo().Button()
-                                                                                                            .Name("soBtnSave")
-                                                                                                            .Content("Save")
-                                                                                                            .HtmlAttributes(new { type = "button", data_bind = "enabled: editor.hasChanges" })
-                                                                                                            .Events(e => e.Click("SUPLEXUI.soBtnSaveClick")))
+                    <div style="float:right;margin-right:100px;">
+                        @(Html.Kendo().Button().Name("soBtnSave").Content("Save").HtmlAttributes(new { type = "button", data_bind = "enabled: editor.hasChanges" })
+                              .Events(e => e.Click("SUPLEXUI.soBtnSaveClick")))
 
-                        @(Html.Kendo().Button()
-                                                                                                            .Name("soBtnDiscard")
-                                                                                                            .Content("Discard")
-                                                                                                            .HtmlAttributes(new { type = "button" })
-                                                                                                            .Events(e => e.Click("SUPLEXUI.soBtnDiscardClick")))
-
-
+                        @(Html.Kendo().Button().Name("soBtnDiscard").Content("Discard").HtmlAttributes(new { type = "button" })
+                              .Events(e => e.Click("SUPLEXUI.soBtnDiscardClick")))
                     </div>
                     <h2 class="k-header" style="line-height:30px;font-weight:600;"><span>Secure Object : </span><span data-bind="text: editor.model.UniqueName"></span><span data-bind="visible: editor.hasChanges" style="color:red">*</span></h2>
                 </div>
@@ -346,10 +349,18 @@
     </kendo-splitter>
 </div>
 
-
 <div id="dlgSelectFile"></div>
 <div id="dlgSaveAs"></div>
 <div id="noti"></div>
+<ul id="soTvMnu">
+    <li id="soTvMnuNew">New Secure Object</li>
+    <li id="soTvMnuDelete" class="node-only">Delete Secure Object</li>
+    <li class="k-separator" ></li>
+    <li id="soTvMnuExpand">Expand All Children</li>
+    <li id="soTvMnuCollapse" >Collapse All Children</li>
+    <li class="k-separator node-only"></li>
+    <li id="soTvMnuPreview" class="node-only">Preview</li>
+</ul>
 <script id="soTemplateAuditTypeFilter" type="text/x-kendo-template">
     <li>
         @*<input type="checkbox" class="k=checkbox" data-bind="checked: Checked, value: Name, events: {change: editor.raiseChange}" />*@

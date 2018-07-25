@@ -113,7 +113,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
         {
             return Json(_secureObjectDefaults);
         }
-        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        //[ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
         public IActionResult GetDirectoryContents(string path)
         {
             // need to deal with unauthorised access?
@@ -156,7 +156,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             r.Status = SUCCESS;
             return Json(r);
         }
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult OpenFile(string fileName)
         {
             _logger.LogInformation($"In OpenFile({nameof(fileName)}:{fileName})");
@@ -192,7 +192,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
         [HttpPost]
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult SaveFile(string fileName = null)
         {
             bool ok = false;
@@ -204,6 +204,11 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 if (string.IsNullOrWhiteSpace(fileName) && string.IsNullOrWhiteSpace(_fileStore.CurrentPath))
                     throw new ArgumentException("File name not provided");
 
+                // sort the secure objects
+                //RecursiveSortSecureObjects(_dal.Store.SecureObjects);
+                //IList<SecureObject> sorted = RecursiveSortSecureObjects(_dal.Store.SecureObjects);
+                _dal.Store.SecureObjects = SortSecureObjects(_dal.Store.SecureObjects);
+                
                 if (!string.IsNullOrWhiteSpace(fileName))
                     _fileStore.ToYamlFile(fileName);
                 else
@@ -221,8 +226,19 @@ namespace Suplex.UI.Modules.Admin.Controllers
             };
             return Json(r);
         }
+        private List<SecureObject> SortSecureObjects(IList<SecureObject> secureObjects)
+        {
+            List<SecureObject> sortedList = secureObjects.ToList();
+            sortedList.Sort((x, y) => x.UniqueName.CompareTo(y.UniqueName));
+
+            foreach (SecureObject item in sortedList)
+            {
+                SortSecureObjects(item.Children);
+            }
+            return sortedList;
+        }
         #region Security Principals
-        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        //[ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
         public IActionResult GetSecurityPrincipals([DataSourceRequest] DataSourceRequest request)
         {
             IList<Group> groups = _dal.Store.Groups;
@@ -235,7 +251,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
         }
         #endregion
 
-        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        //[ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
         public IActionResult GetUserByUId(Guid uId)
         {
             _logger.LogInformation($"In GetUserByUId({nameof(uId)}:{uId})");
@@ -307,7 +323,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
         [HttpPost]
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult SaveUser([FromBody] UserSaveVM userSave)
         {
             bool ok = false;
@@ -371,22 +387,22 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 }
                 else
                 {
-                    _logger.LogError($"Error updating user {user.UId} | {user.Name}");
+                    _logger.LogError($"Error saving user {user.UId} | {user.Name}");
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                _logger.LogError(ex, $"Error updating user {user.UId} | {user.Name}");
+                _logger.LogError(ex, $"Error saving user {user.UId} | {user.Name}");
             }
 
             ResponseVM r = new ResponseVM()
             {
                 Status = ok ? SUCCESS : ERROR,
                 Message = ok ? null : $"Unable to save User {user.Name}. Clear the error(s) and try again.",
-                Errors = ok ? null : ModelState.Keys.SelectMany(k => ModelState[k].Errors)
+                ValidationErrors = ok ? null : ModelState.Keys.SelectMany(k => ModelState[k].Errors)
                               .Select(m => m.ErrorMessage).ToList(),
-                Data = new { User = user }
+                Data = new { User = (ok ? user : null) }
             };
 
             //https://www.telerik.com/blogs/handling-server-side-validation-errors-in-your-kendo-ui-grid
@@ -395,7 +411,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
 
-        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        //[ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
         public IActionResult GetGroupByUId(Guid uId)
         {
 
@@ -430,11 +446,11 @@ namespace Suplex.UI.Modules.Admin.Controllers
 
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error retrieving information for group {uId}");
+                _logger.LogError(ex, $"Error retrieving information for Group {uId}");
                 r = new ResponseVM()
                 {
                     Status = ERROR,
-                    Message = $"There is a problem retrieving information for group {uId}"
+                    Message = $"There is a problem retrieving information for Group {uId}"
                 };
             }
             return Json(r);
@@ -475,7 +491,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
         [HttpPost]
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult SaveGroup([FromBody] GroupSaveVM groupSave)
         {
             bool ok = false;
@@ -491,7 +507,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 {
                     if (_dal.GetGroupByName(group.Name).Count != 0 || _dal.GetUserByName(group.Name).Count != 0)
                     {
-                        ModelState.AddModelError("Name", "Name has already been used.. Please choose another one.");
+                        ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
                     }
                 }
                 else
@@ -499,7 +515,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                     if (_dal.GetGroupByName(group.Name).Where(u => u.UId != group.UId).Count() != 0 ||
                         _dal.GetUserByName(group.Name).Count != 0)
                     {
-                        ModelState.AddModelError("Name", "Name has already been used.. Please choose another one.");
+                        ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
                     }
                 }
 
@@ -574,9 +590,9 @@ namespace Suplex.UI.Modules.Admin.Controllers
             {
                 Status = ok ? SUCCESS : ERROR,
                 Message = ok ? null : $"Unable to save Group {group.Name}. Clear the error(s) and try again.",
-                Errors = ok ? null : ModelState.Keys.SelectMany(k => ModelState[k].Errors)
+                ValidationErrors = ok ? null : ModelState.Keys.SelectMany(k => ModelState[k].Errors)
                               .Select(m => m.ErrorMessage).ToList(),
-                Data = new { Group = group }
+                Data = new { Group = (ok ? group : null) }
             };
 
             //https://www.telerik.com/blogs/handling-server-side-validation-errors-in-your-kendo-ui-grid
@@ -586,7 +602,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
         }
 
         [HttpPost]
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult DeleteUser(Guid uId)
         {
             string error = null;
@@ -608,7 +624,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error deleting information user {uId}");
+                _logger.LogError(ex, $"Error deleting User {uId}");
                 error = $"An error has occurred while deleting User {u.Name}.";
             }
             r = new ResponseVM()
@@ -619,7 +635,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
         [HttpPost]
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult DeleteGroup(Guid uId)
         {
             string error = null;
@@ -642,7 +658,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error deleting information group {uId}");
+                _logger.LogError(ex, $"Error deleting Group {uId}");
                 error = $"An error has occurred while deleting Group {g.Name}.";
             }
             r = new ResponseVM()
@@ -652,7 +668,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             };
             return Json(r);
         }
-        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        //[ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
         public IActionResult GetAllTrustees()
         {
             _logger.LogInformation($"In GetAllTrustees()");
@@ -663,22 +679,24 @@ namespace Suplex.UI.Modules.Admin.Controllers
         }
 
         #region Secure Objects
-        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
-        public IActionResult GetSecureObjectTreeItems(Guid? uId)
+        //[ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        public IActionResult GetSecureObjectTreeChildren(Guid? uId)
         {
-            _logger.LogInformation($"In GetSecureObjectTreeItems({nameof(uId)}:{uId})");
+            _logger.LogInformation($"In GetSecureObjectChildren({nameof(uId)}:{uId})");
             List<SecureObjectTreeItemVM> secureObjectTreeItems = null;
+            List<SecureObject> children = null;
             try
             {
                 if (uId == null)
                 {
-                    secureObjectTreeItems = _dal.Store.SecureObjects.Where(s => s.ParentUId == null)
-                        .Select(so => new SecureObjectTreeItemVM { UId = so.UId, UniqueName = so.UniqueName, HasChildren = (so.Children.Count > 0 ? true : false) }).ToList();
+                    children = _dal.Store.SecureObjects.Where(s => s.ParentUId == null).ToList();
                 }
                 else
                 {
-                    secureObjectTreeItems = _dal.GetSecureObjectByUId(uId.Value, true).Children.OfType<SecureObject>().Select(item => new SecureObjectTreeItemVM { UId = item.UId, UniqueName = item.UniqueName, HasChildren = (item.Children.Count > 0 ? true : false) }).ToList();
+                    children = (List<SecureObject>)_dal.GetSecureObjectByUId(uId.Value, includeChildren:true, includeDisabled:true).Children.OfType<SecureObject>().ToList();
                 }
+                secureObjectTreeItems = _mapper.Map<List<SecureObject>, List<SecureObjectTreeItemVM>>(children);
+                secureObjectTreeItems.Sort((x, y) => x.UniqueName.CompareTo(y.UniqueName));
             }
             catch (Exception ex)
             {
@@ -687,7 +705,23 @@ namespace Suplex.UI.Modules.Admin.Controllers
             }
             return Json(secureObjectTreeItems);
         }
-        [ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
+        public IActionResult GetSecureObjectTreeItem(Guid uId)
+        {
+            _logger.LogInformation($"In GetSecureObjectTreeNode({nameof(uId)}:{uId})");
+            SecureObjectTreeItemVM secureObjectTreeNode = null;
+            try
+            {
+
+                ISecureObject so = _dal.GetSecureObjectByUId(uId, includeChildren: true, includeDisabled: true);
+                secureObjectTreeNode = _mapper.Map<ISecureObject, SecureObjectTreeItemVM>(so);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting secure object {uId}");                
+            }
+            return Json(secureObjectTreeNode);
+        }
+        //[ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
         public IActionResult GetSecureObjectByUId(Guid uId)
         {
             _logger.LogInformation($"In GetSecureObjectByUId({nameof(uId)}:{uId})");
@@ -695,9 +729,9 @@ namespace Suplex.UI.Modules.Admin.Controllers
 
             try
             {
-                SecureObject so = (SecureObject)_dal.GetSecureObjectByUId(uId, includeDisabled: true);
+                SecureObject so = (SecureObject)_dal.GetSecureObjectByUId(uId, includeChildren:false, includeDisabled: true);
                 SecureObjectEditorVM editorVM = _mapper.Map<SecureObject, SecureObjectEditorVM>(so);
-                // use this if using automapper is too difficult
+                // use this if using automapper gets too difficult
                 //editorVM.Security.Dacl = so.Security.Dacl.Select(x => new DaclVM() { UId = x.UId, TrusteeUId = x.TrusteeUId, Allowed = x.Allowed, Inheritable = x.Inheritable, RightType = x.RightData.FriendlyTypeName, Right = x.RightData.Name.Split(new string[] { ", " }, StringSplitOptions.None) }).ToList();
 
                 r = new ResponseVM()
@@ -724,55 +758,170 @@ namespace Suplex.UI.Modules.Admin.Controllers
             //    }
             //});
         }
-        //public IActionResult GetRightTypes()
-        //{
-        //    if (_rightTypes == null)
-        //    {
-        //        List<Type> types = new List<Type>() { typeof(UIRight), typeof(RecordRight), typeof(FileSystemRight), typeof(SynchronizationRight) };
-        //        _rightTypes = new List<RightTypeVM>();
-
-        //        foreach (Type t in types)
-        //        {
-        //            //_rightTypes.Add(new RightTypeVM { RightType = t.GetFriendlyRightTypeName(), Rights = Enum.GetNames(t) });
-        //            _rightTypes.Add(new RightTypeVM { RightType = t.GetFriendlyRightTypeName(), Rights = EnumHelpers.EnumToList(t) });
-        //        }
-        //    }
-        //    return Json(_rightTypes);
-        //}
-        
-        // not required anymore since we pre-send all the defaults to the client at the start
-        public IActionResult GetNewSecureObject()
+        [HttpPost]
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult SaveSecureObject([FromBody] SecureObjectEditorVM model)
         {
-            _logger.LogInformation($"In GetNewSecureObject()");
-            SecureObjectEditorVM soDTO = null;
+            _logger.LogInformation($"In SaveSecureObject({nameof(model)}:{Newtonsoft.Json.JsonConvert.SerializeObject(model)})");
+            bool ok = false;
+            ISecureObject so = null;
+            ResponseVM r = null;
+
+            // check unique name
+
+            try
+            {
+                // validate
+                ISecureObject check = _dal.GetSecureObjectByUniqueName(model.UniqueName, includeChildren: false, includeDisabled: true);
+                
+                if (model.UId == null)
+                {
+                    if (check != null)
+                    {
+                        ModelState.AddModelError("Unique Name", "Unique Name has already been used. Please choose another one.");
+                    }
+                }
+                else
+                {
+                    if (check != null && check.UId != model.UId)
+                    {
+                        ModelState.AddModelError("Unique Name", "Unique Name has already been used. Please choose another one.");
+                    }
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (model.UId == null)  // new
+                    {
+                        model.UId = Guid.NewGuid();
+                    }
+
+                    model.Dacl.ForEach(ace => ace.UId = ace.UId ?? Guid.NewGuid());
+                    model.Sacl.ForEach(ace => ace.UId = ace.UId ?? Guid.NewGuid());
+
+                    so = _mapper.Map<SecureObjectEditorVM, SecureObject>(model);
+
+                    DiscretionaryAcl dacl = new DiscretionaryAcl();
+                    foreach (var item in model.Dacl)
+                    {
+                        switch (item.RightType)
+                        {
+                            case "FileSystem":
+                                dacl.Add(_mapper.Map<DaclVM, AccessControlEntry<FileSystemRight>>(item));
+                                break;
+                            case "Record":
+                                dacl.Add(_mapper.Map<DaclVM, AccessControlEntry<RecordRight>>(item));
+                                break;
+                            case "UI":
+                                dacl.Add(_mapper.Map<DaclVM, AccessControlEntry<UIRight>>(item));
+                                break;
+                            case "Synchronization":
+                                dacl.Add(_mapper.Map<DaclVM, AccessControlEntry<SynchronizationRight>>(item));
+                                break;
+                        }
+
+                    }
+                    SystemAcl sacl = new SystemAcl();
+                    foreach (var item in model.Sacl)
+                    {
+                        switch (item.RightType)
+                        {
+                            case "FileSystem":
+                                sacl.Add(_mapper.Map<SaclVM, AccessControlEntryAudit<FileSystemRight>>(item));
+                                break;
+                            case "Record":
+                                sacl.Add(_mapper.Map<SaclVM, AccessControlEntryAudit<RecordRight>>(item));
+                                break;
+                            case "UI":
+                                sacl.Add(_mapper.Map<SaclVM, AccessControlEntryAudit<UIRight>>(item));
+                                break;
+                            case "Synchronization":
+                                sacl.Add(_mapper.Map<SaclVM, AccessControlEntryAudit<SynchronizationRight>>(item));
+                                break;
+                        }
+
+                    }
+                    so.Security.Dacl = dacl;
+                    so.Security.Sacl = sacl;
+                    _dal.UpsertSecureObject(so);
+                    ok = true;
+                }
+                else
+                {
+                    _logger.LogError($"Error saving Secure Object {model.UId} | {model.UniqueName}");
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                _logger.LogError(ex, $"Error saving Secure Object");
+            }
+
+            r = new ResponseVM()
+            {
+                Status = ok ? SUCCESS : ERROR,
+                Data = ok ? model : null,
+                Message = ok ? null : $"Unable to save Secure Object {model.UniqueName}. Clear the error(s) and try again.",
+                ValidationErrors = ok ? null : ModelState.Keys.SelectMany(k => ModelState[k].Errors)
+                          .Select(m => m.ErrorMessage).ToList(),
+            };
+
+            return Json(r);
+        }
+        [HttpPost]
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult DeleteSecureObject(Guid uId)
+        {
+            string error = null;
+            _logger.LogInformation($"In DeleteSecureObject({nameof(uId)}:{uId})");
+
+            ResponseVM r = null;
+            try
+            {
+                _dal.DeleteSecureObject(uId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error deleting Secure Object {uId}");
+                error = $"An error has occurred while deleting Secure Object.";
+            }
+            r = new ResponseVM()
+            {
+                Status = string.IsNullOrEmpty(error) ? SUCCESS : ERROR,
+                Message = error
+            };
+            return Json(r);
+        }
+        [HttpPost]
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult UpdateSecureObjectParent(Guid uId, Guid? parentUId)
+        {
+            string error = null;
+            _logger.LogInformation($"In MoveSecureObject({nameof(uId)}:{uId}), {nameof(parentUId)}:{parentUId}");
             ResponseVM r = null;
 
             try
             {
-                
-                SecureObject so = new SecureObject();
-                soDTO = _mapper.Map<SecureObject, SecureObjectEditorVM>(so);
-                soDTO.UId = null;   // we want the UId to be null first to indicate it is a new record
-
-                r = new ResponseVM()
-                {
-                    Status = SUCCESS,
-                    Data = soDTO
-                };
+                SecureObject item = (SecureObject)_dal.GetSecureObjectByUId(uId, includeChildren: true, includeDisabled: true);
+                _dal.UpdateSecureObjectParentUId(item, parentUId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error retrieving information for new secure object");
-                r = new ResponseVM()
-                {
-                    Status = ERROR,
-                    Message = $"There is a problem retrieving information for new secure object"
-                };
+                _logger.LogError(ex, $"Error updating parent of Secure Object {uId}");
+                error = $"An error has occurred while attempting to update parent of Secure Object.";
             }
+            
+            r = new ResponseVM()
+            {
+                Status = string.IsNullOrEmpty(error) ? SUCCESS : ERROR,
+                Message = error
+            };
             return Json(r);
         }
 
         #endregion
 
     }
-    }
+}

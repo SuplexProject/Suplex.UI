@@ -62,8 +62,11 @@ input:-ms-input-placeholder {
 .k-grid tr td {
     vertical-align: top;
 }
+.k-splitter .k-ghost-splitbar-horizontal, .k-splitter .k-splitbar-horizontal {
+    width: 3px;
+}
 /* tool bars */
-#tbMain, #spTb {
+#tbMain, #spTb, #soTb {
     margin-bottom: -1px;
 }
 
@@ -142,104 +145,6 @@ input:-ms-input-placeholder {
     background-position: 0 -80px; /*-48px*/
 }
 
-/* security principals tool bar */
-/* ============================ */
-#spView {
-    position:relative;      /* required for kendo ui progress to work */
-}
-#spTb .k-button,
-#spTb .k-textbox,
-#soTb .k-button {
-    margin: 0px 0.2em;    /* follow kendo tool bar, couldnt use kendo toolbar bcos mvvm binding is only at toolbar widget level not individual items on the toolbar */
-}
-
-#spTb .k-textbox {
-    margin-top:-1px;  /* to make the box align properly to the buttons */
-} 
-
-/* styles for security principals grid */
-/* =================================== */
-#spGrd .k-dirty {
-    display:none;   /* don't show dirty flag */
-}
-#spGrd .k-footer-template {
-    display: none;
-}
-
-#spGrd.k-grid tr+.k-grouping-row td {
-    border-top-width: 1px
-}
-
-/* styles for security principal editor */
-/* ==================================== */
-#spEditorError,
-#soEditorError{
-    margin-bottom: 5px;
-}
-
-#memberOfSection .k-listbox,
-#membersSection .k-listbox {
-    width: 335px;
-    height: 320px;
-    margin-right: 1px;
-}
-
-#notMemberOfSection .k-listbox,
-#nonMembersSection .k-listbox {
-    width: 300px;
-    height: 320px;
-}
-
-.groupMembership label {
-    font-weight: bold;
-}
-
-.groupMembership label,
-.groupMembership input {
-    margin-bottom: 5px;
-    display: inline-block;
-    width: 300px !important;
-}
-
-#spTlGroupHierarchy {
-    width: 640px;
-}
-
-/* styles for secure object editor */
-/* =============================== */
-
-/* -- edit/delete/save/cancel buttons with no text */
-/* https://docs.telerik.com/kendo-ui/knowledge-base/grid-icon-only-buttons */
-#soGrdDacl.k-grid .k-grid-toolbar .k-grid-add,
-#soGrdDacl.k-grid tbody .k-grid-edit,
-#soGrdDacl.k-grid tbody .k-grid-update,
-#soGrdDacl.k-grid tbody .k-grid-cancel,
-#soGrdDacl.k-grid tbody .k-grid-delete,
-#soGrdSacl.k-grid .k-grid-toolbar .k-grid-add,
-#soGrdSacl.k-grid tbody .k-grid-edit,
-#soGrdSacl.k-grid tbody .k-grid-update,
-#soGrdSacl.k-grid tbody .k-grid-cancel,
-#soGrdSacl.k-grid tbody .k-grid-delete {
-    min-width: 0;
-}
-#soGrdDacl.k-grid .k-grid-toolbar .k-grid-add .k-icon,
-#soGrdDacl.k-grid tbody .k-grid-edit .k-icon,
-#soGrdDacl.k-grid tbody .k-grid-update .k-icon,
-#soGrdDacl.k-grid tbody .k-grid-cancel .k-icon,
-#soGrdDacl.k-grid tbody .k-grid-delete .k-icon,
-#soGrdSacl.k-grid .k-grid-toolbar .k-grid-add .k-icon,
-#soGrdSacl.k-grid tbody .k-grid-edit .k-icon,
-#soGrdSacl.k-grid tbody .k-grid-update .k-icon,
-#soGrdSacl.k-grid tbody .k-grid-cancel .k-icon,
-#soGrdSacl.k-grid tbody .k-grid-delete .k-icon {
-    margin: 0;
-}
-
-#soSecurityInheritance .formElement .formLabel {
-    width: 300px;
-    text-align: left;
-}
-
 /* -- controls inside grid editor */
 /* can delete these 2 if confirm not using treeview inside grid */
 .gridEditor.k-treeview .k-item {
@@ -315,4 +220,100 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 /* https://stackoverflow.com/questions/22257104/kendo-window-scrolling-background-window */
 .no-scroll {
     overflow: hidden;
+}
+
+/* styles for secure object editor */
+/* =============================== */
+
+/* -- edit/delete/save/cancel buttons with no text */
+/* https://docs.telerik.com/kendo-ui/knowledge-base/grid-icon-only-buttons */
+#soGrdDacl.k-grid .k-grid-toolbar .k-grid-add,
+#soGrdDacl.k-grid tbody .k-grid-edit,
+#soGrdDacl.k-grid tbody .k-grid-update,
+#soGrdDacl.k-grid tbody .k-grid-cancel,
+#soGrdDacl.k-grid tbody .k-grid-customdelete,
+#soGrdSacl.k-grid .k-grid-toolbar .k-grid-add,
+#soGrdSacl.k-grid tbody .k-grid-edit,
+#soGrdSacl.k-grid tbody .k-grid-update,
+#soGrdSacl.k-grid tbody .k-grid-cancel,
+#soGrdSacl.k-grid tbody .k-grid-customdelete {
+    min-width: 0;
+}
+
+    #soGrdDacl.k-grid .k-grid-toolbar .k-grid-add .k-icon,
+    #soGrdDacl.k-grid tbody .k-grid-edit .k-icon,
+    #soGrdDacl.k-grid tbody .k-grid-update .k-icon,
+    #soGrdDacl.k-grid tbody .k-grid-cancel .k-icon,
+    #soGrdDacl.k-grid tbody .k-grid-customdelete .k-icon,
+    #soGrdSacl.k-grid .k-grid-toolbar .k-grid-add .k-icon,
+    #soGrdSacl.k-grid tbody .k-grid-edit .k-icon,
+    #soGrdSacl.k-grid tbody .k-grid-update .k-icon,
+    #soGrdSacl.k-grid tbody .k-grid-cancel .k-icon,
+    #soGrdSacl.k-grid tbody .k-grid-customdelete .k-icon {
+        margin: 0;
+    }
+
+#soSecurityInheritance .formElement .formLabel {
+    width: 300px;
+    text-align: left;
+}
+/* security principals tool bar */
+#spView {
+    position: relative; /* required for kendo ui progress to work */
+}
+
+#spTb .k-button,
+#spTb .k-textbox {
+    margin: 0px 0.2em; /* follow kendo tool bar, couldnt use kendo toolbar bcos mvvm binding is only at toolbar widget level not individual items on the toolbar */
+}
+
+#spTb .k-textbox {
+    margin-top: -1px; /* to make the box align properly to the buttons */
+}
+
+/* security principals grid */
+#spGrd .k-dirty {
+    display: none; /* don't show dirty flag */
+}
+
+#spGrd .k-footer-template {
+    display: none;
+}
+
+#spGrd.k-grid tr + .k-grouping-row td {
+    border-top-width: 1px
+}
+
+/* security principal editor */
+#spEditorError,
+#soEditorError {
+    margin-bottom: 5px;
+}
+
+#memberOfSection .k-listbox,
+#membersSection .k-listbox {
+    width: 335px;
+    height: 320px;
+    margin-right: 1px;
+}
+
+#notMemberOfSection .k-listbox,
+#nonMembersSection .k-listbox {
+    width: 300px;
+    height: 320px;
+}
+
+.groupMembership label {
+    font-weight: bold;
+}
+
+.groupMembership label,
+.groupMembership input {
+    margin-bottom: 5px;
+    display: inline-block;
+    width: 300px !important;
+}
+
+#spTlGroupHierarchy {
+    width: 640px;
 }

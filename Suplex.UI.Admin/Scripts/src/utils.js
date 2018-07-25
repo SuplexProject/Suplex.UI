@@ -11,7 +11,7 @@ export function notifyWarning( msg, allowHideAfter, autoHideAfter ) {
     showNotification( msg, "warning", allowHideAfter, autoHideAfter )
 }
 export function showNotification (msg, msgType, allowHideAfter, autoHideAfter) {
-    if (allowHideAfter === undefined) allowHideAfter = 10000
+    if (allowHideAfter === undefined) allowHideAfter = 5000
     if (autoHideAfter === undefined) autoHideAfter = 15000
     if (msg == null)
         return;
@@ -156,6 +156,15 @@ export function showYesNoDialog( title, content ) {
 
     return dfd.promise()
 
+}
+export function showAlert( title, content ) {
+    //https://docs.telerik.com/kendo-ui/controls/layout/dialog/how-to/customize-predefined-dialogs
+    $( "<div></div>" ).kendoAlert( {
+        title: title, 
+        minWidth: 400,
+        minHeight: 150,
+        content: content
+    } ).data( "kendoAlert" ).open();
 }
 export function blockUI() {
     kendo.ui.progress( $( document.body ), true );

@@ -217,7 +217,7 @@ function setupWidgets() {
 function setupEventHandlers() {
 
     // need to test on IE 11    
-    $( window ).resize( debounce( resizeSplitter, 500 ) ) 
+    $( window ).resize( debounce( resizeSplitter, 500 ) ).trigger( 'resize' )
 
     // click comes after grid change event
     _$spGrd.on( 'click', 'tbody tr', spGrdClick )
@@ -297,7 +297,7 @@ function resizeSplitter() {
     console.log("In resizeSplitter...")
     var top = 125  // height occupied above splitter
     var bottom = 25 // height occupied below splitter
-    var height = $( window ).height() - ( top + bottom )    
+    var height = $( window ).height() - ( top + bottom ) - 1
     height = (height <= 0 ) ? 100 : height    
     _$spSpltr.height(height)
 
@@ -325,7 +325,7 @@ export function loadSecurityPrincipals() {
     ds.read()
 }
 
-export function spGrdClick( e ) {
+function spGrdClick( e ) {
     console.log( "In spGrdClick..." )
 
     // var selectedItem = e.sender.dataItem(this.select())
@@ -373,10 +373,6 @@ export function spGrdClick( e ) {
     })
 }
 
-//export function spGrdDataBound( e ) {
-//    console.log( "In spGrdDataBound..." )
-//}
-
 export function verifySaveChanges() {
 
     console.log("In verifySaveChanges...")
@@ -388,7 +384,7 @@ export function verifySaveChanges() {
     else {
         var isEditingUser = spVM.editor.model.get( "IsUser" )
         var message = "Save changes to " + ( isEditingUser ? "User " : "Group " ) + spVM.editor.model.get( 'Name' ) + "?"
-        $.when( showYesNoCancelDialog( "Save changes?", message ) ).then( function ( response ) {
+        $.when( showYesNoCancelDialog( "Save changes", message ) ).then( function ( response ) {
             console.log( "-- Response is " + response )
             switch ( response ) {
 
@@ -559,10 +555,10 @@ function notifySaveGroupFailed( jqXHR, textStatus, errorThrown ) {
 function checkResponseStatus( data, $formErrorContainer ) {
     console.log("In checkResponseStatus...")
     if ( data.Status != constants.SUCCESS ) {
-        if (data.Errors) {
+        if ( data.ValidationErrors) {
             if ( $formErrorContainer ) {
                 let msg = ""
-                $(data.Errors).each(function () {
+                $(data.ValidationErrors).each(function () {
                     console.log(this)
                     msg += this + "<br/>"
                 } )
@@ -818,7 +814,7 @@ export function spBtnDeleteClick( e ) {
     var message = "Are you sure you want to delete " + ( itemToDelete.IsUser ? "User " : "Group " ) + itemToDelete.Name + "?"
     
     var action = itemToDelete.IsUser ? "DeleteUser" : "DeleteGroup"
-    $.when( showYesNoDialog( "Confirm delete?", message ) )        
+    $.when( showYesNoDialog( "Confirm Delete", message ) )        
         .then( function ( response ) {
             if ( response == 1 ) {  // ok
                 blockUI()
@@ -850,6 +846,7 @@ function updateUIPostDelete( gridDataItem ) {
     // remove item from grid
     var ds = _k$spGrd.dataSource
     ds.remove( gridDataItem )
+    spVM.set("selectedUId", null)
 
     // reset editor & hide it
     resetEditor( false )

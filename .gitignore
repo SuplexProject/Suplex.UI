@@ -784,6 +784,9 @@ typings/
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
+*.dll
+package-lock.json
+Scripts/dist/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 
@@ -938,7 +941,3 @@ typings/
 # End of https://www.gitignore.io/api/git,node,csharp,jetbrains,visualstudio,visualstudiocode
 
 # Excluded binary modules
-*.dll
-package-lock.json
-bundle.js
-bundle.js.map

@@ -8,13 +8,13 @@ var _$tbMain = $(ID.TB_MAIN);
 
 // TODO: Check if the parameters passed to kendo.observable are correct
 var mainVM = {
-    fileName: null,
+    fileName: "",
     hasChanges: false,
     init: function () {
         this.fileName = null;
         this.hasChanges = false;
     },
-    setChange: function (trueorfalse) {
+    setChange: function (trueorfalse: boolean) {
         this.hasChanges = trueorfalse;
     }
 };
@@ -24,8 +24,8 @@ var originalWindowTitle = document.title;
 // create the widgets once, and store a reference to it so it can be used again and again
 // resolve(fileName) or reject() when no file selected
 var selectFile = (function () {
-    var dfd;
-    var fileName;
+    let dfd: JQueryDeferred<string> = $.Deferred();
+    var fileName = "";
 
     var dsFileExplorer = new kendo.data.HierarchicalDataSource({
         transport: {
@@ -39,7 +39,7 @@ var selectFile = (function () {
                 id: "Path",
                 //hasChildren: "HasChildren"  
                 //use a function to dynamically add an item/field to the node. https://stackoverflow.com/questions/13629373/kendo-ui-treeview-sprite-altering-template
-                hasChildren: function (node) {
+                hasChildren: function (node: any) { // TODO: Specify more specific type
                     if (node.Type == "File")
                         node.spriteCssClass = "file";
                     else
@@ -130,8 +130,9 @@ var selectFile = (function () {
 
 // resolve(fileName) or reject() when no file selected
 var selectSaveAsFileName = (function () {
-    var dfd;
-    var fileName;
+    let dfd: JQueryDeferred<string> = $.Deferred();
+
+    var fileName = "";
 
     var dsFileExplorer = new kendo.data.HierarchicalDataSource({
         transport: {
@@ -145,7 +146,7 @@ var selectSaveAsFileName = (function () {
                 id: "Path",
                 //hasChildren: "HasChildren"  
                 //use a function to dynamically add an item/field to the node. https://stackoverflow.com/questions/13629373/kendo-ui-treeview-sprite-altering-template
-                hasChildren: function (node) {
+                hasChildren: function (node: any) {
                     if (node.Type == "File")
                         node.spriteCssClass = "file";
                     else
@@ -297,7 +298,7 @@ function setupEventHandlers() {
         $(this).find("span.k-i-arrow-chevron-up, span.k-i-arrow-chevron-down").toggleClass("k-i-arrow-chevron-up k-i-arrow-chevron-down");
     });
 }
-function openFile(fileName) {
+function openFile(fileName: string) {
     console.log("In openFile...");
     console.log("-- File name: " + fileName);
 
@@ -352,7 +353,7 @@ function newFile() {
         });
 }
 
-function btnNewFileClick(e) {
+function btnNewFileClick() {
     console.log("In btnNewFileClick...");
     spVerifySaveChanges()
         .then(function (proceed) {
@@ -368,7 +369,7 @@ function btnNewFileClick(e) {
             }
         });
 }
-function btnOpenFileClick(e) {
+function btnOpenFileClick() {
     console.log("In btnOpenFileClick...");
     spVerifySaveChanges()
         .then(function (proceed) {
@@ -386,7 +387,7 @@ function btnOpenFileClick(e) {
         });
 }
 
-function btnSaveFileClick(e) {
+function btnSaveFileClick(e: any) {
     console.log("In btnSaveFileClick...");
 
     switch ("#" + e.id) {
@@ -417,7 +418,7 @@ function btnSaveFileClick(e) {
 // resolve(false) if save failed or cancel selected
 function verifySaveChangesToStore() {
     console.log("In verifySaveChangesToStore...");
-    var dfd = $.Deferred();
+    let dfd: JQueryDeferred<boolean> = $.Deferred();
     console.log(mainVM.hasChanges);
     if (!mainVM.hasChanges) {
         dfd.resolve(true);
@@ -430,8 +431,9 @@ function verifySaveChangesToStore() {
             switch (response) {
                 case 1: // save
                     var promise = isNewFile ? selectSaveAsFileName() : $.Deferred().resolve();
-                    promise.then(saveFile).then(function (saveResult) { dfd.resolve(saveResult) });
-
+                    // TODO: This needs to be fixed.
+                    // promise.then(saveFile).then(function (saveResult: any) { dfd.resolve(saveResult) });
+                                        
                     break;
                 case 2: // discard
                     dfd.resolve(true);
@@ -449,12 +451,12 @@ function verifySaveChangesToStore() {
 }
 
 // resolve(true) when file save is successful, resolve(false) if otherwise
-function saveFile(fileName): JQueryPromise<boolean> {
+function saveFile(fileName: string): JQueryPromise<boolean> {
     console.log("In saveFile...");
     console.log("-- File name: " + fileName);
 
     var data = fileName ? { fileName: fileName } : null;
-    var dfd = $.Deferred();
+    let dfd: JQueryDeferred<boolean> = $.Deferred();
 
     $.ajax({
         method: 'POST',
@@ -490,7 +492,7 @@ function saveFile(fileName): JQueryPromise<boolean> {
 
     return dfd.promise();
 }
-function switchView(e) {
+function switchView(e: any) {
     console.log("In switchView...");
     switch (e.id) {
         case "btnShowSecurityPrincipals":
@@ -507,7 +509,7 @@ function switchView(e) {
     }
 }
 
-function setWindowTitle(fileName) {
+function setWindowTitle(fileName: string) {
     document.title = originalWindowTitle + " " + fileName;
 }
 

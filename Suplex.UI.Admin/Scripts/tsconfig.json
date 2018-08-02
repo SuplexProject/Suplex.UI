@@ -3,7 +3,7 @@
         "outDir": "./dist/",
         "sourceMap": true,
         "allowJs": true,
-        // "noEmitOnError": true,
+        "noEmitOnError": true,
         // "noImplicitAny": true,
         "target": "es5",
         "module": "es2015",

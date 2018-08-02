@@ -6,18 +6,11 @@
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />
-    <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Views\**;Styles\**\*.min.css;Scripts\dist\*.js;Images\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Scripts\dist\**" />
-    <Content Remove="Scripts\dist\**" />
-    <EmbeddedResource Remove="Scripts\dist\**" />
-    <None Remove="Scripts\dist\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.2.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
     <PackageReference Include="Suplex.Security.Core" Version="1.0.18206" />
     <PackageReference Include="Suplex.Security.FileSystemDal" Version="1.0.18181" />
@@ -55,5 +48,9 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /e /y /s &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Suplex.UI.WebApplication\Modules\Admin\&quot;&#xD;&#xA;" />
   </Target>
+
+  <PropertyGroup>
+    <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
+  </PropertyGroup>
 
 </Project>

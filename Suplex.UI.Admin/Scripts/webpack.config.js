@@ -9,7 +9,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         library: 'SUPLEXUI'
     },
-    watch: true,
+    watch: false,
     // Enable sourcemaps for debugging webpack's output.
     devtool: "source-map",
 

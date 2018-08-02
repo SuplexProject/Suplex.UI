@@ -6,6 +6,7 @@
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />
+    <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,4 +49,8 @@
     <Exec Command="xcopy /e /y /s &quot;$(TargetPath)&quot; &quot;$(ProjectDir)..\Suplex.UI.WebApplication\Modules\Admin\&quot;&#xD;&#xA;" />
   </Target>
 
+  <PropertyGroup>
+    <TypeScriptCompileBlocked>True</TypeScriptCompileBlocked>
+  </PropertyGroup>
+  
 </Project>

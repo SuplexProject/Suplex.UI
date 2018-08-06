@@ -1,16 +1,16 @@
-﻿export function notifyError(msg, allowHideAfter?, autoHideAfter?) {
+﻿export function notifyError(msg: string, allowHideAfter?: number, autoHideAfter?: number) {
     showNotification(msg, "error", allowHideAfter, autoHideAfter);
 }
-export function notifyInfo(msg, allowHideAfter?, autoHideAfter?) {
+export function notifyInfo(msg: string, allowHideAfter?: number, autoHideAfter?: number) {
     showNotification(msg, "info", allowHideAfter, autoHideAfter);
 }
-export function notifySuccess(msg, allowHideAfter?, autoHideAfter?) {
+export function notifySuccess(msg: string, allowHideAfter?: number, autoHideAfter?: number) {
     showNotification(msg, "success", allowHideAfter, autoHideAfter);
 }
-export function notifyWarning(msg, allowHideAfter?, autoHideAfter?) {
+export function notifyWarning(msg: string, allowHideAfter?: number, autoHideAfter?: number) {
     showNotification(msg, "warning", allowHideAfter, autoHideAfter);
 }
-export function showNotification(msg, msgType, allowHideAfter, autoHideAfter) {
+export function showNotification(msg: string, msgType: string, allowHideAfter: number, autoHideAfter: number) {
     if (allowHideAfter === undefined) allowHideAfter = 5000;
     if (autoHideAfter === undefined) autoHideAfter = 15000;
     if (msg == null) return;
@@ -33,19 +33,20 @@ export function showNotification(msg, msgType, allowHideAfter, autoHideAfter) {
     noti.show(msg, msgType);
 }
 
-export function getActionUrl(action, controller) {
+export function getActionUrl(action: string, controller: string) {
     return $("base").attr("href") + controller + "/" + action;
 }
 
-export function dataSourceError(e) {
+export function dataSourceError(e: any) {
     this.data([]); // "this" is set to the data source instance
     //console.log(e);
     // e.status can be null, "timeout", "error", "abort", and "parsererror"
-    // e.errorThrown is the textual portion of the HTTP status
+    // e.errorThrown is the textual portion of the HTTP statuses
     if (e) {
         let msg = decipherJqXhrError(e.xhr, e.status);
         if (e.errors) {
             $.each(e.errors, function(key, value) {
+                console.log(key); // TODO: Key is not used
                 if ("errors" in value) {
                     $.each(value.errors, function() {
                         msg += this + "\n";
@@ -58,7 +59,7 @@ export function dataSourceError(e) {
     }
 }
 
-export function decipherJqXhrError(jqXHR, textStatus) {
+export function decipherJqXhrError(jqXHR: JQueryXHR, textStatus: string) {
     let errorMessage = "";
 
     if (jqXHR.status === 0) {
@@ -79,7 +80,7 @@ export function decipherJqXhrError(jqXHR, textStatus) {
     return errorMessage;
 }
 
-export function showYesNoCancelDialog(title, content) {
+export function showYesNoCancelDialog(title: string, content: string) {
     let dfd = $.Deferred();
     let result = 0;
 
@@ -114,7 +115,7 @@ export function showYesNoCancelDialog(title, content) {
                     },
                 },
             ],
-            close: function(e) {
+            close: function() {
                 this.destroy();
                 dfd.resolve(result);
             },
@@ -124,7 +125,7 @@ export function showYesNoCancelDialog(title, content) {
 
     return dfd.promise();
 }
-export function showYesNoDialog(title, content) {
+export function showYesNoDialog(title: string, content: string) {
     let dfd = $.Deferred();
     let result = 0;
 
@@ -152,7 +153,7 @@ export function showYesNoDialog(title, content) {
                     },
                 },
             ],
-            close: function(e) {
+            close: function() {
                 this.destroy();
                 dfd.resolve(result);
             },
@@ -162,7 +163,7 @@ export function showYesNoDialog(title, content) {
 
     return dfd.promise();
 }
-export function showAlert(title, content) {
+export function showAlert(title: string, content: string) {
     // https://docs.telerik.com/kendo-ui/controls/layout/dialog/how-to/customize-predefined-dialogs
     // TODO: Alert option here is not matching the typing. Kendo.Dialog should be used instead.
     // Workaround to coerce DialogOptions as AlertOptions.
@@ -184,9 +185,9 @@ export function unblockUI() {
     kendo.ui.progress($(document.body), false);
 }
 
-export function isValidFileName(fileName) {
-    return true;
+export function isValidFileName(fileName: string) {
+    return !fileName ? false : true;
 }
-export function isPowerOfTwo(x) {
+export function isPowerOfTwo(x: number) {
     return (x & (x - 1)) == 0 ? true : false;
 }

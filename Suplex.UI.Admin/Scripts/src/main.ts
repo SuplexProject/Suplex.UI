@@ -20,7 +20,7 @@ let mainVM = kendo.observable({
         this.fileName = null;
         this.hasChanges = false;
     },
-    setChange: function(trueorfalse) {
+    setChange: function(trueorfalse: boolean) {
         this.hasChanges = trueorfalse;
     },
 });
@@ -30,8 +30,8 @@ let originalWindowTitle = document.title;
 // create the widgets once, and store a reference to it so it can be used again and again
 // resolve(fileName) or reject() when no file selected
 let selectFile = (function() {
-    let dfd;
-    let fileName;
+    let dfd: JQueryDeferred<string> = $.Deferred();
+    let fileName: string;
 
     let dsFileExplorer = new kendo.data.HierarchicalDataSource({
         transport: {
@@ -45,7 +45,8 @@ let selectFile = (function() {
                 id: "Path",
                 //hasChildren: "HasChildren"
                 //use a function to dynamically add an item/field to the node. https://stackoverflow.com/questions/13629373/kendo-ui-treeview-sprite-altering-template
-                hasChildren: function(node) {
+                hasChildren: function(node: any) {
+                    // TODO: Put explicit type
                     if (node.Type == "File") node.spriteCssClass = "file";
                     else node.spriteCssClass = "folder";
                     return node.HasChildren;
@@ -128,8 +129,8 @@ let selectFile = (function() {
 
 // resolve(fileName) or reject() when no file selected
 let selectSaveAsFileName = (function() {
-    let dfd;
-    let fileName;
+    let dfd: JQueryDeferred<string> = $.Deferred();
+    let fileName: string;
 
     let dsFileExplorer = new kendo.data.HierarchicalDataSource({
         transport: {
@@ -143,7 +144,8 @@ let selectSaveAsFileName = (function() {
                 id: "Path",
                 //hasChildren: "HasChildren"
                 //use a function to dynamically add an item/field to the node. https://stackoverflow.com/questions/13629373/kendo-ui-treeview-sprite-altering-template
-                hasChildren: function(node) {
+                hasChildren: function(node: any) {
+                    // TODO: Put explicit type
                     if (node.Type == "File") node.spriteCssClass = "file";
                     else node.spriteCssClass = "folder";
                     return node.HasChildren;
@@ -286,7 +288,7 @@ function setupEventHandlers() {
             .toggleClass("k-i-arrow-chevron-up k-i-arrow-chevron-down");
     });
 }
-function openFile(fileName) {
+function openFile(fileName: string) {
     console.log("In openFile...");
     console.log("-- File name: " + fileName);
 
@@ -340,7 +342,7 @@ function newFile() {
         });
 }
 
-function btnNewFileClick(e) {
+function btnNewFileClick() {
     console.log("In btnNewFileClick...");
     spVerifySaveChanges()
         .then(function(proceed) {
@@ -356,7 +358,7 @@ function btnNewFileClick(e) {
             }
         });
 }
-function btnOpenFileClick(e) {
+function btnOpenFileClick() {
     console.log("In btnOpenFileClick...");
     spVerifySaveChanges()
         .then(function(proceed) {
@@ -374,7 +376,8 @@ function btnOpenFileClick(e) {
         });
 }
 
-function btnSaveFileClick(e) {
+function btnSaveFileClick(e: any) {
+    // TODO: Put explicit type
     console.log("In btnSaveFileClick...");
 
     switch ("#" + e.id) {
@@ -415,8 +418,9 @@ function verifySaveChangesToStore() {
             console.log("-- Response is " + response);
             switch (response) {
                 case 1: // save
-                    let promise = isNewFile ? selectSaveAsFileName() : $.Deferred().resolve();
-                    promise.then(saveFile).then(function(saveResult) {
+                    let promise: any = isNewFile ? selectSaveAsFileName() : $.Deferred().resolve();
+                    // TODO: Need to check what exactly it does here and amend.
+                    promise.then(saveFile).then(function(saveResult: any) {
                         dfd.resolve(saveResult);
                     });
 
@@ -437,7 +441,7 @@ function verifySaveChangesToStore() {
 }
 
 // resolve(true) when file save is successful, resolve(false) if otherwise
-function saveFile(fileName) {
+function saveFile(fileName: string) {
     console.log("In saveFile...");
     console.log("-- File name: " + fileName);
 
@@ -476,7 +480,7 @@ function saveFile(fileName) {
 
     return dfd.promise();
 }
-function switchView(e) {
+function switchView(e: any) {
     console.log("In switchView...");
     switch (e.id) {
         case "btnShowSecurityPrincipals":
@@ -493,7 +497,7 @@ function switchView(e) {
     }
 }
 
-function setWindowTitle(fileName?) {
+function setWindowTitle(fileName?: string) {
     document.title = originalWindowTitle + " " + fileName;
 }
 
@@ -506,7 +510,7 @@ $(document).ready(function() {
 //    //alert( "togglepanel" )
 //    //console.log( e )
 //    console.log( this )
-//    console.log( $(this).next().toggle())
+//    console.log( $(this).next().toggle())s
 //}
 export { btnOpenFileClick, btnNewFileClick, btnSaveFileClick, switchView, mainVM };
 

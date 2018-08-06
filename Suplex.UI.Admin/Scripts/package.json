@@ -22,7 +22,7 @@
     "webpack-cli": "^3.1.0"
   },
   "scripts": {
-    "start": "webpack --config webpack.config.js"
+    "start": "webpack --config webpack.config.js && move /Y dist\\Scripts.dist.bundle.js.map dist\\bundle.js.map"
   },
   "author": "",
   "license": "ISC"

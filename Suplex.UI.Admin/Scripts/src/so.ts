@@ -5,13 +5,11 @@ import { mainVM } from "./main";
 import {
     getActionUrl,
     decipherJqXhrError,
-    dataSourceError,
     showYesNoCancelDialog,
     showYesNoDialog,
     blockUI,
     unblockUI,
     notifyError,
-    notifyInfo,
     notifySuccess,
     isPowerOfTwo,
     showAlert,
@@ -27,21 +25,21 @@ let _$soEditorError = $(ID.SO_EDITOR_ERROR);
 let _$soGrdDacl = $(ID.SO_GRD_DACL);
 let _$soGrdSacl = $(ID.SO_GRD_SACL);
 
-let _validator = null;
+let _validator: kendo.ui.Validator = null;
 
-let _k$soTv = null;
-let _k$soGrdDacl = null;
-let _k$soGrdSacl = null;
+let _k$soTv: kendo.ui.TreeView = null;
+let _k$soGrdDacl: kendo.ui.Grid = null;
+let _k$soGrdSacl: kendo.ui.Grid = null;
 
-let _auditTypes = [];
-let _rightTypes = [];
+let _auditTypes: string[] = [];
+let _rightTypes: string[] = [];
 let _rights = {};
 let _secureObjectDefaults = {};
 
 let dfdSecureObjectDefaults = $
     .get(getActionUrl("GetSecureObjectDefaults", "Admin"))
     .done(function(data) {
-        let arr = [];
+        // let arr = [];
         _secureObjectDefaults = data;
         (soVM as any).editor.set("secureObjectDefaults", _secureObjectDefaults);
     })
@@ -249,7 +247,7 @@ let soVM = kendo.observable({
                 return "#f00";
             }
         },
-        reset: function(showEditor?) {
+        reset: function(showEditor?: boolean) {
             if (showEditor == undefined) {
                 showEditor = false;
             }
@@ -261,16 +259,16 @@ let soVM = kendo.observable({
             this.set("hasError", false);
             this.set("model", new _soEditorModel());
         },
-        setError: function(trueOrFalse) {
+        setError: function(trueOrFalse: boolean) {
             if (this.get("hasError") == trueOrFalse) return;
             this.set("hasError", trueOrFalse);
         },
-        raiseChange: function(e) {
+        raiseChange: function() {
             // bound to editor to set the hasChanges flag
             let that = this;
             that.editor.set("hasChanges", true);
         },
-        setSaclAuditTypeFilterToDefault: function(e) {
+        setSaclAuditTypeFilterToDefault: function() {
             let that = this;
             that.editor.model.set("SaclAuditTypeFilter", _secureObjectDefaults["SaclAuditTypeFilterArray"]);
         },
@@ -300,7 +298,7 @@ let soVM = kendo.observable({
             //} )
             //return ( v == _secureObjectDefaults["SaclAuditTypeFilter"] )
             return (
-                this.model.get("SaclAuditTypeFilter").reduce(function(result, itemVal) {
+                this.model.get("SaclAuditTypeFilter").reduce(function(result: any, itemVal: any) {
                     return result | itemVal;
                 }, 0) == _secureObjectDefaults["SaclAuditTypeFilter"]
             );
@@ -316,15 +314,15 @@ let soVM = kendo.observable({
     },
 });
 // functions to set view model fields
-function setChange(trueorfalse) {
+function setChange(trueorfalse: boolean) {
     if ((soVM as any).editor.get("hasChanges") == trueorfalse) return;
     (soVM as any).editor.set("hasChanges", trueorfalse);
 }
-function setError(trueorfalse) {
+function setError(trueorfalse: boolean) {
     if ((soVM as any).editor.get("hasError") == trueorfalse) return;
     (soVM as any).editor.set("hasError", trueorfalse);
 }
-function setSelectedUId(uId) {
+function setSelectedUId(uId: string) {
     if (soVM.get("selectedUId") != uId) {
         soVM.set("selectedUId", uId);
     }
@@ -383,7 +381,7 @@ function setupWidgets() {
                         name: "customdelete",
                         text: "",
                         iconClass: "k-icon k-i-close",
-                        click: function(e) {
+                        click: function(e: any) {
                             e.preventDefault();
                             let tr = $(e.target).closest("tr");
                             let data = this.dataItem(tr);
@@ -468,7 +466,7 @@ function setupWidgets() {
                         name: "customdelete",
                         text: "",
                         iconClass: "k-icon k-i-close",
-                        click: function(e) {
+                        click: function(e: any) {
                             e.preventDefault();
                             let tr = $(e.target).closest("tr");
                             let data = this.dataItem(tr);
@@ -536,19 +534,19 @@ function setupWidgets() {
                             if (target.hasClass("wrapper")) {
                                 // not a treeview node, so create a top level node
                             } else {
-                                let dataItem = _k$soTv.dataItem(target);
-                                selectSecureObjectTreeNode(dataItem.UId); // select the node pointed by the context menu
-                                (soVM as any).editor.model.set("ParentUId", dataItem.UId);
+                                let dataItem = _k$soTv.dataItem(target as JQuery); // TODO: Check if the type is correct
+                                selectSecureObjectTreeNode((dataItem as any).UId); // select the node pointed by the context menu
+                                (soVM as any).editor.model.set("ParentUId", (dataItem as any).UId);
                             }
                         } else {
                         }
                     });
                     break;
                 case "soTvMnuDelete":
-                    let dataItem = _k$soTv.dataItem(target);
+                    // let dataItem = _k$soTv.dataItem(target as JQuery);
 
                     // need to incorporate verifysavechanges
-                    _k$soTv.select(target);
+                    _k$soTv.select(target as JQuery);
                     _k$soTv.trigger("click");
                     $(ID.SO_BTN_DELETE).trigger("click");
 
@@ -621,24 +619,25 @@ function resizeElements() {
     // let width = $( window ).width() -
     _$soSpltr.data("kendoSplitter").resize();
 }
-export function soBtnExpandAllClick(e) {
+export function soBtnExpandAllClick() {
     // note: this only works when loadOnDemand is false
     let node = _k$soTv.select();
     expandCollapseAll(true, node);
 }
-export function soBtnCollapseAllClick(e) {
+export function soBtnCollapseAllClick() {
     let node = _k$soTv.select();
     expandCollapseAll(false, node);
 }
-function expandCollapseAll(expand, node) {
+function expandCollapseAll(expand: any, node: any) {
+    // TODO: Put explicit type
     if (node.length == 0) {
         expand ? _k$soTv.expand(".k-item") : _k$soTv.collapse(".k-item");
     } else {
         expand ? _k$soTv.expand(node.find(".k-item").addBack()) : _k$soTv.collapse(node.find(".k-item").addBack());
     }
 }
-export function soTvDataBound(e) {}
-export function soBtnNewClick(e) {
+export function soTvDataBound() {}
+export function soBtnNewClick(e: any) {
     console.log("In soBtnNewClick...");
     verifySaveChanges().then(function(proceed) {
         if (proceed) {
@@ -651,7 +650,7 @@ export function soBtnNewClick(e) {
         }
     });
 }
-export function soBtnSaveClick(e) {
+export function soBtnSaveClick() {
     console.log("In soBtnSaveClick...");
     clearEditorErrors();
     if (validateEditor()) {
@@ -670,7 +669,7 @@ function validateEditor() {
 
     // make sure the 2 grids have exited edit mode
     if (_k$soGrdDacl.table.find("tr.k-grid-edit-row").length > 0 || _k$soGrdSacl.table.find("tr.k-grid-edit-row").length > 0) {
-        showAlert("Alert", "<p style='text-align:center,width:400px;'>Complete the 'Permission' and 'Audit' sections first before you save.</p>");
+        showAlert("Alert", "<p style='text-align:center;width:400px;'>Complete the 'Permission' and 'Audit' sections first before you save.</p>");
         ok = false;
     } else {
         ok = _validator.validate();
@@ -695,7 +694,8 @@ function saveSecureObject() {
     // clone the model
     let model = JSON.parse(JSON.stringify((soVM as any).editor.get("model")));
     // convert saclaudittypefilter back to a single number
-    let auditTypeFilterVal = model.SaclAuditTypeFilter.reduce(function(result, itemVal) {
+    let auditTypeFilterVal = model.SaclAuditTypeFilter.reduce(function(result: any, itemVal: any) {
+        // TODO: Put explicit type
         return result | itemVal;
     }, 0);
     model.SaclAuditTypeFilter = auditTypeFilterVal;
@@ -726,7 +726,8 @@ function saveSecureObject() {
 
     return dfd.promise();
 }
-function transformData(data) {
+function transformData(data: any) {
+    // TODO: Put explicit type
     // convert SaclAuditTypeFilter to int[] so we can bind it to the editor
     // need to convert back before sending the model back to the server for update
     // another option:
@@ -734,17 +735,18 @@ function transformData(data) {
     // - don't touch the existing property. bind the new property to the editor
     // - before save, update the field, and delete (use the delete command) the temporary property
     let v = data.Data.SaclAuditTypeFilter;
-    let arr = [];
-    $.each(_auditTypes, function(index, item) {
+    let arr: number[] = [];
+    $.each(_auditTypes, function(index, item: any) {
         if ((v & item.Id) == item.Id) {
-            arr.push(item.Id);
+            arr.push(item.Id as number);
         }
     });
     data.Data.SaclAuditTypeFilter = arr;
     // return arr
 }
 
-function processSaveActionResponse(data) {
+function processSaveActionResponse(data: any) {
+    // Put explicit type
     console.log("In processSaveActionResponse...");
     let dfd = $.Deferred();
 
@@ -795,7 +797,7 @@ function processSaveActionResponse(data) {
                                 parentEle
                             );
                             // sort that specific level only
-                            dsItem.children.sort({ field: "UniqueName", dir: "asc" });
+                            (dsItem as any).children.sort({ field: "UniqueName", dir: "asc" }); // TODO: Put explicit type
                         }
                     } else {
                         // existing node, just update
@@ -890,9 +892,9 @@ function processSaveActionResponse(data) {
 //        parent = _k$soTv.parent( parent );
 //    }
 //}
-export function soBtnDeleteClick(e) {
+export function soBtnDeleteClick() {
     // get the selected item
-    let itemToDelete = _k$soTv.dataItem(_k$soTv.select());
+    let itemToDelete: any = _k$soTv.dataItem(_k$soTv.select()); // TODO: Put explicit type
     if (!itemToDelete) return;
 
     $.when(showYesNoDialog("Confirm Delete", "Are you sure you want to delete the selected Secure Object and all its child items?")).then(function(
@@ -914,7 +916,8 @@ export function soBtnDeleteClick(e) {
         }
     });
 }
-function deleteSecureObject(itemToDelete) {
+function deleteSecureObject(itemToDelete: any) {
+    // TODO: Put explicit type
     let dfd = $.Deferred();
     $.post(getActionUrl("DeleteSecureObject", "Admin"), { uId: itemToDelete.UId })
         .then(function(data) {
@@ -928,7 +931,8 @@ function deleteSecureObject(itemToDelete) {
 
     return dfd.promise();
 }
-function processDeleteActionResponse(data, itemToDelete) {
+function processDeleteActionResponse(data: any, itemToDelete: any) {
+    // TODO: Put explicit type
     if (data.Status == constants.SUCCESS) {
         (mainVM as any).setChange(true);
         resetEditor();
@@ -951,7 +955,7 @@ function processDeleteActionResponse(data, itemToDelete) {
             .promise();
     }
 }
-export function soBtnDiscardClick(e) {
+export function soBtnDiscardClick() {
     console.log("In soBtnDiscardClick...");
 
     verifySaveChanges().then(function(proceed) {
@@ -963,10 +967,10 @@ export function soBtnDiscardClick(e) {
 
 // use click event and (MUST) leave treeview change and select methods empty
 // too difficult to manage/control the events
-function soTvClick(e) {
+function soTvClick() {
     // this event comes after treeview select and change events
     console.log("In soTvClick...");
-    let selectedItem = _k$soTv.dataItem(_k$soTv.select());
+    let selectedItem: any = _k$soTv.dataItem(_k$soTv.select()); // TODO: Put explicit type
 
     if (!selectedItem) {
         return;
@@ -981,7 +985,7 @@ function soTvClick(e) {
             selectSecureObjectTreeNode(selectedItem.UId);
             resetEditor(true);
 
-            let name = selectedItem.UniqueName;
+            // let name = selectedItem.UniqueName;
             $.when(_kDsTrustees.read(), getSecureObject(selectedItem.UId))
                 .done(function(arg1, arg2) {
                     //let data = arg2[0]
@@ -995,7 +999,8 @@ function soTvClick(e) {
         }
     });
 }
-export function soTvDrag(e) {
+export function soTvDrag(e: any) {
+    // TODO: Put explicit type
     // disallow if dropping to the same parent
     let srcParent = this.dataItem(this.parent(e.sourceNode));
     if (e.statusClass == "i-plus") {
@@ -1012,7 +1017,8 @@ export function soTvDrag(e) {
         }
     }
 }
-export function soTvDrop(e) {
+export function soTvDrop(e: any) {
+    // TODO: Put explicit type
     // at this stage, the node is not yet registered with the new destination.
     if (!e.valid) return;
 
@@ -1056,7 +1062,7 @@ export function soTvDrop(e) {
                 }
                 // sort
                 //let tree = e.sender
-                let dataSource = tree.dataSource;
+                // let dataSource = tree.dataSource;
                 setTimeout(function() {
                     //sortSecureObjectTree( dataSource.view() ) // this one sorts the whole tree
                     sortSecureObjectTreeNode(parentItem);
@@ -1082,7 +1088,8 @@ export function soTvDrop(e) {
     //    sortSecureObjectTreeNode(parent)
     //}, 0 );
 }
-function sortSecureObjectTreeNode(parentNode) {
+function sortSecureObjectTreeNode(parentNode: any) {
+    // TODO: Put explicit type
     if (parentNode) {
         parentNode.children.sort({ field: "UniqueName", dir: "asc" });
     } else {
@@ -1098,13 +1105,13 @@ function sortSecureObjectTreeNode(parentNode) {
 //        }
 //    }
 //}
-function selectSecureObjectTreeNode(uId?) {
+function selectSecureObjectTreeNode(uId?: string) {
     if (!uId) {
         // if not provided take from view model
         uId = soVM.get("selectedUId");
     }
 
-    let dataItem = _k$soTv.dataSource.get(uId);
+    let dataItem: any = _k$soTv.dataSource.get(uId); // TODO: Put explicit type
     if (dataItem) {
         _k$soTv.expandTo(dataItem);
         let nodeElement = _k$soTv.findByUid(dataItem.uid);
@@ -1115,7 +1122,7 @@ function selectSecureObjectTreeNode(uId?) {
     setSelectedUId(dataItem.UId);
 }
 
-function getSecureObject(uId) {
+function getSecureObject(uId: string) {
     let dfd = $.Deferred();
 
     $.get(getActionUrl("GetSecureObjectByUId", "Admin"), { uId: uId }).then(
@@ -1136,7 +1143,7 @@ function getSecureObject(uId) {
     );
     return dfd.promise();
 }
-function resetEditor(showEditor?) {
+function resetEditor(showEditor?: boolean) {
     (soVM as any).editor.reset(showEditor);
     clearEditorErrors();
     _k$soGrdDacl.dataSource.data([]);
@@ -1146,7 +1153,8 @@ function clearEditorErrors() {
     _$soEditorError.empty();
     (soVM as any).editor.setError(false);
 }
-function populateEditor(data) {
+function populateEditor(data: any) {
+    // TODO: Put explicit type
     console.log("In populateEditor...");
     if (data) {
         (soVM as any).editor.set("model", data.Data);
@@ -1176,7 +1184,8 @@ function populateEditor(data) {
 // }
 
 // ddl used inside dacl, sacl grid
-function trusteeDropDownEditor(container, options) {
+function trusteeDropDownEditor(container: any, options: any) {
+    // TODO: Put explicit type
     //$( '<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required"/>' )
     $('<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required"/>')
         .appendTo(container)
@@ -1193,7 +1202,8 @@ function trusteeDropDownEditor(container, options) {
         });
     $('<span class="k-invalid-msg" data-for="' + options.field + '"></span>').appendTo(container);
 }
-function getTrusteeName(dataItem) {
+function getTrusteeName(dataItem: any) {
+    // TODO: Put explicit type
     if (dataItem.TrusteeUId == null) return "";
 
     // TODO: Check filter item, which does not match the definition.
@@ -1209,7 +1219,8 @@ function getTrusteeName(dataItem) {
     return kendo.htmlEncode(name);
 }
 
-function boolEditor(container, options) {
+function boolEditor(container: any, options: any) {
+    // TODO: Put explicit type
     let guid = kendo.guid();
     $(
         '<input class="k-checkbox" id="' +
@@ -1223,7 +1234,8 @@ function boolEditor(container, options) {
     $('<label class="k-checkbox-label" for="' + guid + '">&#8203;</label>').appendTo(container);
 }
 
-function rightTypeDropDownListEditor(container, options) {
+function rightTypeDropDownListEditor(container: any, options: any) {
+    // TODO: Put explicit type
     console.log("In rightTypeDropDownListEditor...");
     //let guid = kendo.guid()
     // options.model --> returns the row data item. to access a field, use options.model.<fieldname>
@@ -1244,7 +1256,8 @@ function rightTypeDropDownListEditor(container, options) {
     $('<span class="k-invalid-msg" data-for="' + options.field + '"></span>').appendTo(container);
 }
 
-function createRightCheckBoxList(container, model) {
+function createRightCheckBoxList(container: any, model: any) {
+    // TODO: Put explicit type
     container.empty();
     if (model.RightType == "") return;
 
@@ -1276,14 +1289,14 @@ function createRightCheckBoxList(container, model) {
 
     // bind to click event - don't bind to change as we don't want the handler to be called multiple times for each checkbox that is programatically checked/unchecked
     // when auto-checking, use .prop("checked", trueorfalse). don't use .trigger('click') as it will cause the click handler to be executed for every checkbox that is checked
-    container.find(".k-checkbox").bind("click", function(e) {
+    container.find(".k-checkbox").bind("click", function(e: any) {
         let cb = $(e.target);
         let bitFlag1 = parseInt(cb.val() as string);
         let isCompositeValue = !isPowerOfTwo(bitFlag1);
         if (cb.prop("checked")) {
             if (isCompositeValue) {
                 // loop thru all unchecked checkboxes and see if we need to check them
-                container.find("input:checkbox:not(:checked)").each(function(index) {
+                container.find("input:checkbox:not(:checked)").each(function() {
                     let bitFlag2 = parseInt($(this).val() as string);
                     if ((bitFlag1 & bitFlag2) == bitFlag2) {
                         $(this).prop("checked", true); // fire change(). without it kendo checkboxes will not be checked. also change() will keep binding in sync
@@ -1295,7 +1308,7 @@ function createRightCheckBoxList(container, model) {
             if (!isCompositeValue) {
                 // do nothing if the value unchecked is a composite value
                 // loop thru all checked checkboxes and see which ones to uncheck
-                container.find("input:checked").each(function(index) {
+                container.find("input:checked").each(function() {
                     let bitFlag2 = parseInt($(this).val() as string);
                     if ((bitFlag1 & bitFlag2) == bitFlag1) {
                         $(this).prop("checked", false);
@@ -1306,7 +1319,7 @@ function createRightCheckBoxList(container, model) {
         }
         // now update the model
         let newRightVal = 0;
-        container.find("input:checked").each(function(index) {
+        container.find("input:checked").each(function() {
             newRightVal |= $(this).val() as number;
         });
         if (newRightVal != model.Right) {
@@ -1315,10 +1328,11 @@ function createRightCheckBoxList(container, model) {
     });
 }
 
-function getRightAsString(dataItem) {
+function getRightAsString(dataItem: any) {
+    // TODO: Put explicit type
     let rightVal = dataItem.Right;
     let allRightsArr = _rights[dataItem.RightType];
-    let rightArr = [];
+    let rightArr: string[] = [];
     while (rightVal > 0) {
         $.each(allRightsArr, function(index, item) {
             if ((rightVal & item.RightId) == item.RightId) {
@@ -1332,7 +1346,7 @@ function getRightAsString(dataItem) {
     }
     return rightArr.join(", ");
 }
-function validateRight(input) {
+function validateRight(input: JQuery) {
     if (input.is('[name="Right"]')) {
         if (input.closest("td").find("input[type=checkbox]:checked").length == 0) {
             input.attr("data-rightvalidation-msg", "Select at least 1 right");
@@ -1343,7 +1357,7 @@ function validateRight(input) {
     }
     return true;
 }
-function validateRightType(input) {
+function validateRightType(input: JQuery) {
     if (input.is('[name="RightType"]')) {
         // right + trusteeuid must be unique
         //to get the row dataItem for inline editing
@@ -1365,7 +1379,7 @@ function validateRightType(input) {
 
         for (let i = 0; i < data.length; i++) {
             // not we are comparing "uid"
-            if (data[i].uid != dataItem.uid && data[i].TrusteeUId == dataItem.TrusteeUId && data[i].RightType == input.val()) {
+            if (data[i].uid != dataItem.uid && data[i].TrusteeUId == (dataItem as any).TrusteeUId && data[i].RightType == input.val()) {
                 input.attr("data-righttypevalidation-msg", "Group / Right Type<br/>combination must be<br/>unique");
                 ok = false;
                 break;

@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Views\**;Styles\**\*.min.css;Scripts\dist\*.js;Images\**" />
+    <EmbeddedResource Include="Views\**;Styles\**\*.min.css;Scripts\dist\*.js;Scripts\dist\*.js.map;Images\**" />
   </ItemGroup>
 
   <ItemGroup>

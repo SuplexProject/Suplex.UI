@@ -8,6 +8,7 @@ module.exports = {
         filename: "bundle.js",
         path: path.resolve(__dirname, "dist"),
         library: "SUPLEXUI",
+        sourceMapFilename: "Scripts.dist.bundle.js.map" // Because C# project references Scripts.dist.bundle.js
     },
 
     // Enable sourcemaps for debugging webpack"s output.
@@ -35,7 +36,7 @@ module.exports = {
                 },
             },
         }),
-    ],
+    ]
     // When importing a module whose path matches one of the following, just
     // assume a corresponding global variable exists and use that instead.
     // This is important because it allows us to avoid bundling all of our

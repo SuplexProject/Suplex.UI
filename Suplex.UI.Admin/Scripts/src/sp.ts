@@ -3,18 +3,7 @@ import debounce from "lodash-es/debounce";
 import * as ID from "./ids";
 import * as constants from "./constants";
 import { mainVM } from "./main";
-import {
-    getActionUrl,
-    decipherJqXhrError,
-    dataSourceError,
-    showYesNoCancelDialog,
-    showYesNoDialog,
-    blockUI,
-    unblockUI,
-    notifyError,
-    notifyInfo,
-    notifySuccess,
-} from "./utils";
+import { getActionUrl, decipherJqXhrError, showYesNoCancelDialog, showYesNoDialog, blockUI, unblockUI, notifyError, notifySuccess } from "./utils";
 
 let _$spView = $(ID.SP_VIEW);
 let _$spSpltr = $(ID.SP_SPLITTER);
@@ -32,17 +21,17 @@ let _$spTxtNotMemberOfFilter = $(ID.SP_TXT_NOT_MEMBER_OF_FILTER);
 let _$spTxtMembersFilter = $(ID.SP_TXT_MEMBERS_FILTER);
 let _$spTxtNonMembersFilter = $(ID.SP_TXT_NON_MEMBERS_FILTER);
 
-let _validator;
+let _validator: kendo.ui.Validator = null;
 
-let _k$spGrd = null;
-let _k$spLbMemberOf = null;
-let _k$spLbNotMemberOf = null;
-let _k$spLbMembers = null;
-let _k$spLbNonMembers = null;
-let _k$spTlGroupHierarchy = null;
+let _k$spGrd: kendo.ui.Grid = null;
+let _k$spLbMemberOf: kendo.ui.ListBox = null;
+let _k$spLbNotMemberOf: kendo.ui.ListBox = null;
+let _k$spLbMembers: kendo.ui.ListBox = null;
+let _k$spLbNonMembers: kendo.ui.ListBox = null;
+let _k$spTlGroupHierarchy: kendo.ui.TreeList = null;
 
-let _memberOfOriginal = [];
-let _membersOriginal = [];
+let _memberOfOriginal: any[] = [];
+let _membersOriginal: any[] = [];
 
 let _spEditorModel = kendo.data.Model.define({
     id: "UId",
@@ -89,7 +78,7 @@ let spVM = kendo.observable({
                 return false;
             }
         },
-        reset: function(showEditor) {
+        reset: function(showEditor: boolean) {
             if (showEditor == undefined) {
                 showEditor = false;
             }
@@ -101,7 +90,7 @@ let spVM = kendo.observable({
             this.set("hasError", false);
             this.set("model", new _spEditorModel());
         },
-        raiseChange: function(e) {
+        raiseChange: function() {
             let that = this;
             if (that.editor.get("hasChanges")) return;
             that.editor.set("hasChanges", true);
@@ -118,18 +107,19 @@ let spVM = kendo.observable({
 });
 
 // functions to set view model fields
-function setError(trueorfalse) {
+function setError(trueorfalse: boolean) {
     if ((spVM as any).editor.get("hasError") == trueorfalse) return;
     (spVM as any).editor.set("hasError", trueorfalse);
 }
-function setChange(trueorfalse) {
+function setChange(trueorfalse: boolean) {
     if ((spVM as any).editor.get("hasChanges") == trueorfalse) return;
     (spVM as any).editor.set("hasChanges", trueorfalse);
 }
-function showEditor(show) {
-    if ((spVM as any).editor.get("visible") == show) return;
-    (spVM as any).editor.set("visible", show);
-}
+// TODO: Function not used, check if indeed the case
+// function showEditor(show: boolean) {
+//     if ((spVM as any).editor.get("visible") == show) return;
+//     (spVM as any).editor.set("visible", show);
+// }
 
 export function setupSecurityPrincipals() {
     kendo.bind(_$spView, spVM);
@@ -201,7 +191,7 @@ function setupWidgets() {
     _validator = _$spEditor
         .kendoValidator({
             validateOnBlur: false,
-            validate: function(e) {
+            validate: function() {
                 $("span.k-invalid-msg").hide();
             },
         })
@@ -348,12 +338,12 @@ export function loadSecurityPrincipals() {
     ds.read();
 }
 
-function spGrdClick(e) {
+function spGrdClick() {
     console.log("In spGrdClick...");
 
     // var selectedItem = e.sender.dataItem(this.select())
     // click event is triggered after change event. so by now we would have the selected row
-    let selectedItem = _k$spGrd.dataItem(_k$spGrd.select()); // or _k$spGrd.select()[0] ?
+    let selectedItem: any = _k$spGrd.dataItem(_k$spGrd.select()); // or _k$spGrd.select()[0] ? // TODO: Put explicit type
     console.log(selectedItem);
 
     if (!selectedItem) return;
@@ -383,7 +373,8 @@ function spGrdClick(e) {
                         notifyError("There is a problem retrieving " + (selectedItem.IsUser ? "user" : "group") + " information");
                     }
                 })
-                .fail(function(jqXHR, textStatus, errorThrown) {
+                .fail(function() {
+                    // TODO: Original parameters - jqXHR?, textStatus?, errorThrown?
                     notifyError("There is a problem retrieving " + (selectedItem.IsUser ? "user" : "group") + " information");
                 });
         } else {
@@ -469,7 +460,8 @@ export function verifySaveChanges() {
     return dfd.promise();
 }
 
-function populateEditor(data) {
+function populateEditor(data: any) {
+    // TODO: Put explicit type
     console.log("In populateEditor...");
     if (data) {
         if (data.Data.User) {
@@ -486,7 +478,7 @@ function populateEditor(data) {
         }
     }
 }
-function resetEditor(showEditor) {
+function resetEditor(showEditor: boolean) {
     (spVM as any).editor.reset(showEditor);
     //spVM.editor.set( "visible", showEditor )
     _k$spLbMemberOf.dataSource.data([]);
@@ -498,12 +490,13 @@ function resetEditor(showEditor) {
     _membersOriginal = [];
 }
 
-export function getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) {
+export function getSecurityPrincipalIconClass(IsUser: boolean, IsLocal: boolean, IsEnabled: boolean) {
     let cls = IsUser ? "icon-user" : IsLocal ? "icon-group" : "icon-group-ext";
     return "k-sprite " + cls + (IsEnabled ? "" : " k-state-disabled");
 }
 
-export function spBtnSaveClick(e) {
+export function spBtnSaveClick() {
+    // TODO: Put explicit type
     console.log("In spBtnSaveClick...");
     if ((spVM as any).editor.model.get("IsUser")) {
         clearEditorErrors();
@@ -530,12 +523,14 @@ export function spBtnSaveClick(e) {
         }
     }
 }
-function notifySaveUserOK(data) {
+function notifySaveUserOK(data: any) {
+    // TODO: Put explicit type
     console.log("In notifySaveUserOK...");
     notifySuccess("User " + data.Data.User.Name + " saved successfully.");
     return true;
 }
-function notifySaveUserFailed(jqXHR, textStatus, errorThrown) {
+function notifySaveUserFailed(jqXHR: any, textStatus: string, errorThrown?: any) {
+    // TODO: Put explicit type
     console.log("In notifySaveUserFailed...");
     if (jqXHR.Data.User) {
         // reject because of form error
@@ -547,12 +542,14 @@ function notifySaveUserFailed(jqXHR, textStatus, errorThrown) {
     }
     return false;
 }
-function notifySaveGroupOK(data) {
+function notifySaveGroupOK(data: any) {
+    // TODO: Put explicit type
     console.log("In notifySaveGroupOK...");
     notifySuccess("Group " + data.Data.Group.Name + " saved successfully.");
     return true;
 }
-function notifySaveGroupFailed(jqXHR, textStatus, errorThrown) {
+function notifySaveGroupFailed(jqXHR: any, textStatus: string, errorThrown?: any) {
+    // TODO: Put explicit type
     console.log("In notifySaveGroupFailed...");
     if (jqXHR.Data.Group) {
         // reject because of form error
@@ -565,7 +562,7 @@ function notifySaveGroupFailed(jqXHR, textStatus, errorThrown) {
 
     return false;
 }
-function checkResponseStatus(data, $formErrorContainer?) {
+function checkResponseStatus(data: any, $formErrorContainer?: JQuery) {
     console.log("In checkResponseStatus...");
     if (data.Status != constants.SUCCESS) {
         if (data.ValidationErrors) {
@@ -587,7 +584,8 @@ function checkResponseStatus(data, $formErrorContainer?) {
     }
 }
 
-function updateUIPostSave(data) {
+function updateUIPostSave(data: any) {
+    // TODO: Put explicit type
     console.log("In updateUIPostSave...");
 
     (mainVM as any).setChange(true);
@@ -685,7 +683,7 @@ function validateEditor() {
     return ok;
 }
 
-function selectSecurityPrincipalGridItem(uId) {
+function selectSecurityPrincipalGridItem(uId: string) {
     if (!uId) return;
 
     console.log("In selectSecurityPrincipalGridItem...");
@@ -699,7 +697,7 @@ function selectSecurityPrincipalGridItem(uId) {
     // are re-created with the new data. These uids are not implemented to match the model Id in the datasource
 
     // if is already selected, don't select again
-    let currentSelectedItem = _k$spGrd.dataItem(_k$spGrd.select());
+    let currentSelectedItem: any = _k$spGrd.dataItem(_k$spGrd.select()); // TODO: Put explicit type
     if (currentSelectedItem) if (currentSelectedItem.UId == uId) return;
 
     let rowuid = ds.get(uId).uid;
@@ -713,7 +711,8 @@ function selectSecurityPrincipalGridItem(uId) {
         console.log("-- Cannot locate grid item with UId " + uId);
     }
 }
-function updateSecurityPrincipalsGrid(gridModel) {
+function updateSecurityPrincipalsGrid(gridModel: any) {
+    // TODO: Put explicit type
     console.log("In updateSecurityPrincipalsGrid...");
     console.log(gridModel);
 
@@ -746,7 +745,8 @@ function clearEditorErrors() {
     setError(false);
 }
 
-export function spBtnDiscardClick(e) {
+export function spBtnDiscardClick(e?: any) {
+    // TODO: Put explicit type
     console.log("In spBtnDiscardClick...");
 
     verifySaveChanges().then(function(proceed) {
@@ -755,7 +755,8 @@ export function spBtnDiscardClick(e) {
         }
     });
 }
-export function spBtnNewUserClick(e) {
+export function spBtnNewUserClick(e?: any) {
+    // TODO: Put explicit type
     console.log("In spBtnNewUserClick...");
 
     verifySaveChanges().then(function(proceed) {
@@ -784,7 +785,8 @@ export function spBtnNewUserClick(e) {
     });
 }
 
-export function spBtnNewGroupClick(e) {
+export function spBtnNewGroupClick(e?: any) {
+    // TODO: Put explicit type
     console.log("In spBtnNewGroupClick...");
 
     verifySaveChanges().then(function(proceed) {
@@ -812,11 +814,12 @@ export function spBtnNewGroupClick(e) {
         }
     });
 }
-export function spBtnDeleteClick(e) {
+export function spBtnDeleteClick(e?: any) {
+    // TODO: Put explicit type
     console.log("In spBtnDeleteClick...");
 
     // get the selected item
-    let itemToDelete = _k$spGrd.dataItem(_k$spGrd.select());
+    let itemToDelete: any = _k$spGrd.dataItem(_k$spGrd.select()); // TODO; Put explicit type
     if (!itemToDelete) return;
 
     let message = "Are you sure you want to delete " + (itemToDelete.IsUser ? "User " : "Group ") + itemToDelete.Name + "?";
@@ -861,7 +864,8 @@ export function spBtnDeleteClick(e) {
     });
 }
 
-function updateUIPostDelete(gridDataItem) {
+function updateUIPostDelete(gridDataItem: any) {
+    // TODO: Put explicit type
     // remove item from grid
     let ds = _k$spGrd.dataSource;
     ds.remove(gridDataItem);
@@ -875,7 +879,7 @@ function updateUIPostDelete(gridDataItem) {
     return true;
 }
 
-function getUser(uId) {
+function getUser(uId: string) {
     return $.ajax({
         method: "GET",
         url: getActionUrl("GetUserByUId", "Admin"),
@@ -890,7 +894,7 @@ function getNewUser() {
         dataType: "json",
     });
 }
-function getGroup(uId) {
+function getGroup(uId: string) {
     console.log("In getGroup...");
 
     return $.ajax({
@@ -908,7 +912,8 @@ function getNewGroup() {
     });
 }
 
-export function spLbMemberOfAdd(e) {
+export function spLbMemberOfAdd(e?: any) {
+    // TODO: Put explicit type
     //help on how to auto sort
     //https://github.com/telerik/kendo-ui-core/blob/master/docs/knowledge-base/listbox-sort-items-on-add.md
     console.log("In spLbMemberOfAdd...");
@@ -917,18 +922,21 @@ export function spLbMemberOfAdd(e) {
     this.dataSource.sort({ field: "Name", dir: "asc" });
     setChange(true);
 }
-export function spLbMemberOfRemove(e) {
+export function spLbMemberOfRemove(e?: any) {
+    // TODO: Put explicit type
     setChange(true);
 }
 
-function spLbNotMemberOfAdd(e) {
+function spLbNotMemberOfAdd(e?: any) {
+    // TODO: Put explicit type
     console.log("In spLbNotMemberOfAdd...");
     e.preventDefault();
     this.dataSource.data().push(e.dataItems[0]);
     this.dataSource.sort({ field: "Name", dir: "asc" });
 }
 
-function spLbMembersAdd(e) {
+function spLbMembersAdd(e?: any) {
+    // TODO: Put explicit type
     //help on how to auto sort
     //https://github.com/telerik/kendo-ui-core/blob/master/docs/knowledge-base/listbox-sort-items-on-add.md
     console.log("In spLbMembersAdd...");
@@ -938,11 +946,13 @@ function spLbMembersAdd(e) {
     setChange(true);
 }
 
-function spLbMembersRemove(e) {
+function spLbMembersRemove(e?: any) {
+    // TODO: Put explicit type
     setChange(true);
 }
 
-function spLbNonMembersAdd(e) {
+function spLbNonMembersAdd(e: any) {
+    // TODO: Put explicit type
     console.log("In spLbNonMembersAdd...");
     e.preventDefault();
     this.dataSource.data().push(e.dataItems[0]);

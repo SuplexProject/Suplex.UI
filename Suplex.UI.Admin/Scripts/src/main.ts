@@ -29,7 +29,7 @@ let originalWindowTitle = document.title;
 // https://www.telerik.com/blogs/how-to-do-javascript-alerts-without-being-a-jerk
 // create the widgets once, and store a reference to it so it can be used again and again
 // resolve(fileName) or reject() when no file selected
-let selectFile = (function() {
+/*let selectFile = (function() {
     let dfd: JQueryDeferred<string> = $.Deferred();
     let fileName: string;
 
@@ -125,7 +125,116 @@ let selectFile = (function() {
 
         return dfd.promise();
     };
-})();
+})();*/
+
+// Testing conversion to class
+class SelectFile {
+    dfd: JQueryDeferred<string> = $.Deferred();
+    fileName: string;
+    dsFileExplorer: kendo.data.HierarchicalDataSource;
+    k$dlgSelectFile: kendo.ui.Dialog;
+    k$tvSelectFile: kendo.ui.TreeView;
+
+    constructor() {
+        this.dsFileExplorer = new kendo.data.HierarchicalDataSource({
+            transport: {
+                read: {
+                    url: getActionUrl("GetDirectoryContents", "Admin"),
+                    dataType: "json",
+                },
+            },
+            schema: {
+                model: {
+                    id: "Path",
+                    //hasChildren: "HasChildren"
+                    //use a function to dynamically add an item/field to the node. https://stackoverflow.com/questions/13629373/kendo-ui-treeview-sprite-altering-template
+                    hasChildren: function(node: any) {
+                        // TODO: Put explicit type
+                        if (node.Type == "File") node.spriteCssClass = "file";
+                        else node.spriteCssClass = "folder";
+                        return node.HasChildren;
+                    },
+                },
+            },
+        });
+
+        let $dlgSelectFile = $(ID.DLG_SELECT_FILE);
+        $dlgSelectFile.kendoDialog({
+            width: "400px",
+            visible: false,
+            title: "Open File",
+            closable: true,
+            modal: true,
+            content: "<div id='tvSelectFile'></div>",
+            open: () => {
+                $("body").addClass("no-scroll"); // stops background from scrolling when dialog is open
+                if (this.dsFileExplorer.data().length == 0) this.dsFileExplorer.read();
+            },
+            close: () => {
+                $("body").removeClass("no-scroll");
+                if (this.fileName == null) {
+                    this.dfd.reject();
+                } else {
+                    this.dfd.resolve(this.fileName);
+                }
+            },
+            actions: [
+                {
+                    text: "OK",
+                    primary: true,
+                    action: () => {
+                        let ok = false;
+                        let selected = this.k$tvSelectFile.select();
+                        let item: any = this.k$tvSelectFile.dataItem(selected); // TODO: Should be kendo.data.Node type.
+                        if (item) {
+                            if (item.Type != "File") {
+                                kendo.alert("Select a file");
+                            } else {
+                                ok = true; // assume ok so dialog can be closed
+                                this.fileName = item.Path;
+                            }
+                        } else {
+                            kendo.alert("Select a file");
+                        }
+                        return ok;
+                    },
+                },
+                { text: "Cancel" },
+                {
+                    text: "Refresh",
+                    action: () => {
+                        console.log("-- Refreshing file explorer");
+                        this.dsFileExplorer.read();
+                        return false;
+                    },
+                },
+            ],
+        });
+        this.k$dlgSelectFile = $dlgSelectFile.data("kendoDialog");
+
+        let $tvSelectFile = $(ID.TREEVIEW_SELECT_FILE);
+        $tvSelectFile.kendoTreeView({
+            autoBind: false,
+            dataSource: this.dsFileExplorer,
+            dataTextField: "Name",
+        });
+        this.k$tvSelectFile = $tvSelectFile.data("kendoTreeView");
+    }
+
+    OpenDialog(): JQuery.Promise<string> {
+        console.log("In selectFile.OpenDialog ...");
+        this.dfd = $.Deferred();
+        this.fileName = null;
+        this.k$dlgSelectFile.open();
+
+        return this.dfd.promise();
+    }
+}
+let selectFile = new SelectFile();
+console.log("Testing class conversion");
+console.log(selectFile);
+
+// Testing conversion to class
 
 // resolve(fileName) or reject() when no file selected
 let selectSaveAsFileName = (function() {
@@ -371,7 +480,8 @@ function btnOpenFileClick() {
         })
         .then(function(proceed) {
             if (proceed) {
-                selectFile().then(openFile);
+                // Modified to test function closure to class conversion
+                selectFile.OpenDialog().then(openFile);
             }
         });
 }

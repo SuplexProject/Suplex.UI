@@ -2,7 +2,7 @@
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
-    mode: "production",
+    mode: "development",
     entry: ["./src/main.ts"],
     output: {
         filename: "bundle.js",
@@ -27,16 +27,16 @@ module.exports = {
         ],
     },
 
-    plugins: [
-        new UglifyJsPlugin({
-            sourceMap: true,
-            uglifyOptions: {
-                compress: {
-                    warnings: false,
-                },
-            },
-        }),
-    ]
+    // plugins: [
+    //     new UglifyJsPlugin({
+    //         sourceMap: true,
+    //         uglifyOptions: {
+    //             compress: {
+    //                 warnings: false,
+    //             },
+    //         },
+    //     }),
+    // ]
     // When importing a module whose path matches one of the following, just
     // assume a corresponding global variable exists and use that instead.
     // This is important because it allows us to avoid bundling all of our

@@ -1,6 +1,6 @@
 ﻿import * as ID from "./ids";
 import * as constants from "./constants";
-import { notifySuccess, notifyError, getActionUrl, showYesNoCancelDialog, blockUI, unblockUI, isValidFileName, decipherJqXhrError } from "./utils";
+import { notifySuccess, notifyError, getActionUrl, showYesNoCancelDialog, blockUI, unblockUI, isValidFileName, decipherJqXhrError, AjaxResponse, AjaxResponseStatus } from "./utils";
 import {
     setupSecurityPrincipals,
     showSecurityPrincipals,
@@ -11,7 +11,7 @@ import {
 } from "./sp";
 import { setupSecureObjects, hideSecureObjects, showSecureObjects, resetSecureObjects, loadSecureObjectsTree } from "./so";
 
-let _$tbMain = $(ID.TB_MAIN);
+let $tbMain = $(ID.TB_MAIN);
 
 let mainVM = kendo.observable({
     fileName: null,
@@ -236,137 +236,267 @@ console.log(selectFile);
 
 // Testing conversion to class
 
-// resolve(fileName) or reject() when no file selected
-let selectSaveAsFileName = (function() {
-    let dfd: JQueryDeferred<string> = $.Deferred();
-    let fileName: string;
+class SelectSaveAsFileName {
+    dfd: JQueryDeferred<string> = $.Deferred();
+    fileName: string;
+    dsFileExplorer: kendo.data.HierarchicalDataSource;
+    k$dlgSaveAs: kendo.ui.Dialog;;
+    k$tvSaveAs: kendo.ui.TreeView;
 
-    let dsFileExplorer = new kendo.data.HierarchicalDataSource({
-        transport: {
-            read: {
-                url: getActionUrl("GetDirectoryContents", "Admin"),
-                dataType: "json",
-            },
-        },
-        schema: {
-            model: {
-                id: "Path",
-                //hasChildren: "HasChildren"
-                //use a function to dynamically add an item/field to the node. https://stackoverflow.com/questions/13629373/kendo-ui-treeview-sprite-altering-template
-                hasChildren: function(node: any) {
-                    // TODO: Put explicit type
-                    if (node.Type == "File") node.spriteCssClass = "file";
-                    else node.spriteCssClass = "folder";
-                    return node.HasChildren;
+    constructor() {
+        this.dsFileExplorer = new kendo.data.HierarchicalDataSource( {
+            transport: {
+                read: {
+                    url: getActionUrl( "GetDirectoryContents", "Admin" ),
+                    dataType: "json",
                 },
             },
-        },
-    });
-
-    let $dlgSaveAs = $(ID.DLG_SAVE_AS);
-    $dlgSaveAs.kendoDialog({
-        width: "400px",
-        visible: false,
-        title: "Save As",
-        closable: true,
-        modal: true,
-        content:
-            "<div id='tvSaveAs'></div><div style='margin-top:20px'><label>File name </label>&nbsp;&nbsp;<input id='txtSaveAsName' class='k-textbox' /><label>" +
-            constants.FILE_EXTENSION +
-            "</label></div>",
-        open: function() {
-            $("body").addClass("no-scroll"); // stops background from scrolling when dialog is open
-            if (dsFileExplorer.data().length == 0) dsFileExplorer.read();
-        },
-        close: function() {
-            $("body").removeClass("no-scroll");
-            if (fileName == null) {
-                dfd.reject();
-            } else {
-                dfd.resolve(fileName);
-            }
-        },
-        actions: [
-            {
-                text: "OK",
-                primary: true,
-                action: function() {
-                    let ok = false;
-                    let fn = ($txtSaveAsName.val() as string).trim();
-                    fn = fn.substr(0, fn.lastIndexOf(".")) || fn;
-                    $txtSaveAsName.val(fn);
-                    let selected = k$tvSaveAs.select();
-                    // file name specified?
-                    if (fn.length == 0) {
-                        kendo.alert("Choose a folder and enter a file name");
-                    } else if (!isValidFileName(fn)) {
-                        kendo.alert("File name is not valid");
-                    } else if (selected.length == 0) {
-                        kendo.alert("Choose a folder and enter a file name");
-                    } else {
-                        // file name entered, something is selected
-                        let item: any = k$tvSaveAs.dataItem(selected); // TODO: Should be of a specific type.
-                        let folder = null;
-                        if (item.Type == "File") {
-                            folder = (k$tvSaveAs.dataItem(k$tvSaveAs.parent(selected)) as any).Path; // TODO: Should be of a specific type.
-                        } else {
-                            folder = item.Path;
-                        }
-                        fileName = folder + fn + constants.FILE_EXTENSION;
-                        ok = true;
-                    }
-                    return ok;
+            schema: {
+                model: {
+                    id: "Path",
+                    //hasChildren: "HasChildren"
+                    //use a function to dynamically add an item/field to the node. https://stackoverflow.com/questions/13629373/kendo-ui-treeview-sprite-altering-template
+                    hasChildren: function ( node: any ) {
+                        // TODO: Put explicit type
+                        if ( node.Type == "File" ) node.spriteCssClass = "file";
+                        else node.spriteCssClass = "folder";
+                        return node.HasChildren;
+                    },
                 },
             },
-            { text: "Cancel" },
-            {
-                text: "Refresh",
-                action: function() {
-                    console.log("-- Refreshing file explorer");
-                    dsFileExplorer.read();
-                    return false;
-                },
-            },
-        ],
-    });
-    let k$dlgSaveAs = $dlgSaveAs.data("kendoDialog");
+        } );
+        let $dlgSaveAs = $( ID.DLG_SAVE_AS );
 
-    let $tvSaveAs = $(ID.TREEVIEW_SAVE_AS);
-    let $txtSaveAsName = $(ID.TXT_SAVE_AS_NAME);
-    $tvSaveAs.kendoTreeView({
-        autoBind: false,
-        dataSource: dsFileExplorer,
-        dataTextField: "Name",
-        change: function(e) {
-            //console.log( this.select() )
-            let selected = this.select();
-            let item = this.dataItem(selected);
-            if (item)
-                if (item.Type == "File") {
-                    // get the base name, minus extension, and populate the file name text box
-                    let name = item.Name;
-                    $txtSaveAsName.val(name.substr(0, name.lastIndexOf(".")) || name);
+        // resolve(fileName) or reject() when no file selected
+        $dlgSaveAs.kendoDialog( {
+            width: "400px",
+            visible: false,
+            title: "Save As",
+            closable: true,
+            modal: true,
+            content:
+                "<div id='tvSaveAs'></div><div style='margin-top:20px'><label>File name </label>&nbsp;&nbsp;<input id='txtSaveAsName' class='k-textbox' /><label>" +
+                constants.FILE_EXTENSION +
+                "</label></div>",
+            open: () => {
+                $( "body" ).addClass( "no-scroll" ); // stops background from scrolling when dialog is open
+                if ( this.dsFileExplorer.data().length == 0 ) this.dsFileExplorer.read();
+            },
+            close: () => {
+                $( "body" ).removeClass( "no-scroll" );
+                if ( this.fileName == null ) {
+                    this.dfd.reject();
+                } else {
+                    this.dfd.resolve( this.fileName );
                 }
-        },
-    });
-    let k$tvSaveAs = $tvSaveAs.data("kendoTreeView");
+            },
+            actions: [
+                {
+                    text: "OK",
+                    primary: true,
+                    action: () => {
+                        let ok = false;
+                        let fn = ( $txtSaveAsName.val() as string ).trim();
+                        fn = fn.substr( 0, fn.lastIndexOf( "." ) ) || fn;
+                        $txtSaveAsName.val( fn );
+                        let selected = this.k$tvSaveAs.select();
+                        // file name specified?
+                        if ( fn.length == 0 ) {
+                            kendo.alert( "Choose a folder and enter a file name" );
+                        } else if ( !isValidFileName( fn ) ) {
+                            kendo.alert( "File name is not valid" );
+                        } else if ( selected.length == 0 ) {
+                            kendo.alert( "Choose a folder and enter a file name" );
+                        } else {
+                            // file name entered, something is selected
+                            let item: any = this.k$tvSaveAs.dataItem( selected ); // TODO: Should be of a specific type.
+                            let folder = null;
+                            if ( item.Type == "File" ) {
+                                folder = ( this.k$tvSaveAs.dataItem( this.k$tvSaveAs.parent( selected ) ) as any ).Path; // TODO: Should be of a specific type.
+                            } else {
+                                folder = item.Path;
+                            }
+                            this.fileName = folder + fn + constants.FILE_EXTENSION;
+                            ok = true;
+                        }
+                        return ok;
+                    },
+                },
+                { text: "Cancel" },
+                {
+                    text: "Refresh",
+                    action: () => {
+                        console.log( "-- Refreshing file explorer" );
+                        this.dsFileExplorer.read();
+                        return false;
+                    },
+                },
+            ],
+        } );
+        this.k$dlgSaveAs = $dlgSaveAs.data( "kendoDialog" );
 
-    return function() {
-        console.log("In selectSaveAsFileName...");
-        dfd = $.Deferred();
-        fileName = null;
-        k$dlgSaveAs.open();
+        let $tvSaveAs = $( ID.TREEVIEW_SAVE_AS );
+        let $txtSaveAsName = $( ID.TXT_SAVE_AS_NAME );
+        $tvSaveAs.kendoTreeView( {
+            autoBind: false,
+            dataSource: this.dsFileExplorer,
+            dataTextField: "Name",
+            change: function ( e ) {
+                //console.log( this.select() )
+                let selected = this.select();
+                let item = this.dataItem( selected );
+                if ( item )
+                    if ( item.Type == "File" ) {
+                        // get the base name, minus extension, and populate the file name text box
+                        let name = item.Name;
+                        $txtSaveAsName.val( name.substr( 0, name.lastIndexOf( "." ) ) || name );
+                    }
+            },
+        } );
+        this.k$tvSaveAs = $tvSaveAs.data( "kendoTreeView" );
+    }
+    OpenDialog(): JQuery.Promise<string> {
+        console.log( "In SelectSaveAsFileName.OpenDialog ..." );
+        this.dfd = $.Deferred();
+        this.fileName = null;
+        this.k$dlgSaveAs.open();
 
-        return dfd.promise();
-    };
-})();
+        return this.dfd.promise();
+    }
+}
+let selectSaveAsFileName = new SelectSaveAsFileName();
+
+// resolve(fileName) or reject() when no file selected
+//let selectSaveAsFileName = (function() {
+//    let dfd: JQueryDeferred<string> = $.Deferred();
+//    let fileName: string;
+
+//    let dsFileExplorer = new kendo.data.HierarchicalDataSource({
+//        transport: {
+//            read: {
+//                url: getActionUrl("GetDirectoryContents", "Admin"),
+//                dataType: "json",
+//            },
+//        },
+//        schema: {
+//            model: {
+//                id: "Path",
+//                //hasChildren: "HasChildren"
+//                //use a function to dynamically add an item/field to the node. https://stackoverflow.com/questions/13629373/kendo-ui-treeview-sprite-altering-template
+//                hasChildren: function(node: any) {
+//                    // TODO: Put explicit type
+//                    if (node.Type == "File") node.spriteCssClass = "file";
+//                    else node.spriteCssClass = "folder";
+//                    return node.HasChildren;
+//                },
+//            },
+//        },
+//    });
+
+//    let $dlgSaveAs = $(ID.DLG_SAVE_AS);
+//    $dlgSaveAs.kendoDialog({
+//        width: "400px",
+//        visible: false,
+//        title: "Save As",
+//        closable: true,
+//        modal: true,
+//        content:
+//            "<div id='tvSaveAs'></div><div style='margin-top:20px'><label>File name </label>&nbsp;&nbsp;<input id='txtSaveAsName' class='k-textbox' /><label>" +
+//            constants.FILE_EXTENSION +
+//            "</label></div>",
+//        open: function() {
+//            $("body").addClass("no-scroll"); // stops background from scrolling when dialog is open
+//            if (dsFileExplorer.data().length == 0) dsFileExplorer.read();
+//        },
+//        close: function() {
+//            $("body").removeClass("no-scroll");
+//            if (fileName == null) {
+//                dfd.reject();
+//            } else {
+//                dfd.resolve(fileName);
+//            }
+//        },
+//        actions: [
+//            {
+//                text: "OK",
+//                primary: true,
+//                action: function() {
+//                    let ok = false;
+//                    let fn = ($txtSaveAsName.val() as string).trim();
+//                    fn = fn.substr(0, fn.lastIndexOf(".")) || fn;
+//                    $txtSaveAsName.val(fn);
+//                    let selected = k$tvSaveAs.select();
+//                    // file name specified?
+//                    if (fn.length == 0) {
+//                        kendo.alert("Choose a folder and enter a file name");
+//                    } else if (!isValidFileName(fn)) {
+//                        kendo.alert("File name is not valid");
+//                    } else if (selected.length == 0) {
+//                        kendo.alert("Choose a folder and enter a file name");
+//                    } else {
+//                        // file name entered, something is selected
+//                        let item: any = k$tvSaveAs.dataItem(selected); // TODO: Should be of a specific type.
+//                        let folder = null;
+//                        if (item.Type == "File") {
+//                            folder = (k$tvSaveAs.dataItem(k$tvSaveAs.parent(selected)) as any).Path; // TODO: Should be of a specific type.
+//                        } else {
+//                            folder = item.Path;
+//                        }
+//                        fileName = folder + fn + constants.FILE_EXTENSION;
+//                        ok = true;
+//                    }
+//                    return ok;
+//                },
+//            },
+//            { text: "Cancel" },
+//            {
+//                text: "Refresh",
+//                action: function() {
+//                    console.log("-- Refreshing file explorer");
+//                    dsFileExplorer.read();
+//                    return false;
+//                },
+//            },
+//        ],
+//    });
+//    let k$dlgSaveAs = $dlgSaveAs.data("kendoDialog");
+
+//    let $tvSaveAs = $(ID.TREEVIEW_SAVE_AS);
+//    let $txtSaveAsName = $(ID.TXT_SAVE_AS_NAME);
+//    $tvSaveAs.kendoTreeView({
+//        autoBind: false,
+//        dataSource: dsFileExplorer,
+//        dataTextField: "Name",
+//        change: function(e) {
+//            //console.log( this.select() )
+//            let selected = this.select();
+//            let item = this.dataItem(selected);
+//            if (item)
+//                if (item.Type == "File") {
+//                    // get the base name, minus extension, and populate the file name text box
+//                    let name = item.Name;
+//                    $txtSaveAsName.val(name.substr(0, name.lastIndexOf(".")) || name);
+//                }
+//        },
+//    });
+//    let k$tvSaveAs = $tvSaveAs.data("kendoTreeView");
+
+//    return function() {
+//        console.log("In selectSaveAsFileName...");
+//        dfd = $.Deferred();
+//        fileName = null;
+//        k$dlgSaveAs.open();
+
+//        return dfd.promise();
+//    };
+//})();
 
 function init() {
     setupWidgets();
     setupVariables();
     setupEventHandlers();
 
-    kendo.bind(_$tbMain, mainVM);
+    kendo.bind($tbMain, mainVM);
     setupSecurityPrincipals();
     setupSecureObjects();
 
@@ -409,8 +539,8 @@ function openFile(fileName: string) {
         data: { fileName: fileName },
         dataType: "json",
     })
-        .done(function(data, textStatus, xhr) {
-            if (data.Status == constants.SUCCESS) {
+        .done((data: AjaxResponse) => {
+            if (data.Status == AjaxResponseStatus.Success) {
                 mainVM.init();
                 mainVM.set("fileName", fileName);
 
@@ -423,7 +553,7 @@ function openFile(fileName: string) {
                 notifyError(data.Message);
             }
         })
-        .fail(function(xhr, textStatus, errorThrown) {
+        .fail( ( xhr: JQueryXHR, textStatus: string ) => {
             notifyError("There was a problem opening the file");
         });
 }
@@ -435,8 +565,8 @@ function newFile() {
         url: getActionUrl("NewFile", "Admin"),
         dataType: "json",
     })
-        .done(function(data, textStatus, xhr) {
-            if (data.Status != constants.SUCCESS) {
+        .done((data: AjaxResponse) => {
+            if (data.Status != AjaxResponseStatus.Success ) {
                 notifyError("Unable to initialize suplex store");
             } else {
                 mainVM.init();
@@ -445,7 +575,7 @@ function newFile() {
                 resetSecureObjects();
             }
         })
-        .fail(function(xhr, textStatus, errorThrown) {
+        .fail( ( xhr: JQueryXHR, textStatus: string ) => {
             notifyError("Unable to initialize suplex store");
             console.log(xhr);
         });
@@ -491,10 +621,8 @@ function btnSaveFileClick(e: any) {
     console.log("In btnSaveFileClick...");
 
     switch ("#" + e.id) {
-        case "":
-            break;
         case ID.BTN_SAVE_FILE: // "btnSaveFile":
-            console.log("-- save");
+            console.log( "-- save" );
             let fileName = mainVM.get("fileName");
             if (fileName != null) {
                 blockUI();
@@ -503,7 +631,7 @@ function btnSaveFileClick(e: any) {
             }
         case ID.BTN_SAVE_FILE_AS: // "btnSaveFileAs":
             console.log("-- save file as");
-            selectSaveAsFileName()
+            selectSaveAsFileName.OpenDialog()
                 .then(function(fileName) {
                     blockUI();
                     return saveFile(fileName);
@@ -528,7 +656,7 @@ function verifySaveChangesToStore() {
             console.log("-- Response is " + response);
             switch (response) {
                 case 1: // save
-                    let promise: any = isNewFile ? selectSaveAsFileName() : $.Deferred().resolve();
+                    let promise: any = isNewFile ? selectSaveAsFileName.OpenDialog() : $.Deferred().resolve();
                     // TODO: Need to check what exactly it does here and amend.
                     promise.then(saveFile).then(function(saveResult: any) {
                         dfd.resolve(saveResult);
@@ -563,9 +691,9 @@ function saveFile(fileName: string) {
         url: getActionUrl("SaveFile", "Admin"),
         data: data, //{ fileName: fileName } ,
         dataType: "json",
-    }).then(
-        function(data) {
-            if (data.Status == constants.SUCCESS) {
+    } )
+        .then( ( data: AjaxResponse ) => {
+            if (data.Status == AjaxResponseStatus.Success) {
                 if (fileName) {
                     mainVM.init();
                     mainVM.set("fileName", fileName);
@@ -581,7 +709,7 @@ function saveFile(fileName: string) {
                 dfd.resolve(false);
             }
         },
-        function(jqXHR, textStatus, errorThrown) {
+        function(jqXHR: JQueryXHR, textStatus: string) {
             let msg = decipherJqXhrError(jqXHR, textStatus);
             notifyError("An error has occurred while saving file " + (fileName ? fileName : mainVM.get("fileName")) + ".<br/>" + "Error: " + msg);
             dfd.resolve(false);
@@ -622,14 +750,28 @@ $(document).ready(function() {
 //    console.log( this )
 //    console.log( $(this).next().toggle())s
 //}
-export { btnOpenFileClick, btnNewFileClick, btnSaveFileClick, switchView, mainVM };
+export {
+    btnOpenFileClick,
+    btnNewFileClick,
+    btnSaveFileClick,
+    switchView,
+    mainVM
+};
 
-export { getSecurityPrincipalIconClass, spBtnNewUserClick, spBtnNewGroupClick, spBtnSaveClick, spBtnDiscardClick, spBtnDeleteClick } from "./sp";
+export {
+    getSecurityPrincipalIconClass,
+    spBtnNewClick,
+    spBtnEditClick,
+    spBtnDeleteClick,
+    spBtnSaveClick,
+    spBtnDiscardClick
+} from "./sp";
 export {
     soTvDataBound,
     soTvDrop,
     soTvDrag,
     soBtnNewClick,
+    soBtnEditClick,
     soBtnDeleteClick,
     soBtnExpandAllClick,
     soBtnCollapseAllClick,

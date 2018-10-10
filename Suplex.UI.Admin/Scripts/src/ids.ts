@@ -27,6 +27,9 @@ export const SP_TXT_NOT_MEMBER_OF_FILTER = "#spTxtNotMemberOfFilter";
 export const SP_TXT_MEMBERS_FILTER = "#spTxtMembersFilter";
 export const SP_TXT_NON_MEMBERS_FILTER = "#spTxtNonMembersFilter";
 export const SP_TREELIST_GROUP_HIERARCHY = "#spTlGroupHierarchy";
+export const SP_BTN_NEW = "#spBtnNew";
+export const SP_BTN_NEW_USER = "#spBtnNewUser";
+export const SP_BTN_NEW_GROUP = "#spBtnNewGroup";
 
 // secure objects
 export const SO_VIEW = "#soView";
@@ -39,5 +42,6 @@ export const SO_GRD_SACL = "#soGrdSacl";
 export const SO_TREEVIEW_MENU = "#soTvMnu";
 export const SO_TREEVIEW_MENU_NEW = "#soTvMnuNew";
 export const SO_BTN_NEW = "#soBtnNew";
-export const SO_BTN_NEW_TOP = "#soBtnNewTop";
+export const SO_BTN_NEW_ROOT = "#soBtnNewRoot";
+export const SO_BTN_NEW_CHILD = "#soBtnNewChild";
 export const SO_BTN_DELETE = "#soBtnDelete";

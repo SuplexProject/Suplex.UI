@@ -1,5 +1,4 @@
 ﻿import * as ID from "./ids";
-import * as constants from "./constants";
 import debounce from "lodash-es/debounce";
 import { mainVM } from "./main";
 import {
@@ -13,67 +12,75 @@ import {
     notifySuccess,
     isPowerOfTwo,
     showAlert,
+    DialogResponse,
+    AjaxResponse,
+    AjaxResponseStatus,
 } from "./utils";
-import { SUCCESS } from "./constants";
 
-let _$soView = $(ID.SO_VIEW);
-let _$soTv = $(ID.SO_TREEVIEW);
-let _$soSpltr = $(ID.SO_SPLITTER);
+let $soView = $(ID.SO_VIEW);
+let $soTv = $(ID.SO_TREEVIEW);
+let $soSpltr = $(ID.SO_SPLITTER);
 
-let _$soEditor = $(ID.SO_EDITOR);
-let _$soEditorError = $(ID.SO_EDITOR_ERROR);
-let _$soGrdDacl = $(ID.SO_GRD_DACL);
-let _$soGrdSacl = $(ID.SO_GRD_SACL);
+let $soEditor = $(ID.SO_EDITOR);
+let $soEditorError = $(ID.SO_EDITOR_ERROR);
+let $soGrdDacl = $(ID.SO_GRD_DACL);
+let $soGrdSacl = $(ID.SO_GRD_SACL);
 
-let _validator: kendo.ui.Validator = null;
+let validator: kendo.ui.Validator = null;
 
-let _k$soTv: kendo.ui.TreeView = null;
-let _k$soGrdDacl: kendo.ui.Grid = null;
-let _k$soGrdSacl: kendo.ui.Grid = null;
+let k$soTv: kendo.ui.TreeView = null;
+let k$soGrdDacl: kendo.ui.Grid = null;
+let k$soGrdSacl: kendo.ui.Grid = null;
 
-let _auditTypes: string[] = [];
-let _rightTypes: string[] = [];
-let _rights = {};
-let _secureObjectDefaults = {};
+let auditTypes: string[] = [];
+let rightTypes: string[] = [];
+let rights = {};
+let secureObjectDefaults = {};
+
+let dacl: Array<any> = [];
+let sacl: Array<any> = [];
+
+let daclLocalId: number;
+let saclLocalId: number;
 
 let dfdSecureObjectDefaults = $
     .get(getActionUrl("GetSecureObjectDefaults", "Admin"))
     .done(function(data) {
         // let arr = [];
-        _secureObjectDefaults = data;
-        (soVM as any).editor.set("secureObjectDefaults", _secureObjectDefaults);
+        secureObjectDefaults = data;
+        (soVM as any).editor.set("secureObjectDefaults", secureObjectDefaults);
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
         let msg = decipherJqXhrError(jqXHR, textStatus);
-        notifyError("There is a problem getting information from the server" + "<br/>" + msg);
+        notifyError(`There is a problem getting information from the server.<br/>${msg}`);
     });
 
 let dfdAuditTypes = $
     .get(getActionUrl("GetAuditTypes", "Admin"))
     .done(function(data) {
-        _auditTypes = data;
-        (soVM as any).editor.set("auditTypes", _auditTypes);
+        auditTypes = data;
+        (soVM as any).editor.set("auditTypes", auditTypes);
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
         let msg = decipherJqXhrError(jqXHR, textStatus);
-        notifyError("There is a problem getting information from the server" + "<br/>" + msg);
+        notifyError(`There is a problem getting information from the server.<br/>${msg}`);
     });
 let dfdRights = $
     .get(getActionUrl("GetRights", "Admin"))
     .done(function(data) {
-        _rightTypes = [];
-        _rights = {};
+        rightTypes = [];
+        rights = {};
         $.each(data, function(index, item) {
-            _rights[item.RightType] = _rights[item.RightType] || [];
-            _rights[item.RightType].push(item);
-            if (_rightTypes.indexOf(item.RightType) < 0) {
-                _rightTypes.push(item.RightType);
+            rights[item.RightType] = rights[item.RightType] || [];
+            rights[item.RightType].push(item);
+            if (rightTypes.indexOf(item.RightType) < 0) {
+                rightTypes.push(item.RightType);
             }
         });
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
         let msg = decipherJqXhrError(jqXHR, textStatus);
-        notifyError("There is a problem getting information from the server" + "<br/>" + msg);
+        notifyError(`There is a problem getting information from the server.<br/>${msg}`);
     });
 
 // block UI to ensure data is available before user starts to use
@@ -90,11 +97,47 @@ let _kDsTrustees = new kendo.data.DataSource({
 });
 
 let _kDsDacl = new kendo.data.DataSource({
-    data: [],
+    //data: [],
+    transport: {
+        read: function ( options ) {
+            options.success( dacl );
+            //$.each( _kDsDacl.data(), function ( idx, record ) {
+            //    if ( !record.hasOwnProperty( "LocalUId" ) || !record["LocalUId"] ) { // not present or null
+            //        record["LocalUId"] = record["uid"];
+            //    }
+            //} );
+        },
+        create: function ( options ) {
+            options.data.LocalId = ++daclLocalId;
+            dacl.push( options.data );
+            options.success( options.data );
+            console.log( "create ds" );
+            console.log( dacl );
+        },
+        update: function ( options ) {
+            for ( let i = 0; i < dacl.length; i++ ) {
+                if ( dacl[i].LocalId == options.data.LocalId ) {
+                    dacl[i] = options.data;
+                }
+            }
+            options.success( options.data );
+            console.log( "update ds" );
+        },
+        destroy: function ( options ) {
+            for ( let i = 0; i < dacl.length; i++ ) {
+                if ( dacl[i].LocalId == options.data.LocalId ) {
+                    dacl.splice( i, 1 );
+                    break;
+                }
+            }
+            options.success( options.data );
+        }
+    },
     schema: {
         model: {
-            id: "UId", // this is a MUST in order for CRUD to work in Grid
+            id: "LocalId", //"UId", // this is a MUST in order for CRUD to work in Grid
             fields: {
+                LocalId: { editable: false },
                 UId: { editable: false, nullable: true },
                 TrusteeUId: {
                     type: "string",
@@ -119,13 +162,13 @@ let _kDsDacl = new kendo.data.DataSource({
                 Allowed: {
                     type: "boolean",
                     defaultValue: function() {
-                        return _secureObjectDefaults["DaclAllowed"] || false;
+                        return secureObjectDefaults["DaclAllowed"] || false;
                     },
                 },
                 Inheritable: {
                     type: "boolean",
                     defaultValue: function() {
-                        return _secureObjectDefaults["DaclInheritable"] || false;
+                        return secureObjectDefaults["DaclInheritable"] || false;
                     },
                 },
             },
@@ -134,11 +177,17 @@ let _kDsDacl = new kendo.data.DataSource({
 });
 
 let _kDsSacl = new kendo.data.DataSource({
-    data: [],
+    //data: [],
+    transport: {
+        read: function ( options ) {
+            options.success( sacl );
+        }
+    },
     schema: {
         model: {
-            id: "UId", // this is a MUST in order for CRUD to work in Grid
+            id: "LocalId", // "UId", // this is a MUST in order for CRUD to work in Grid
             fields: {
+                LocalId: { editable: false },
                 UId: { editable: false, nullable: true },
                 TrusteeUId: {
                     type: "string",
@@ -163,19 +212,19 @@ let _kDsSacl = new kendo.data.DataSource({
                 Allowed: {
                     type: "boolean",
                     defaultValue: function() {
-                        return _secureObjectDefaults["SaclAllowed"] || false;
+                        return secureObjectDefaults["SaclAllowed"] || false;
                     },
                 },
                 Denied: {
                     type: "boolean",
                     defaultValue: function() {
-                        return _secureObjectDefaults["SaclDenied"] || false;
+                        return secureObjectDefaults["SaclDenied"] || false;
                     },
                 },
                 Inheritable: {
                     type: "boolean",
                     defaultValue: function() {
-                        return _secureObjectDefaults["SaclInheritable"] || false;
+                        return secureObjectDefaults["SaclInheritable"] || false;
                     },
                 },
             },
@@ -195,24 +244,24 @@ let _soEditorModel = kendo.data.Model.define({
         IsEnabled: {
             type: "boolean",
             defaultValue: function() {
-                return typeof _secureObjectDefaults["IsEnabled"] === "boolean" ? _secureObjectDefaults["IsEnabled"] : false;
+                return typeof secureObjectDefaults["IsEnabled"] === "boolean" ? secureObjectDefaults["IsEnabled"] : false;
             },
         },
         DaclAllowInherit: {
             type: "boolean",
             defaultValue: function() {
-                return typeof _secureObjectDefaults["DaclAllowInherit"] === "boolean" ? _secureObjectDefaults["DaclAllowInherit"] : false;
+                return typeof secureObjectDefaults["DaclAllowInherit"] === "boolean" ? secureObjectDefaults["DaclAllowInherit"] : false;
             },
         },
         SaclAllowInherit: {
             type: "boolean",
             defaultValue: function() {
-                return typeof _secureObjectDefaults["SaclAllowInherit"] === "boolean" ? _secureObjectDefaults["SaclAllowInherit"] : false;
+                return typeof secureObjectDefaults["SaclAllowInherit"] === "boolean" ? secureObjectDefaults["SaclAllowInherit"] : false;
             },
         },
         SaclAuditTypeFilter: {
             defaultValue: function() {
-                return _secureObjectDefaults["SaclAuditTypeFilterArray"] || [];
+                return secureObjectDefaults["SaclAuditTypeFilterArray"] || [];
             },
         },
         Dacl: {},
@@ -264,13 +313,14 @@ let soVM = kendo.observable({
             this.set("hasError", trueOrFalse);
         },
         raiseChange: function() {
-            // bound to editor to set the hasChanges flag
+            // event handler for UI elements bound to the model. fired when there are changes to the element
             let that = this;
             that.editor.set("hasChanges", true);
         },
         setSaclAuditTypeFilterToDefault: function() {
             let that = this;
-            that.editor.model.set("SaclAuditTypeFilter", _secureObjectDefaults["SaclAuditTypeFilterArray"]);
+            that.editor.model.set( "SaclAuditTypeFilter", secureObjectDefaults["SaclAuditTypeFilterArray"] );
+            that.editor.set( "hasChanges", true );
         },
         kDsDacl: _kDsDacl, // required so we display dacl item count on the editor
         kDsSacl: _kDsSacl, // required so we display sacl item count on the editor
@@ -283,8 +333,8 @@ let soVM = kendo.observable({
         securityInheritanceState: function() {
             // returns default if default setting, else modified
             if (
-                this.model.get("DaclAllowInherit") == _secureObjectDefaults["DaclAllowInherit"] &&
-                this.model.get("SaclAllowInherit") == _secureObjectDefaults["SaclAllowInherit"] &&
+                this.model.get("DaclAllowInherit") == secureObjectDefaults["DaclAllowInherit"] &&
+                this.model.get("SaclAllowInherit") == secureObjectDefaults["SaclAllowInherit"] &&
                 this.saclAuditTypeFilterIsDefault()
             )
                 return "Default";
@@ -296,11 +346,11 @@ let soVM = kendo.observable({
             //$.each( filterArray , function ( index, item ) {
             //    v |= item //parseInt(item)
             //} )
-            //return ( v == _secureObjectDefaults["SaclAuditTypeFilter"] )
+            //return ( v == secureObjectDefaults["SaclAuditTypeFilter"] )
             return (
                 this.model.get("SaclAuditTypeFilter").reduce(function(result: any, itemVal: any) {
                     return result | itemVal;
-                }, 0) == _secureObjectDefaults["SaclAuditTypeFilter"]
+                }, 0) == secureObjectDefaults["SaclAuditTypeFilter"]
             );
         },
     },
@@ -328,15 +378,13 @@ function setSelectedUId(uId: string) {
     }
 }
 export function setupSecureObjects() {
-    kendo.bind(_$soView, soVM);
+    kendo.bind($soView, soVM);
 
     setupWidgets();
 
     setupVariables();
 
     setupEventHandlers();
-
-    resizeElements();
 
     resetSecureObjects(); // without this data wont show up on the treeview when adding item to the datasouce right after launch
 }
@@ -345,7 +393,7 @@ function setupWidgets() {
     //https://demos.telerik.com/kendo-ui/grid/editing-custom
     //https://docs.telerik.com/kendo-ui/controls/data-management/grid/how-to/Templates/grid-with-checkbox-column
     //https://community.progress.com/community_groups/openedge_kendo_ui_builder/w/openedgekendouibuilder/2923.how-to-add-a-combo-box-or-a-dropdownlist-to-a-grid-in-a-custom-view
-    _$soGrdDacl.kendoGrid({
+    $soGrdDacl.kendoGrid({
         dataSource: _kDsDacl,
         columns: [
             {
@@ -385,23 +433,22 @@ function setupWidgets() {
                             e.preventDefault();
                             let tr = $(e.target).closest("tr");
                             let data = this.dataItem(tr);
-                            $.when(showYesNoDialog("Confirm Delete", "Are you sure you want to delete this permission record?")).then(function(
-                                response
-                            ) {
-                                if (response == 1) {
-                                    // ok
-                                    _k$soGrdDacl.dataSource.remove(data);
-                                    setChange(true);
-                                }
-                            });
+                            $.when( showYesNoDialog( "Confirm Delete", "Are you sure you want to delete this permission record?" ) )
+                                .then( (response: DialogResponse) => {
+                                    if ( response == DialogResponse.Yes ) {
+                                        // ok
+                                        k$soGrdDacl.dataSource.remove(data);
+                                        setChange(true);
+                                    }
+                                });
                         },
                     },
                 ],
             },
         ],
-        toolbar: ["create"],
+        toolbar: [ { name: "create" } ],
         editable: "inline",
-        edit: function(e) {
+        edit: function ( e: kendo.ui.GridEditEvent ) {
             // edit event is triggered before the editor form is shown. By this time the editor UI elements are already bound to the model.
             let model = e.model;
             let container = e.container;
@@ -412,7 +459,7 @@ function setupWidgets() {
             // https://docs.telerik.com/kendo-ui/knowledge-base/grid-disable-validation-on-blur
             delete (e.model as any)._events.set;
         },
-        save: function(e) {
+        save: function ( e: kendo.ui.GridSaveEvent ) {
             // can also do validation here
             // and use e.preventDefault() to stop the save
             if (this.dataSource.hasChanges()) {
@@ -420,16 +467,18 @@ function setupWidgets() {
                 // 1. data item dirty is true( so if you clicked edit and save without doing anything, dirty will be false) or
                 // 2. new item added
                 // item delete has no effect on this flag
-                setChange(true);
+                setChange( true );
+                console.log( "save clicked" );
+                console.log(e)
             }
         },
-        remove: function(e) {
+        remove: function ( e: kendo.ui.GridRemoveEvent ) {
             // not triggered when we use custom command
             setChange(true);
         },
     });
 
-    _$soGrdSacl.kendoGrid({
+    $soGrdSacl.kendoGrid({
         dataSource: _kDsSacl,
         columns: [
             {
@@ -470,21 +519,22 @@ function setupWidgets() {
                             e.preventDefault();
                             let tr = $(e.target).closest("tr");
                             let data = this.dataItem(tr);
-                            $.when(showYesNoDialog("Confirm Delete", "Are you sure you want to delete this audit record?")).then(function(response) {
-                                if (response == 1) {
-                                    // ok
-                                    _k$soGrdSacl.dataSource.remove(data);
-                                    setChange(true);
-                                }
-                            });
+                            $.when( showYesNoDialog( "Confirm Delete", "Are you sure you want to delete this audit record?" ) )
+                                .then( ( response: DialogResponse ) => {
+                                    if ( response == DialogResponse.Yes ) {
+                                        // ok
+                                        k$soGrdSacl.dataSource.remove(data);
+                                        setChange(true);
+                                    }
+                                });
                         },
                     },
                 ],
             },
         ],
-        toolbar: ["create"],
+        toolbar: [ { name:"create" } ],
         editable: "inline",
-        edit: function(e) {
+        edit: function( e: kendo.ui.GridEditEvent ) {
             // edit event is triggered before the editor form is shown. By this time the editor UI elements are already bound to the model.
             let model = e.model;
             let container = e.container;
@@ -495,7 +545,7 @@ function setupWidgets() {
             // https://docs.telerik.com/kendo-ui/knowledge-base/grid-disable-validation-on-blur
             delete (e.model as any)._events.set;
         },
-        save: function(e) {
+        save: function( e: kendo.ui.GridSaveEvent ) {
             // can also do validation here
             // and use e.preventDefault() to stop the save
             if (this.dataSource.hasChanges()) {
@@ -506,7 +556,7 @@ function setupWidgets() {
                 setChange(true);
             }
         },
-        remove: function(e) {
+        remove: function ( e: kendo.ui.GridRemoveEvent) {
             // won't work if we use custom command
             setChange(true);
         },
@@ -515,7 +565,7 @@ function setupWidgets() {
     $(ID.SO_TREEVIEW_MENU).kendoContextMenu({
         target: $(ID.SO_SPLITTER).find(".k-pane:first"),
         filter: ".k-item .k-in, .wrapper",
-        open: function(e) {
+        open: function ( e: kendo.ui.ContextMenuOpenEvent ) {
             let ele = $(e.target);
             let ctxMnu = $(e.item);
             if (ele.hasClass("wrapper")) {
@@ -524,7 +574,7 @@ function setupWidgets() {
                 ctxMnu.find(".node-only").show();
             }
         },
-        select: function(e) {
+        select: function ( e: kendo.ui.ContextMenuSelectEvent ) {
             let target = $(e.target);
             switch (e.item.id) {
                 case "soTvMnuNew":
@@ -533,33 +583,33 @@ function setupWidgets() {
                             resetEditor(true);
                             if (target.hasClass("wrapper")) {
                                 // not a treeview node, so create a top level node
+                                deselectSecureObjectTreeNode();
                             } else {
-                                let dataItem = _k$soTv.dataItem(target as JQuery); // TODO: Check if the type is correct
+                                let dataItem = k$soTv.dataItem(target as JQuery); // TODO: Check if the type is correct
                                 selectSecureObjectTreeNode((dataItem as any).UId); // select the node pointed by the context menu
                                 (soVM as any).editor.model.set("ParentUId", (dataItem as any).UId);
                             }
-                        } else {
-                        }
+                        } 
                     });
                     break;
                 case "soTvMnuDelete":
-                    // let dataItem = _k$soTv.dataItem(target as JQuery);
+                    // let dataItem = k$soTv.dataItem(target as JQuery);
 
                     // need to incorporate verifysavechanges
-                    _k$soTv.select(target as JQuery);
-                    _k$soTv.trigger("click");
+                    k$soTv.select(target as JQuery);
+                    k$soTv.trigger("click");
                     $(ID.SO_BTN_DELETE).trigger("click");
 
                     break;
                 case "soTvMnuExpand":
                     // TODO: Variable was node.
                     let node1 = target.hasClass("wrapper") ? $() : target.closest(".k-item");
-                    expandCollapseAll(true, node1);
+                    expandCollapseAll(true, node1 as JQuery);
                     break;
                 case "soTvMnuCollapse":
                     // TODO: Variable was node.
                     let node2 = target.hasClass("wrapper") ? $() : target.closest(".k-item");
-                    expandCollapseAll(false, node2);
+                    expandCollapseAll(false, node2 as JQuery);
                     break;
                 case "soTvMnuPreview":
                     break;
@@ -573,30 +623,31 @@ function setupWidgets() {
         },
     });
 
-    _validator = _$soEditor
+    validator = $soEditor
         .kendoValidator({
             validateOnBlur: false,
-            validate: function(e) {
+            validate: function ( e: kendo.ui.ValidatorValidateEvent ) {
                 $("span.k-invalid-msg").hide();
             },
         })
         .data("kendoValidator");
 }
 function setupVariables() {
-    _k$soTv = _$soTv.data("kendoTreeView");
-    _k$soGrdDacl = _$soGrdDacl.data("kendoGrid");
-    _k$soGrdSacl = _$soGrdSacl.data("kendoGrid");
+    k$soTv = $soTv.data("kendoTreeView");
+    k$soGrdDacl = $soGrdDacl.data("kendoGrid");
+    k$soGrdSacl = $soGrdSacl.data("kendoGrid");
 }
 function setupEventHandlers() {
     $(window)
-        .resize(debounce(resizeElements, 500))
+        .resize(debounce(resizeSplitter, 500))
         .trigger("resize");
 
     $(ID.SO_TREEVIEW).on("click", ".k-item .k-in", soTvClick);
 }
 
 export function showSecureObjects() {
-    if (!soVM.get("visible")) soVM.set("visible", true);
+    if ( !soVM.get( "visible" ) ) soVM.set( "visible", true );
+    resizeSplitter();
 }
 export function hideSecureObjects() {
     if (soVM.get("visible")) soVM.set("visible", false);
@@ -604,51 +655,100 @@ export function hideSecureObjects() {
 export function resetSecureObjects() {
     (soVM as any).reset();
     //resetEditor( false )
-    _k$soTv.dataSource.data([]);
+    k$soTv.dataSource.data([]);
 }
 export function loadSecureObjectsTree() {
-    _k$soTv.dataSource.read();
+    k$soTv.dataSource.read();
 }
-function resizeElements() {
+function resizeSplitter() {
+    console.log( "In resizeSplitter..." );
     let top = 125; // height occupied above splitter
     let bottom = 25; // height occupied below splitter
     let height = $(window).height() - (top + bottom) - 1; // to stop the body scrollbar from appearing
     height = height <= 0 ? 100 : height;
-    _$soSpltr.height(height);
-
+    //$soSpltr.height(height);
+    console.log( height );
     // let width = $( window ).width() -
-    _$soSpltr.data("kendoSplitter").resize();
+    $soSpltr.data( "kendoSplitter" ).wrapper.height( height );
+    $soSpltr.data("kendoSplitter").resize();
 }
 export function soBtnExpandAllClick() {
     // note: this only works when loadOnDemand is false
-    let node = _k$soTv.select();
+    let node = k$soTv.select();
     expandCollapseAll(true, node);
 }
 export function soBtnCollapseAllClick() {
-    let node = _k$soTv.select();
+    let node = k$soTv.select();
     expandCollapseAll(false, node);
 }
-function expandCollapseAll(expand: any, node: any) {
-    // TODO: Put explicit type
+function expandCollapseAll( expand: boolean, node: JQuery ) {
+    
     if (node.length == 0) {
-        expand ? _k$soTv.expand(".k-item") : _k$soTv.collapse(".k-item");
+        expand ? k$soTv.expand(".k-item") : k$soTv.collapse(".k-item");
     } else {
-        expand ? _k$soTv.expand(node.find(".k-item").addBack()) : _k$soTv.collapse(node.find(".k-item").addBack());
+        expand ? k$soTv.expand(node.find(".k-item").addBack()) : k$soTv.collapse(node.find(".k-item").addBack());
     }
 }
 export function soTvDataBound() {}
 export function soBtnNewClick(e: any) {
-    console.log("In soBtnNewClick...");
-    verifySaveChanges().then(function(proceed) {
-        if (proceed) {
-            // go ahead and prepare the editor
-            resetEditor(true);
-            // if there is a selected node, set the parent of the model
-            if ("#" + e.id == ID.SO_BTN_NEW) {
-                (soVM as any).editor.model.set("ParentUId", soVM.get("selectedUId"));
+    console.log( "In soBtnNewClick..." );
+
+    switch ( "#" + e.id ) {        
+        case ID.SO_BTN_NEW:
+            console.log( "-- new" );
+            //https://www.telerik.com/forums/open-split-button-with-js
+            let $btn = $( ID.SO_BTN_NEW ).closest( '.k-split-button' );
+            let popup = $btn.data( "kendoPopup" );
+            console.log( popup );
+            if ( popup ) {
+                if ( popup.visible() ) {
+                    popup.close();
+                }
+                else {
+                    popup.open();
+                }
             }
+            break;
+
+        case ID.SO_BTN_NEW_ROOT:
+        case ID.SO_BTN_NEW_CHILD:
+
+            verifySaveChanges().then( function ( proceed ) {
+                if ( proceed ) {
+                    // go ahead and prepare the editor
+                    resetEditor( true );
+                    // if there is a selected node, set the parent of the model
+                    // else assume new root
+                    if ( "#" + e.id == ID.SO_BTN_NEW_CHILD && soVM.get( "selectedUId" ) != null ) {
+                        ( soVM as any ).editor.model.set( "ParentUId", soVM.get( "selectedUId" ) );
+                    }
+                    else {
+                        // clear node selection
+                        deselectSecureObjectTreeNode();
+                    }
+                }
+            } );
+            break;
+
+    }
+}
+function deselectSecureObjectTreeNode() {
+    k$soTv.select( $() );
+    soVM.set( "selectedUId", null );
+}
+
+export function soBtnEditClick() {
+    console.log( "In soBtnEditClick..." );
+
+    let selectedNode: JQuery = k$soTv.select();
+    let dataItem:any = k$soTv.dataItem( selectedNode );
+    if ( dataItem ) {
+        console.log( selectedNode )
+        if ( !( soVM as any ).editor.get( "visible" ) || ( soVM as any ).editor.model.get( "UId" ) !== dataItem.UId ) {
+            console.log('edit btn trgger click')
+            selectedNode.find(".k-in").first().trigger( "click" );
         }
-    });
+    }    
 }
 export function soBtnSaveClick() {
     console.log("In soBtnSaveClick...");
@@ -657,9 +757,6 @@ export function soBtnSaveClick() {
         $.when(blockUI)
             .then(saveSecureObject)
             .then(processSaveActionResponse)
-            .then(function(data) {
-                notifySuccess("Secure Object " + data.Data.UniqueName + " saved successfully.");
-            })
             .always(unblockUI);
     }
 }
@@ -668,19 +765,19 @@ function validateEditor() {
     let ok;
 
     // make sure the 2 grids have exited edit mode
-    if (_k$soGrdDacl.table.find("tr.k-grid-edit-row").length > 0 || _k$soGrdSacl.table.find("tr.k-grid-edit-row").length > 0) {
+    if (k$soGrdDacl.table.find("tr.k-grid-edit-row").length > 0 || k$soGrdSacl.table.find("tr.k-grid-edit-row").length > 0) {
         showAlert("Alert", "<p style='text-align:center;width:400px;'>Complete the 'Permission' and 'Audit' sections first before you save.</p>");
         ok = false;
     } else {
-        ok = _validator.validate();
+        ok = validator.validate();
         if (!ok) {
-            let errors = _validator.errors();
+            let errors = validator.errors();
             let msg = "";
             $(errors).each(function() {
                 msg = this + "<br/>";
             });
             if (msg.length > 0) {
-                _$soEditorError.html(msg);
+                $soEditorError.html(msg);
             }
             (soVM as any).editor.setError(true);
         }
@@ -699,8 +796,18 @@ function saveSecureObject() {
         return result | itemVal;
     }, 0);
     model.SaclAuditTypeFilter = auditTypeFilterVal;
-    model.Sacl = _kDsSacl.data();
-    model.Dacl = _kDsDacl.data();
+    // remove property "LocalId" first
+    model.Dacl = dacl.map( item => {
+        return Object.keys( item )
+            .reduce( ( acc, key ) => key == "LocalId" ? acc : ( { ...acc, [key]: item[key] } ), {} )
+
+    } );
+    model.Sacl = sacl.map( item => {
+        return Object.keys( item )
+            .reduce( ( acc, key ) => key == "LocalId" ? acc : ( { ...acc, [key]: item[key] } ), {} )
+
+    } );
+
     let dfd = $.Deferred();
 
     $.ajax({
@@ -710,17 +817,17 @@ function saveSecureObject() {
         data: JSON.stringify(model),
         dataType: "json",
     })
-        .then(function(data) {
-            if (data.Status == constants.SUCCESS) {
+        .then( (data: AjaxResponse) => {
+            if (data.Status == AjaxResponseStatus.Success) {
                 transformData(data);
                 dfd.resolve(data);
             } else {
                 dfd.resolve(data); // need to pass error message from the server to the UI
             }
         })
-        .fail(function(jqXHR, textStatus, errorThrown) {
+        .fail( ( jqXHR: JQueryXHR, textStatus: string ) => {
             let msg = decipherJqXhrError(jqXHR, textStatus);
-            notifyError("There is a problem saving Secure Object." + "<br/>" + msg);
+            notifyError(`There is a problem saving Secure Object.<br/>${msg}`);
             dfd.reject();
         });
 
@@ -736,7 +843,7 @@ function transformData(data: any) {
     // - before save, update the field, and delete (use the delete command) the temporary property
     let v = data.Data.SaclAuditTypeFilter;
     let arr: number[] = [];
-    $.each(_auditTypes, function(index, item: any) {
+    $.each(auditTypes, function(index, item: any) {
         if ((v & item.Id) == item.Id) {
             arr.push(item.Id as number);
         }
@@ -745,12 +852,12 @@ function transformData(data: any) {
     // return arr
 }
 
-function processSaveActionResponse(data: any) {
+function processSaveActionResponse(data: AjaxResponse) {
     // Put explicit type
     console.log("In processSaveActionResponse...");
     let dfd = $.Deferred();
 
-    if (data.Status == constants.SUCCESS) {
+    if (data.Status == AjaxResponseStatus.Success) {
         (mainVM as any).setChange(true);
 
         let model = null;
@@ -768,31 +875,31 @@ function processSaveActionResponse(data: any) {
                 uId: data.Data.UId,
             })
                 .then(updatedItem => {
-                    let dsItem = _k$soTv.dataSource.get(updatedItem.UId);
+                    let dsItem = k$soTv.dataSource.get(updatedItem.UId);
 
                     if (typeof dsItem == "undefined") {
                         if (updatedItem.ParentUId == null) {
-                            // append as root node
-                            _k$soTv.append({
+                            // append as root node, no need to specifically call sort as root level sorting will use the sort configuration
+                            k$soTv.append({
                                 UId: updatedItem.UId,
                                 UniqueName: updatedItem.UniqueName,
                                 IsEnabled: updatedItem.IsEnabled,
                                 ParentUId: updatedItem.ParentUId,
                                 HasChildren: updatedItem.HasChildren,
+                                IsDefaultSecuritySettings: updatedItem.IsDefaultSecuritySettings
                             });
-                            // sort root nodes, doesn't sort child nodes
-                            // _k$soTv.dataSource.sort()   // root level sorting will use the sort configuration
                         } else {
                             // append as a child of some node
-                            let dsItem = _k$soTv.dataSource.get(updatedItem.ParentUId);
-                            let parentEle = _k$soTv.findByUid(dsItem.uid);
-                            _k$soTv.append(
+                            let dsItem = k$soTv.dataSource.get(updatedItem.ParentUId);
+                            let parentEle = k$soTv.findByUid(dsItem.uid);
+                            k$soTv.append(
                                 {
                                     UId: updatedItem.UId,
                                     UniqueName: updatedItem.UniqueName,
                                     IsEnabled: updatedItem.IsEnabled,
                                     ParentUId: updatedItem.ParentUId,
                                     HasChildren: updatedItem.HasChildren,
+                                    IsDefaultSecuritySettings: updatedItem.IsDefaultSecuritySettings
                                 },
                                 parentEle
                             );
@@ -801,148 +908,100 @@ function processSaveActionResponse(data: any) {
                         }
                     } else {
                         // existing node, just update
-                        dsItem.set("UniqueName", updatedItem.UniqueName);
-                        dsItem.set("IsEnabled", updatedItem.IsEnabled);
-                        dsItem.set("ParentUId", updatedItem.ParentUId);
-                        dsItem.set("HasChildren", updatedItem.HasChildren);
+                        dsItem.set( "UniqueName", updatedItem.UniqueName );
+                        dsItem.set( "IsEnabled", updatedItem.IsEnabled );
+                        dsItem.set( "ParentUId", updatedItem.ParentUId );
+                        dsItem.set( "HasChildren", updatedItem.HasChildren );
+                        dsItem.set( "IsDefaultSecuritySettings", updatedItem.IsDefaultSecuritySettings );
                     }
 
                     selectSecureObjectTreeNode(data.Data.UId);
-                    (mainVM as any).setChange(true);
-                    dfd.resolve(data);
+                    // ( mainVM as any ).setChange( true );
+                    notifySuccess( `Secure Object ${data.Data.UniqueName} saved successfully.` );
+                    dfd.resolve(); //dfd.resolve(data);
                 })
-                .fail(() => {
-                    dfd.reject(data);
+                .fail( () => {
+                    notifyError( "Error encountered while trying to update secure object tree node" );
+                    dfd.reject(); //dfd.reject(data);
                 }); // should notify error
-
-            //$.get( getActionUrl( "GetSecureObjectTreeItem", "Admin" ), { 'uId': data.Data.UId } )
-
-            //    .done( function ( updatedItem ) {
-
-            //        let dsItem = _k$soTv.dataSource.get( data.Data.UId )
-            //        if ( typeof dsItem !== "undefined" ) {
-            //            dsItem.set( "UniqueName", updatedItem.UniqueName )
-            //            dsItem.set( "IsEnabled", updatedItem.IsEnabled )
-            //            dsItem.set( "ParentUId", updatedItem.ParentUId )
-            //            dsItem.set( "HasChildren", updatedItem.HasChildren )
-
-            //        }
-            //        else if ( updatedItem.ParentUId == null ) {
-            //            // top node
-            //            _k$soTv.append( {
-            //                UId: updatedItem.UId,
-            //                UniqueName: updatedItem.UniqueName,
-            //                IsEnabled: updatedItem.IsEnabled,
-            //                ParentUId: updatedItem.ParentUId,
-            //                HasChildren: updatedItem.HasChildren
-            //            } )
-            //        }
-            //        else {
-            //            //let dsItem = _k$soTv.dataSource.get( updatedItem.ParentUId )
-            //            //let parentEle = _k$soTv.findByUid(dsItem.uid)
-            //            //_k$soTv.append( {
-            //            //    UId: updatedItem.UId,
-            //            //    UniqueName: updatedItem.UniqueName,
-            //            //    IsEnabled: updatedItem.IsEnabled,
-            //            //    ParentUId: updatedItem.ParentUId,
-            //            //    HasChildren: updatedItem.HasChildren
-            //            //},  parentEle )
-
-            //            //
-
-            //            //
-            //            //let dsItem = _k$soTv.dataSource.get( updatedItem.ParentUId )
-            //            //if ( typeof dsItem !== "undefined" ) {
-            //            //    dsItem.append( {
-            //            //        UId: updatedItem.UId,
-            //            //        UniqueName: updatedItem.UniqueName,
-            //            //        IsEnabled: updatedItem.IsEnabled,
-            //            //        ParentUId: updatedItem.ParentUId,
-            //            //        HasChildren: updatedItem.HasChildren
-            //            //    } )
-            //            //}
-            //        }
-            //        selectSecureObjectTreeNode( updatedItem.UId )
-            //        dfd.resolve( data )
-            //    })
         }
     } else {
         if (data.ValidationErrors) {
-            if (_$soEditorError) {
+            if ($soEditorError) {
                 let msg = "";
                 $(data.ValidationErrors).each(function() {
                     msg += this + "<br/>";
                 });
                 if (msg.length > 0) {
-                    _$soEditorError.html(msg);
+                    $soEditorError.html(msg);
                 }
             }
             setError(true);
         }
         notifyError(data.Message);
-        dfd.reject(data);
+        dfd.reject(); //dfd.reject(data);
     }
     return dfd.promise();
 }
 
 //function expandSecureObjectTreeParent( nodeElement ) {
-//    let parent = _k$soTv.parent( nodeElement );
+//    let parent = k$soTv.parent( nodeElement );
 //    while ( parent && parent.length > 0 ) {
-//        _k$soTv.expand( parent );
-//        parent = _k$soTv.parent( parent );
+//        k$soTv.expand( parent );
+//        parent = k$soTv.parent( parent );
 //    }
 //}
 export function soBtnDeleteClick() {
     // get the selected item
-    let itemToDelete: any = _k$soTv.dataItem(_k$soTv.select()); // TODO: Put explicit type
+    let itemToDelete: any = k$soTv.dataItem(k$soTv.select()); // TODO: Put explicit type
     if (!itemToDelete) return;
 
-    $.when(showYesNoDialog("Confirm Delete", "Are you sure you want to delete the selected Secure Object and all its child items?")).then(function(
-        response
-    ) {
-        if (response == 1) {
-            // ok
-            $.when(blockUI)
-                .then(function() {
-                    return deleteSecureObject(itemToDelete);
-                })
-                .then(function(data) {
-                    return processDeleteActionResponse(data, itemToDelete);
-                }) // if success: resolve(), else reject()
-                .then(function() {
-                    notifySuccess("Secure Object " + itemToDelete.UniqueName + " deleted successfully.");
-                })
-                .always(unblockUI);
-        }
-    });
+    $.when( showYesNoDialog( "Confirm Delete", `Are you sure you want to delete the Secure Object ${itemToDelete.UniqueName} and all its child items?` ) )
+        .then( ( response: DialogResponse ) => {
+            if ( response == DialogResponse.Yes ) {
+                // ok
+                $.when(blockUI)
+                    .then( () => {
+                        return deleteSecureObject(itemToDelete);
+                    })
+                    .then( (data: AjaxResponse) => {
+                        return processDeleteActionResponse(data, itemToDelete);
+                    }) // if success: resolve(), else reject()
+                    //.then(function() {
+                    //    notifySuccess("Secure Object " + itemToDelete.UniqueName + " deleted successfully.");
+                    //})
+                    .always(unblockUI);
+            }
+        });
 }
 function deleteSecureObject(itemToDelete: any) {
     // TODO: Put explicit type
     let dfd = $.Deferred();
     $.post(getActionUrl("DeleteSecureObject", "Admin"), { uId: itemToDelete.UId })
-        .then(function(data) {
-            dfd.resolve(data);
+        .then( (data:AjaxResponse) => {
+            return dfd.resolve( data );
         })
-        .fail(function(jqXHR, textStatus, errorThrown) {
+        .fail((jqXHR: JQueryXHR, textStatus: string) => {
             let msg = decipherJqXhrError(jqXHR, textStatus);
-            notifyError("There is a problem deleting Secure Object." + "<br/>" + msg);
+            notifyError(`There is a problem deleting Secure Object ${itemToDelete.UniqueName}.<br/>${msg}`);
             dfd.reject();
         });
 
     return dfd.promise();
 }
-function processDeleteActionResponse(data: any, itemToDelete: any) {
+function processDeleteActionResponse(data: AjaxResponse, itemToDelete: any) {
     // TODO: Put explicit type
-    if (data.Status == constants.SUCCESS) {
+    if (data.Status == AjaxResponseStatus.Success) {
         (mainVM as any).setChange(true);
-        resetEditor();
+        resetEditor(true);
         // remove item from tree
-        let dataItem = _k$soTv.dataSource.get(itemToDelete.UId);
-        _k$soTv.dataSource.remove(dataItem);
+        let dataItem = k$soTv.dataSource.get(itemToDelete.UId);
+        k$soTv.dataSource.remove(dataItem);
         setSelectedUId(null);
         //soVM.set( "selectedUId", null )
 
         // check what happens to the selected item? the selectedUId in the VM
+        notifySuccess( `Secure Object ${itemToDelete.UniqueName} deleted successfully.` );
         return $
             .Deferred()
             .resolve()
@@ -958,11 +1017,17 @@ function processDeleteActionResponse(data: any, itemToDelete: any) {
 export function soBtnDiscardClick() {
     console.log("In soBtnDiscardClick...");
 
-    verifySaveChanges().then(function(proceed) {
-        if (proceed) {
-            resetEditor(false);
-        }
-    });
+    showYesNoDialog( "Confirm discard changes", "Are you sure you want to discard changes? " )
+        .then( (response: DialogResponse) => {
+            if ( response == DialogResponse.Yes ) {
+                resetEditor( true );
+            }
+        } );
+    //verifySaveChanges().then(function(proceed) {
+    //    if (proceed) {
+    //        resetEditor(true);
+    //    }
+    //});
 }
 
 // use click event and (MUST) leave treeview change and select methods empty
@@ -970,7 +1035,7 @@ export function soBtnDiscardClick() {
 function soTvClick() {
     // this event comes after treeview select and change events
     console.log("In soTvClick...");
-    let selectedItem: any = _k$soTv.dataItem(_k$soTv.select()); // TODO: Put explicit type
+    let selectedItem: any = k$soTv.dataItem(k$soTv.select()); // TODO: Put explicit type
 
     if (!selectedItem) {
         return;
@@ -979,7 +1044,7 @@ function soTvClick() {
         return;
     }
 
-    verifySaveChanges().then(function(proceed) {
+    verifySaveChanges().then( function ( proceed: boolean ) {
         console.log("-- " + proceed);
         if (proceed) {
             selectSecureObjectTreeNode(selectedItem.UId);
@@ -987,19 +1052,19 @@ function soTvClick() {
 
             // let name = selectedItem.UniqueName;
             $.when(_kDsTrustees.read(), getSecureObject(selectedItem.UId))
-                .done(function(arg1, arg2) {
+                .done( (arg1: any, arg2: any) => {
                     //let data = arg2[0]
                     let data = arg2;
                     populateEditor(data);
                 })
-                .fail(function() {});
+                .fail( () => {} );
         } else {
             // make prev node the selected node
             selectSecureObjectTreeNode();
         }
     });
 }
-export function soTvDrag(e: any) {
+export function soTvDrag( e: kendo.ui.TreeViewDragEvent ) {
     // TODO: Put explicit type
     // disallow if dropping to the same parent
     let srcParent = this.dataItem(this.parent(e.sourceNode));
@@ -1017,7 +1082,8 @@ export function soTvDrag(e: any) {
         }
     }
 }
-export function soTvDrop(e: any) {
+
+export function soTvDrop( e: any ) { 
     // TODO: Put explicit type
     // at this stage, the node is not yet registered with the new destination.
     if (!e.valid) return;
@@ -1030,6 +1096,8 @@ export function soTvDrop(e: any) {
         console.log("move node");
     }
 
+    //let copyNode: boolean = e.originalEvent.ctrlKey ? true : false;
+
     // update server
     let tree = e.sender; // this
     let sourceItem = tree.dataItem(e.sourceNode);
@@ -1039,7 +1107,7 @@ export function soTvDrop(e: any) {
     if (position != "over") {
         parentItem = parentItem.parentNode();
     }
-    let sourceNode = e.sourceNode;
+    let sourceNode = $(e.sourceNode);
     let destinationNode = $(e.destinationNode);
     e.preventDefault(); // handle the move manually after a successful update on the server
 
@@ -1051,20 +1119,16 @@ export function soTvDrop(e: any) {
             parentUId: parentItem ? parentItem.id : null,
         },
     })
-        .then(function(data) {
+        .then( ( data: AjaxResponse ) => {
             let dfd = $.Deferred();
-            if (data.Status == SUCCESS) {
+            if (data.Status == AjaxResponseStatus.Success) {
                 sourceItem.set("ParentUId", parentItem ? parentItem.id : null);
                 if (position == "over") {
-                    tree.append(sourceNode, destinationNode);
+                    tree.append( sourceNode as JQuery, destinationNode as JQuery );
                 } else {
-                    tree.insertAfter(sourceNode, destinationNode); // it doesn't matter whether insertAfter or insertBefore. We are going to sort it
+                    tree.insertAfter( sourceNode, destinationNode as JQuery ); // it doesn't matter whether insertAfter or insertBefore. We are going to sort it
                 }
-                // sort
-                //let tree = e.sender
-                // let dataSource = tree.dataSource;
                 setTimeout(function() {
-                    //sortSecureObjectTree( dataSource.view() ) // this one sorts the whole tree
                     sortSecureObjectTreeNode(parentItem);
                 }, 0);
 
@@ -1075,7 +1139,7 @@ export function soTvDrop(e: any) {
             }
             return dfd.promise();
         })
-        .fail(function() {
+        .fail( () => {
             e.setValid(false);
             notifyError("An error has occurred while updating parent of Secure Object");
         });
@@ -1088,10 +1152,11 @@ export function soTvDrop(e: any) {
     //    sortSecureObjectTreeNode(parent)
     //}, 0 );
 }
-function sortSecureObjectTreeNode(parentNode: any) {
+function sortSecureObjectTreeNode(parentNode: kendo.data.Node) {
     // TODO: Put explicit type
+    console.log("sort parent node:", parentNode)
     if (parentNode) {
-        parentNode.children.sort({ field: "UniqueName", dir: "asc" });
+        parentNode.children.sort( { field: "UniqueName", dir: "asc" } );
     } else {
         // looks like it is smart enough to use the sort config
     }
@@ -1111,12 +1176,12 @@ function selectSecureObjectTreeNode(uId?: string) {
         uId = soVM.get("selectedUId");
     }
 
-    let dataItem: any = _k$soTv.dataSource.get(uId); // TODO: Put explicit type
+    let dataItem: any = k$soTv.dataSource.get(uId); // TODO: Put explicit type
     if (dataItem) {
-        _k$soTv.expandTo(dataItem);
-        let nodeElement = _k$soTv.findByUid(dataItem.uid);
+        k$soTv.expandTo(dataItem);
+        let nodeElement = k$soTv.findByUid(dataItem.uid);
         if (nodeElement) {
-            _k$soTv.select(nodeElement); // cannot use model set("selected", true) as this will not unset previous selection
+            k$soTv.select(nodeElement); 
         }
     }
     setSelectedUId(dataItem.UId);
@@ -1125,41 +1190,59 @@ function selectSecureObjectTreeNode(uId?: string) {
 function getSecureObject(uId: string) {
     let dfd = $.Deferred();
 
-    $.get(getActionUrl("GetSecureObjectByUId", "Admin"), { uId: uId }).then(
-        function(data) {
-            if (data.Status == constants.SUCCESS) {
-                transformData(data);
-                dfd.resolve(data);
-            } else {
-                notifyError("There is a problem retrieving Secure Object");
-                dfd.reject(data);
+    $.get( getActionUrl( "GetSecureObjectByUId", "Admin" ), { uId: uId } )
+        .then(
+            ( data: AjaxResponse ) => {
+                if (data.Status == AjaxResponseStatus.Success) {
+                    transformData(data);
+                    dfd.resolve(data);
+                } else {
+                    notifyError("There is a problem retrieving Secure Object");
+                    dfd.reject(data);
+                }
+            },
+            ( jqXHR: JQueryXHR, textStatus: string ) => {
+                    let msg = decipherJqXhrError(jqXHR, textStatus);
+                    notifyError(`There is a problem retrieving Secure Object.<br/>${msg}`);
+                    dfd.reject();
             }
-        },
-        function(jqXHR, textStatus, errorThrown) {
-            let msg = decipherJqXhrError(jqXHR, textStatus);
-            notifyError("There is a problem retrieving Secure Object." + "<br/>" + msg);
-            dfd.reject();
-        }
-    );
+        );
     return dfd.promise();
 }
 function resetEditor(showEditor?: boolean) {
     (soVM as any).editor.reset(showEditor);
     clearEditorErrors();
-    _k$soGrdDacl.dataSource.data([]);
-    _k$soGrdSacl.dataSource.data([]);
+    dacl = [];
+    sacl = [];
+    k$soGrdDacl.dataSource.read();
+    k$soGrdSacl.dataSource.read();
 }
 function clearEditorErrors() {
-    _$soEditorError.empty();
+    $soEditorError.empty();
     (soVM as any).editor.setError(false);
 }
-function populateEditor(data: any) {
+function populateEditor(data: AjaxResponse) {
     // TODO: Put explicit type
     console.log("In populateEditor...");
     if (data) {
-        (soVM as any).editor.set("model", data.Data);
-        _k$soGrdDacl.dataSource.data(data.Data.Dacl);
-        _k$soGrdSacl.dataSource.data(data.Data.Sacl);
+        ( soVM as any ).editor.set( "model", data.Data );
+        daclLocalId = 0;
+        dacl = $.map( data.Data.Dacl, function ( record, idx ) {
+            //record.LocalId = ++daclLocalId;
+            //return record;
+            return {
+                ...record, LocalId: ++daclLocalId
+            }
+        } );
+        k$soGrdDacl.dataSource.read();
+        saclLocalId = 0;
+        sacl = $.map( data.Data.Sacl, function ( record, idx ) {
+            record.LocalId = ++saclLocalId;
+            return record;
+        } );
+        k$soGrdSacl.dataSource.read();
+        //k$soGrdDacl.dataSource.data(data.Data.Dacl);
+        //k$soGrdSacl.dataSource.data(data.Data.Sacl);
     }
 }
 
@@ -1184,7 +1267,7 @@ function populateEditor(data: any) {
 // }
 
 // ddl used inside dacl, sacl grid
-function trusteeDropDownEditor(container: any, options: any) {
+function trusteeDropDownEditor(container: JQuery<HTMLElement>, options: kendo.ui.GridColumnEditorOptions) {
     // TODO: Put explicit type
     //$( '<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required"/>' )
     $('<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required"/>')
@@ -1219,7 +1302,7 @@ function getTrusteeName(dataItem: any) {
     return kendo.htmlEncode(name);
 }
 
-function boolEditor(container: any, options: any) {
+function boolEditor( container: JQuery<HTMLElement>, options: kendo.ui.GridColumnEditorOptions ) {
     // TODO: Put explicit type
     let guid = kendo.guid();
     $(
@@ -1234,7 +1317,7 @@ function boolEditor(container: any, options: any) {
     $('<label class="k-checkbox-label" for="' + guid + '">&#8203;</label>').appendTo(container);
 }
 
-function rightTypeDropDownListEditor(container: any, options: any) {
+function rightTypeDropDownListEditor( container: JQuery<HTMLElement>, options: kendo.ui.GridColumnEditorOptions ) {
     // TODO: Put explicit type
     console.log("In rightTypeDropDownListEditor...");
     //let guid = kendo.guid()
@@ -1243,7 +1326,7 @@ function rightTypeDropDownListEditor(container: any, options: any) {
     $('<input data-bind="value:' + options.field + '" name="' + options.field + '" required="required" />')
         .appendTo(container)
         .kendoDropDownList({
-            dataSource: _rightTypes,
+            dataSource: rightTypes,
             change: function(e) {
                 options.model.set("Right", 0);
 
@@ -1256,13 +1339,13 @@ function rightTypeDropDownListEditor(container: any, options: any) {
     $('<span class="k-invalid-msg" data-for="' + options.field + '"></span>').appendTo(container);
 }
 
-function createRightCheckBoxList(container: any, model: any) {
+function createRightCheckBoxList( container: JQuery<HTMLElement>, model: any ) {
     // TODO: Put explicit type
     container.empty();
     if (model.RightType == "") return;
 
     let fieldName = "Right";
-    let rightsArr = _rights[model.RightType];
+    let rightsArr = rights[model.RightType];
 
     let ele = '<ul class="gridEditor">';
     $.each(rightsArr, function(index, item) {
@@ -1331,7 +1414,7 @@ function createRightCheckBoxList(container: any, model: any) {
 function getRightAsString(dataItem: any) {
     // TODO: Put explicit type
     let rightVal = dataItem.Right;
-    let allRightsArr = _rights[dataItem.RightType];
+    let allRightsArr = rights[dataItem.RightType];
     let rightArr: string[] = [];
     while (rightVal > 0) {
         $.each(allRightsArr, function(index, item) {
@@ -1395,20 +1478,19 @@ export function verifySaveChanges() {
     if (!(soVM as any).editor.get("hasChanges")) {
         dfd.resolve(true);
     } else {
-        $.when(showYesNoCancelDialog("Save changes", "Save changes to Secure Object " + (soVM as any).editor.model.get("UniqueName") + "?")).then(
-            function(response) {
+        $.when( showYesNoCancelDialog( "Save changes", `Save changes to Secure Object ${( soVM as any ).editor.model.get( "UniqueName" )} ?` ) )
+            .then((response: DialogResponse) => {
                 switch (response) {
-                    case 1: // go ahead and save
+                    case DialogResponse.Yes: // 1: // go ahead and save
                         clearEditorErrors();
                         if (validateEditor()) {
                             $.when(blockUI)
                                 .then(saveSecureObject)
                                 .then(processSaveActionResponse)
-                                .then(function(data) {
-                                    notifySuccess("Secure Object " + data.Data.UniqueName + " saved successfully.");
+                                .then( () => {
                                     dfd.resolve(true);
                                 })
-                                .fail(function() {
+                                .fail( () => {
                                     dfd.resolve(false);
                                 })
                                 .always(unblockUI);
@@ -1418,10 +1500,10 @@ export function verifySaveChanges() {
                             dfd.resolve(true);
                         }
                         break;
-                    case 2: // discard changes and continue
+                    case DialogResponse.No: // 2: // discard changes and continue
                         dfd.resolve(true);
                         break;
-                    case 3: // cancel action
+                    case DialogResponse.Cancel: // 3: // cancel action
                         dfd.resolve(false);
                         break;
                     default:

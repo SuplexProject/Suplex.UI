@@ -9,7 +9,10 @@ namespace Suplex.UI.Modules.Admin.MappingProfiles
     {
         public SecurityPrincipalEditorVMProfile()
         {
-            CreateMap<User, SecurityPrincipalEditorVM>().ReverseMap();
+            //CreateMap<User, SecurityPrincipalEditorVM>().ReverseMap();
+            CreateMap<User, SecurityPrincipalEditorVM>();
+            CreateMap<SecurityPrincipalEditorVM, User>().ForMember(d => d.UId, o => o.Ignore());
+
             CreateMap<Group, SecurityPrincipalEditorVM>() 
                 .ForMember(d => d.Mask, o => o.ResolveUsing(s => 
                     {
@@ -23,6 +26,7 @@ namespace Suplex.UI.Modules.Admin.MappingProfiles
                         //return sb.ToString().TrimEnd(separator.ToCharArray());
                     }));
             CreateMap<SecurityPrincipalEditorVM, Group>()
+                .ForMember(d => d.UId, o => o.Ignore())
                 .ForMember(d => d.Mask, o => o.ResolveUsing(s =>
                 {
                     return MaskConverter.StringToByteArray(s.Mask);

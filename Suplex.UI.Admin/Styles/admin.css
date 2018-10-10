@@ -72,47 +72,42 @@ input:-ms-input-placeholder {
 
 .icon-user {
     /*background-image: url('/Images.user-16x16.png');*/
-    background: url('/Images.spicons-sprite.png') 0px 0px;
-    margin-right: 2px;
+    /*background: url('/Images.spicons-sprite.png') 0px 0px;*/
+    background: url('/Images.sp-sprite.png') 0px 0px;
+    margin-right: 2px !important;
 }
 
-.k-state-disabled .icon-user {
+/*.k-state-disabled .icon-user {*/
     /*background-image: url('/Images.user-16x16_disabled.png');*/
-    background: url('/Images.spicons-sprite.png') 0px -16px;
-}
+    /*background: url('/Images.spicons-sprite.png') 0px -16px;*/
+    /*opacity: 0.5;*/
+/*}*/
 
 .icon-group {
     /*background-image: url('/Images.users-16x16.png');*/
-    background: url('/Images.spicons-sprite.png') 0px -64px;
-    margin-right: 2px;
+    /*background: url('/Images.spicons-sprite.png') 0px -64px;*/
+    background: url('/Images.sp-sprite.png') 0px -16px;
+    margin-right: 2px !important;
 }
 
-.k-state-disabled .icon-group {
+/*.k-state-disabled .icon-group {*/
     /*background-image: url('/Images.users-16x16_disabled.png');*/
-    background: url('/Images.spicons-sprite.png') 0px -80px;
-}
-
-.icon-user-del {
-    /*background-image: url('/Images.user-del-16x16.png');*/
-    background: url('/Images.spicons-sprite.png') 0px -32px;
-    margin-right: 2px;
-}
-
-.k-state-disabled .icon-user-del {
-    /*background-image: url('/Images.user-del-16x16_disabled.png');*/
-    background: url('/Images.spicons-sprite.png') 0px -48px;
-}
+    /*background: url('/Images.spicons-sprite.png') 0px -80px;*/
+    /*opacity: 0.5;*/
+/*}*/
 
 .icon-group-ext {
     /*background-image: url('/Images.users-16x16_ext.png');*/
-    background: url('/Images.spicons-sprite.png') 0px -96px;
-    margin-right: 2px;
+    /*background: url('/Images.spicons-sprite.png') 0px -96px;*/
+    background: url('/Images.sp-sprite.png') 0px -32px;
+    margin-right: 2px !important;
 }
 
-.k-state-disabled .icon-group-ext {
+/*.k-state-disabled .icon-group-ext {*/
     /*background-image: url('/Images.users-16x16_ext_disabled.png');*/
-    background: url('/Images.spicons-sprite.png') 0px -112px;
-}
+    /*background: url('/Images.spicons-sprite.png') 0px -112px;*/
+    /*opacity: 0.5;*/
+/*}*/
 
 /* styles for show errors on editors */
 .error {
@@ -134,15 +129,15 @@ input:-ms-input-placeholder {
 
 #tvSelectFile .k-sprite,
 #tvSaveAs .k-sprite {
-        background-image: url(/Images.fileicons-sprite.png);
+        background-image: url(/Images.fs-sprite.png);
     }
 
 .folder {
-    background-position: 0 -16px;
+    background-position: 0 0;
 }
 
 .file {
-    background-position: 0 -80px; /*-48px*/
+    background-position: 0 -16px;
 }
 
 /* -- controls inside grid editor */
@@ -262,7 +257,7 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     position: relative; /* required for kendo ui progress to work */
 }
 
-#spTb .k-button,
+/*#spTb .k-button,*/
 #spTb .k-textbox {
     margin: 0px 0.2em; /* follow kendo tool bar, couldnt use kendo toolbar bcos mvvm binding is only at toolbar widget level not individual items on the toolbar */
 }
@@ -317,3 +312,16 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 #spTlGroupHierarchy {
     width: 640px;
 }
+
+/* https://docs.telerik.com/kendo-ui/controls/navigation/button/overview#font-icons */
+/* https://docs.telerik.com/kendo-ui/controls/navigation/toolbar/how-to/use-font-awesome-icons */
+/*.fa.k-sprite,
+.fa.k-sprite::before {
+    font-size: inherit;
+    line-height: inherit;*/
+    /*font-size: inherit;
+    line-height: inherit;
+    width: auto;
+    height: auto;
+    margin-left: 0;*/
+/*}*/

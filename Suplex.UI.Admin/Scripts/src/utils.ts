@@ -1,16 +1,16 @@
-﻿export function notifyError(msg: string, allowHideAfter?: number, autoHideAfter?: number) {
+﻿export function notifyError(msg: string, allowHideAfter?: number, autoHideAfter?: number) : void {
     showNotification(msg, "error", allowHideAfter, autoHideAfter);
 }
-export function notifyInfo(msg: string, allowHideAfter?: number, autoHideAfter?: number) {
+export function notifyInfo(msg: string, allowHideAfter?: number, autoHideAfter?: number) : void {
     showNotification(msg, "info", allowHideAfter, autoHideAfter);
 }
-export function notifySuccess(msg: string, allowHideAfter?: number, autoHideAfter?: number) {
+export function notifySuccess(msg: string, allowHideAfter?: number, autoHideAfter?: number) : void {
     showNotification(msg, "success", allowHideAfter, autoHideAfter);
 }
-export function notifyWarning(msg: string, allowHideAfter?: number, autoHideAfter?: number) {
+export function notifyWarning(msg: string, allowHideAfter?: number, autoHideAfter?: number) : void {
     showNotification(msg, "warning", allowHideAfter, autoHideAfter);
 }
-export function showNotification(msg: string, msgType: string, allowHideAfter: number, autoHideAfter: number) {
+export function showNotification(msg: string, msgType: string, allowHideAfter: number, autoHideAfter: number) : void {
     if (allowHideAfter === undefined) allowHideAfter = 5000;
     if (autoHideAfter === undefined) autoHideAfter = 15000;
     if (msg == null) return;
@@ -33,11 +33,11 @@ export function showNotification(msg: string, msgType: string, allowHideAfter: n
     noti.show(msg, msgType);
 }
 
-export function getActionUrl(action: string, controller: string) {
+export function getActionUrl(action: string, controller: string) : string {
     return $("base").attr("href") + controller + "/" + action;
 }
 
-export function dataSourceError(e: any) {
+export function dataSourceError(e: any) : void {
     this.data([]); // "this" is set to the data source instance
     //console.log(e);
     // e.status can be null, "timeout", "error", "abort", and "parsererror"
@@ -59,7 +59,7 @@ export function dataSourceError(e: any) {
     }
 }
 
-export function decipherJqXhrError(jqXHR: JQueryXHR, textStatus: string) {
+export function decipherJqXhrError(jqXHR: JQueryXHR, textStatus: string) : string {
     let errorMessage = "";
 
     if (jqXHR.status === 0) {
@@ -80,9 +80,15 @@ export function decipherJqXhrError(jqXHR: JQueryXHR, textStatus: string) {
     return errorMessage;
 }
 
-export function showYesNoCancelDialog(title: string, content: string) {
-    let dfd = $.Deferred();
-    let result = 0;
+export enum DialogResponse {
+    None,
+    Yes,
+    No,
+    Cancel
+}
+export function showYesNoCancelDialog( title: string, content: string ): JQueryPromise<DialogResponse> {
+    let dfd = $.Deferred<DialogResponse>();
+    let result = DialogResponse.None;
 
     $("<div id='dlgYesNoCancel'></div>")
         .appendTo("body")
@@ -98,20 +104,20 @@ export function showYesNoCancelDialog(title: string, content: string) {
                 {
                     text: "Yes",
                     action: function() {
-                        result = 1;
+                        result = DialogResponse.Yes;
                     },
                 },
                 {
                     text: "No",
                     action: function() {
-                        result = 2;
+                        result = DialogResponse.No;
                     },
                 },
                 {
                     text: "Cancel",
                     primary: true,
                     action: function() {
-                        result = 3;
+                        result = DialogResponse.Cancel;
                     },
                 },
             ],
@@ -125,9 +131,10 @@ export function showYesNoCancelDialog(title: string, content: string) {
 
     return dfd.promise();
 }
-export function showYesNoDialog(title: string, content: string) {
-    let dfd = $.Deferred();
-    let result = 0;
+
+export function showYesNoDialog( title: string, content: string ): JQueryPromise<DialogResponse> {
+    let dfd = $.Deferred<DialogResponse>();
+    let result = DialogResponse.None;
 
     $("<div id='dlgYesNo'></div>")
         .appendTo("body")
@@ -143,13 +150,13 @@ export function showYesNoDialog(title: string, content: string) {
                 {
                     text: "Yes",
                     action: function() {
-                        result = 1;
+                        result = DialogResponse.Yes;
                     },
                 },
                 {
                     text: "No",
                     action: function() {
-                        result = 2;
+                        result = DialogResponse.No;
                     },
                 },
             ],
@@ -185,9 +192,21 @@ export function unblockUI() {
     kendo.ui.progress($(document.body), false);
 }
 
-export function isValidFileName(fileName: string) {
+export function isValidFileName(fileName: string) : boolean {
     return !fileName ? false : true;
 }
-export function isPowerOfTwo(x: number) {
+export function isPowerOfTwo(x: number) : boolean {
     return (x & (x - 1)) == 0 ? true : false;
+}
+
+export interface AjaxResponse {
+    Status: AjaxResponseStatus;
+    Message: string;
+    ValidationErrors: string[],
+    Data: any
+}
+export enum AjaxResponseStatus {
+    None = "",
+    Success = "success",
+    Error = "error"
 }

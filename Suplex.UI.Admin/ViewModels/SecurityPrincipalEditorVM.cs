@@ -16,8 +16,6 @@ namespace Suplex.UI.Modules.Admin.ViewModels
 
         public bool IsUser { get; set; }
 
-        public bool IsBuiltIn { get; set; }
-
         public bool IsEnabled { get; set; }
 
         public bool IsLocal { get; set; }

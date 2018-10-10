@@ -329,24 +329,24 @@ namespace Suplex.UI.Modules.Admin.Controllers
             bool ok = false;
             _logger.LogInformation($"In SaveUser({nameof(userSave)}:{userSave})");
 
-            SecurityPrincipalEditorVM user = userSave.User;
+            SecurityPrincipalEditorVM sp = userSave.User;
             List<MemberVM> toAdd = userSave.MembersOfToAdd;
             List<MemberVM> toRemove = userSave.MembersOfToRemove;
             try
             {
                 // validate name: must be unique
                 // if new user
-                if (user.UId == null)
+                if (sp.UId == null)
                 {
-                    if (_dal.GetUserByName(user.Name).Count != 0 || _dal.GetGroupByName(user.Name).Count != 0)
+                    if (_dal.GetUserByName(sp.Name).Count != 0 || _dal.GetGroupByName(sp.Name).Count != 0)
                     {
                         ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
                     }
                 }
                 else
                 {
-                    if (_dal.GetUserByName(user.Name).Where(u => u.UId != user.UId).Count() != 0 ||
-                        _dal.GetGroupByName(user.Name).Count != 0)
+                    if (_dal.GetUserByName(sp.Name).Where(u => u.UId != sp.UId).Count() != 0 ||
+                        _dal.GetGroupByName(sp.Name).Count != 0)
                     {
                         ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
                     }
@@ -354,25 +354,32 @@ namespace Suplex.UI.Modules.Admin.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    User u;
                     // if new user
-                    if (user.UId == null)
+                    if (sp.UId == null)
                     {
-                        user.UId = Guid.NewGuid();
+                        //sp.UId = Guid.NewGuid();
+                        u = new User();
+                        sp.UId = u.UId;
+                    }
+                    else
+                    {
+                        u = _dal.GetUserByUId(sp.UId.Value);
                     }
 
-                    User u = _mapper.Map<SecurityPrincipalEditorVM, User>(user);
+                    _mapper.Map<SecurityPrincipalEditorVM, User>(sp, u);    // map to existing object so we dont override fields that are not used in the UI
                     _dal.UpsertUser(u);
 
                     List<GroupMembershipItem> groupMembershipToAdd = new List<GroupMembershipItem>();
                     foreach (MemberVM g in toAdd)
                     {
-                        groupMembershipToAdd.Add(new GroupMembershipItem { GroupUId = g.UId, MemberUId = u.UId.Value, IsMemberUser = true });
+                        groupMembershipToAdd.Add(new GroupMembershipItem { GroupUId = g.UId, MemberUId = u.UId, IsMemberUser = true });
                     }
 
                     List<GroupMembershipItem> groupMembershipToRemove = new List<GroupMembershipItem>();
                     foreach (MemberVM g in toRemove)
                     {
-                        groupMembershipToRemove.Add(new GroupMembershipItem { GroupUId = g.UId, MemberUId = u.UId.Value, IsMemberUser = true });
+                        groupMembershipToRemove.Add(new GroupMembershipItem { GroupUId = g.UId, MemberUId = u.UId, IsMemberUser = true });
                     }
 
                     foreach (GroupMembershipItem i in groupMembershipToAdd)
@@ -387,22 +394,22 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 }
                 else
                 {
-                    _logger.LogError($"Error saving user {user.UId} | {user.Name}");
+                    _logger.LogError($"Error saving user {sp.UId} | {sp.Name}");
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                _logger.LogError(ex, $"Error saving user {user.UId} | {user.Name}");
+                _logger.LogError(ex, $"Error saving user {sp.UId} | {sp.Name}");
             }
 
             ResponseVM r = new ResponseVM()
             {
                 Status = ok ? SUCCESS : ERROR,
-                Message = ok ? null : $"Unable to save User {user.Name}. Clear the error(s) and try again.",
+                Message = ok ? null : $"Unable to save User {sp.Name}. Clear the error(s) and try again.",
                 ValidationErrors = ok ? null : ModelState.Keys.SelectMany(k => ModelState[k].Errors)
                               .Select(m => m.ErrorMessage).ToList(),
-                Data = new { User = (ok ? user : null) }
+                Data = new { User = (ok ? sp : null) }
             };
 
             //https://www.telerik.com/blogs/handling-server-side-validation-errors-in-your-kendo-ui-grid
@@ -429,7 +436,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 List<MemberVM> nonMembers = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>(memberList.NonMemberList);
 
                 // Group hierarchy
-                List<GroupMembershipItem> gm = _dal.GetGroupMembership(uId).ToList();
+                List<GroupMembershipItem> gm = _dal.GetGroupMembershipHierarchy(uId).ToList();
                 List<GroupHierarchyVM> rootnodes = gm.Where(i => (gm.Count(x => x.MemberUId == i.GroupUId) == 0))
                     .Select(i => new GroupHierarchyVM { GroupUId = null, MemberUId = i.GroupUId, Name = i.Group.Name, Description = i.Group.Description, IsEnabled = i.Group.IsEnabled, IsLocal = i.Group.IsLocal, IsUser = i.Group.IsUser }).ToList();
 
@@ -496,24 +503,24 @@ namespace Suplex.UI.Modules.Admin.Controllers
         {
             bool ok = false;
             _logger.LogInformation($"In SaveGroup({nameof(groupSave)}:{groupSave})");
-            SecurityPrincipalEditorVM group = groupSave.Group;
+            SecurityPrincipalEditorVM sp = groupSave.Group;
             List<MemberVM> toAdd = groupSave.MembersToAdd;
             List<MemberVM> toRemove = groupSave.MembersToRemove;
             try
             {
                 // validate name: must be unique
                 // if new user
-                if (group.UId == null)
+                if (sp.UId == null)
                 {
-                    if (_dal.GetGroupByName(group.Name).Count != 0 || _dal.GetUserByName(group.Name).Count != 0)
+                    if (_dal.GetGroupByName(sp.Name).Count != 0 || _dal.GetUserByName(sp.Name).Count != 0)
                     {
                         ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
                     }
                 }
                 else
                 {
-                    if (_dal.GetGroupByName(group.Name).Where(u => u.UId != group.UId).Count() != 0 ||
-                        _dal.GetUserByName(group.Name).Count != 0)
+                    if (_dal.GetGroupByName(sp.Name).Where(u => u.UId != sp.UId).Count() != 0 ||
+                        _dal.GetUserByName(sp.Name).Count != 0)
                     {
                         ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
                     }
@@ -521,22 +528,31 @@ namespace Suplex.UI.Modules.Admin.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    Group g;
+
                     // if new user
-                    if (group.UId == null)
+                    if (sp.UId == null)
                     {
-                        group.UId = Guid.NewGuid();
+                        //sp.UId = Guid.NewGuid();
+                        g = new Group();
+                        sp.UId = g.UId; // we need to send back the UId
                         if (_maskSize == 0)
                         {
-                            group.Mask = "0";
+                            sp.Mask = "0";
                         }
                         else
                         {
                             BitArray maskBitArray = _dal.Store.Groups.GetNextMask(_maskSize);
-                            group.Mask = MaskConverter.BitArrayToString(maskBitArray);
+                            sp.Mask = MaskConverter.BitArrayToString(maskBitArray);
                         }
                     }
+                    else
+                    {
+                        g = _dal.GetGroupByUId(sp.UId.Value);
+                    }
 
-                    Group g = _mapper.Map<SecurityPrincipalEditorVM, Group>(group);
+                    //Group g = _mapper.Map<SecurityPrincipalEditorVM, Group>(sp);
+                    _mapper.Map<SecurityPrincipalEditorVM, Group>(sp, g);   // map to existing object so we dont override fields that are not used in the UI
                     _dal.UpsertGroup(g);
 
                     if (g.IsLocal)
@@ -544,13 +560,13 @@ namespace Suplex.UI.Modules.Admin.Controllers
                         List<GroupMembershipItem> groupMembershipToAdd = new List<GroupMembershipItem>();
                         foreach (MemberVM m in toAdd)
                         {
-                            groupMembershipToAdd.Add(new GroupMembershipItem { GroupUId = g.UId.Value, MemberUId = m.UId, IsMemberUser = m.IsUser });
+                            groupMembershipToAdd.Add(new GroupMembershipItem { GroupUId = g.UId, MemberUId = m.UId, IsMemberUser = m.IsUser });
                         }
 
                         List<GroupMembershipItem> groupMembershipToRemove = new List<GroupMembershipItem>();
                         foreach (MemberVM m in toRemove)
                         {
-                            groupMembershipToRemove.Add(new GroupMembershipItem { GroupUId = g.UId.Value, MemberUId = m.UId, IsMemberUser = m.IsUser });
+                            groupMembershipToRemove.Add(new GroupMembershipItem { GroupUId = g.UId, MemberUId = m.UId, IsMemberUser = m.IsUser });
                         }
 
                         foreach (GroupMembershipItem i in groupMembershipToAdd)
@@ -577,22 +593,22 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 }
                 else
                 {
-                    _logger.LogError($"Error updating group {group.UId} | {group.Name}");
+                    _logger.LogError($"Error updating group {sp.UId} | {sp.Name}");
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
-                _logger.LogError(ex, $"Error saving group {group.UId} | {group.Name}");
+                _logger.LogError(ex, $"Error saving group {sp.UId} | {sp.Name}");
             }
 
             ResponseVM r = new ResponseVM()
             {
                 Status = ok ? SUCCESS : ERROR,
-                Message = ok ? null : $"Unable to save Group {group.Name}. Clear the error(s) and try again.",
+                Message = ok ? null : $"Unable to save Group {sp.Name}. Clear the error(s) and try again.",
                 ValidationErrors = ok ? null : ModelState.Keys.SelectMany(k => ModelState[k].Errors)
                               .Select(m => m.ErrorMessage).ToList(),
-                Data = new { Group = (ok ? group : null) }
+                Data = new { Group = (ok ? sp : null) }
             };
 
             //https://www.telerik.com/blogs/handling-server-side-validation-errors-in-your-kendo-ui-grid
@@ -695,7 +711,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 {
                     children = (List<SecureObject>)_dal.GetSecureObjectByUId(uId.Value, includeChildren:true, includeDisabled:true).Children.OfType<SecureObject>().ToList();
                 }
-                secureObjectTreeItems = _mapper.Map<List<SecureObject>, List<SecureObjectTreeItemVM>>(children);
+                secureObjectTreeItems = _mapper.Map<List<SecureObject>, List<SecureObjectTreeItemVM>>(children); 
                 secureObjectTreeItems.Sort((x, y) => x.UniqueName.CompareTo(y.UniqueName));
             }
             catch (Exception ex)

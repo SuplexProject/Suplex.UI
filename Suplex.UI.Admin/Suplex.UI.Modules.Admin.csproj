@@ -21,8 +21,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
-    <PackageReference Include="Suplex.Security.Core" Version="1.0.18206" />
-    <PackageReference Include="Suplex.Security.FileSystemDal" Version="1.0.18181" />
+    <PackageReference Include="Suplex.Security.Core" Version="1.0.18280" />
+    <PackageReference Include="Suplex.Security.FileSystemDal" Version="1.0.18280" />
     <PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2018.2.516" />
     <!--<PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2018.1.221" />-->
   </ItemGroup>

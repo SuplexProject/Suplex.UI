@@ -9,6 +9,7 @@ namespace Suplex.UI.Modules.Admin.ViewModels
         public string Name { get; set; }
         public bool IsUser { get; set; }
         public bool IsLocal { get; set; }
-        public bool IsEnabled { get; set; }        
+        public bool IsEnabled { get; set; }
+        public string Source { get; set; }
     }
 }

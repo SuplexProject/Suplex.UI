@@ -15,4 +15,5 @@ namespace Suplex.UI.Modules.Admin.ViewModels
         public bool IsLocal { get; set; }
         public bool IsEnabled { get; set; }
     }
+    
 }

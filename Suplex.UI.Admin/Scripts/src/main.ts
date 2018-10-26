@@ -1,15 +1,15 @@
 ﻿import * as ID from "./ids";
 import * as constants from "./constants";
-import { notifySuccess, notifyError, getActionUrl, showYesNoCancelDialog, blockUI, unblockUI, isValidFileName, decipherJqXhrError, AjaxResponse, AjaxResponseStatus } from "./utils";
+import { notifySuccess, notifyError, getActionUrl, showYesNoCancelDialog, showProgress, hideProgress, isValidFileName, decipherJqXhrError, AjaxResponse, AjaxResponseStatus } from "./utils";
 import {
-    setupSecurityPrincipals,
-    showSecurityPrincipals,
-    hideSecurityPrincipals,
-    resetSecurityPrincipals,
-    loadSecurityPrincipals,
+    spSetup,
+    spShow,
+    spHide,
+    spReset,
+    spLoad,
     verifySaveChanges as spVerifySaveChanges,
 } from "./sp";
-import { setupSecureObjects, hideSecureObjects, showSecureObjects, resetSecureObjects, loadSecureObjectsTree } from "./so";
+import { soSetup, soHide, soShow, soReset, soLoad } from "./so";
 
 let $tbMain = $(ID.TB_MAIN);
 
@@ -497,8 +497,8 @@ function init() {
     setupEventHandlers();
 
     kendo.bind($tbMain, mainVM);
-    setupSecurityPrincipals();
-    setupSecureObjects();
+    spSetup();
+    soSetup();
 
     // turn off autocomplete & autocorrect
     $("input").attr("autocomplete", "off");
@@ -545,10 +545,10 @@ function openFile(fileName: string) {
                 mainVM.set("fileName", fileName);
 
                 setWindowTitle(fileName);
-                resetSecurityPrincipals();
-                loadSecurityPrincipals();
-                resetSecureObjects();
-                loadSecureObjectsTree();
+                spReset();
+                spLoad();
+                soReset();
+                soLoad();
             } else {
                 notifyError(data.Message);
             }
@@ -571,8 +571,8 @@ function newFile() {
             } else {
                 mainVM.init();
                 setWindowTitle();
-                resetSecurityPrincipals();
-                resetSecureObjects();
+                spReset();
+                soReset();
             }
         })
         .fail( ( xhr: JQueryXHR, textStatus: string ) => {
@@ -625,18 +625,18 @@ function btnSaveFileClick(e: any) {
             console.log( "-- save" );
             let fileName = mainVM.get("fileName");
             if (fileName != null) {
-                blockUI();
-                saveFile(fileName).always(unblockUI);
+                showProgress();
+                saveFile(fileName).always(hideProgress);
                 break;
             }
         case ID.BTN_SAVE_FILE_AS: // "btnSaveFileAs":
             console.log("-- save file as");
             selectSaveAsFileName.OpenDialog()
                 .then(function(fileName) {
-                    blockUI();
+                    showProgress();
                     return saveFile(fileName);
                 })
-                .always(unblockUI);
+                .always(hideProgress);
             break;
     }
 }
@@ -722,16 +722,16 @@ function switchView(e: any) {
     console.log("In switchView...");
     switch (e.id) {
         case "btnShowSecurityPrincipals":
-            hideSecureObjects();
-            showSecurityPrincipals();
+            soHide();
+            spShow();
             break;
         case "btnShowSecureObjects":
-            hideSecurityPrincipals();
-            showSecureObjects();
+            spHide();
+            soShow();
             break;
         default:
-            hideSecurityPrincipals();
-            hideSecureObjects();
+            spHide();
+            soHide();
     }
 }
 
@@ -759,19 +759,22 @@ export {
 };
 
 export {
-    getSecurityPrincipalIconClass,
+    spGetNameIconClass,
     spBtnNewClick,
-    spBtnEditClick,
     spBtnDeleteClick,
     spBtnSaveClick,
-    spBtnDiscardClick
+    spBtnDiscardClick,
+    spBtnMemberOfAddClick,
+    spBtnMembersAddClick,
+    spMsMemberOfDataSource,
+    spMsMembersDataSource,
+    spLbMemberOfDataSource,
+    spLbMembersDataSource,
+    spGrdDataSourceChange
 } from "./sp";
 export {
-    soTvDataBound,
-    soTvDrop,
-    soTvDrag,
+    soTlDrop,
     soBtnNewClick,
-    soBtnEditClick,
     soBtnDeleteClick,
     soBtnExpandAllClick,
     soBtnCollapseAllClick,

@@ -12,7 +12,7 @@ export function notifyWarning(msg: string, allowHideAfter?: number, autoHideAfte
 }
 export function showNotification(msg: string, msgType: string, allowHideAfter: number, autoHideAfter: number) : void {
     if (allowHideAfter === undefined) allowHideAfter = 5000;
-    if (autoHideAfter === undefined) autoHideAfter = 15000;
+    if (autoHideAfter === undefined) autoHideAfter = 10000;
     if (msg == null) return;
     const id = "#noti";
     let noti = $(id).data("kendoNotification");
@@ -184,13 +184,63 @@ export function showAlert(title: string, content: string) {
         .data("kendoAlert")
         .open();
 }
-export function blockUI() {
+export function showProgress() {
     kendo.ui.progress($(document.body), true);
 }
 
-export function unblockUI() {
+export function hideProgress() {
     kendo.ui.progress($(document.body), false);
 }
+////https://jsfiddle.net/wbsmhjL0/
+//export function maskOn( elemId?: string ) {
+//    let elem: JQuery = null;
+//    if ( typeof elemId === 'undefined' || elemId === null )
+//        elem = $( 'body' );
+//    else
+//        elem = $( '#' + elemId );
+
+//    if ( !elem ) return;
+
+//    let maskDiv = elem.data( 'maskDiv' );
+//    if ( !maskDiv ) {
+//        maskDiv = $( '<div style="position:fixed;display:inline"></div>' );
+//        $( 'body' ).append( maskDiv );
+//        elem.data( 'maskDiv', maskDiv );
+//    }
+
+//    // stretch maskdiv over elem
+//    let offsetParent = elem.offsetParent();
+//    let widthPercents = elem.outerWidth() * 100 / offsetParent.outerWidth() + '%';
+//    let heightPercents = elem.outerHeight() * 100 / offsetParent.outerHeight() + '%';
+//    maskDiv.width( widthPercents );
+//    maskDiv.height( heightPercents );
+//    maskDiv.offset( elem.offset() );
+
+//    // set styles
+//    maskDiv[0].style.backgroundColor = 'gray';
+//    maskDiv[0].style.opacity = '0.8';
+//    maskDiv[0].style.zIndex = 999;
+
+//    return maskDiv;
+//}
+//export function maskOff( elemId?: string ) {
+//    let elem: JQuery = null;
+//    if ( typeof elemId === 'undefined' || elemId === null )
+//        elem = $( 'body' );
+//    else
+//        elem = $( '#' + elemId );
+
+//    if ( !elem ) return;
+
+//    let maskDiv = elem.data( 'maskDiv' );
+//    if ( !maskDiv ) {
+//        console.log( 'maskOff no mask !' );
+//        return;
+//    }
+
+//    elem.removeData( 'maskDiv' );
+//    maskDiv.remove();
+//}
 
 export function isValidFileName(fileName: string) : boolean {
     return !fileName ? false : true;

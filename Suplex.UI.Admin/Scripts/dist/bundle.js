@@ -5991,7 +5991,7 @@ var FILE_EXTENSION = ".splx";
 /*!********************!*\
   !*** ./src/ids.ts ***!
   \********************/
-/*! exports provided: TB_MAIN, BTN_SHOW_SECURITY_PRINCIPALS, BTN_SHOW_SECURE_OBJECTS, BTN_SAVE_FILE_AS, BTN_SAVE_FILE, DLG_SELECT_FILE, TREEVIEW_SELECT_FILE, DLG_SAVE_AS, TREEVIEW_SAVE_AS, TXT_SAVE_AS_NAME, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_NOT_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_LISTBOX_NON_MEMBERS, SP_TXT_MEMBER_OF_FILTER, SP_TXT_NOT_MEMBER_OF_FILTER, SP_TXT_MEMBERS_FILTER, SP_TXT_NON_MEMBERS_FILTER, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SO_VIEW, SO_SPLITTER, SO_TREEVIEW, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_TREEVIEW_MENU, SO_TREEVIEW_MENU_NEW, SO_BTN_NEW, SO_BTN_NEW_ROOT, SO_BTN_NEW_CHILD, SO_BTN_DELETE */
+/*! exports provided: TB_MAIN, BTN_SHOW_SECURITY_PRINCIPALS, BTN_SHOW_SECURE_OBJECTS, BTN_SAVE_FILE_AS, BTN_SAVE_FILE, DLG_SELECT_FILE, TREEVIEW_SELECT_FILE, DLG_SAVE_AS, TREEVIEW_SAVE_AS, TXT_SAVE_AS_NAME, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SO_VIEW, SO_SPLITTER, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_BTN_NEW, SO_BTN_NEW_ROOT, SO_BTN_NEW_CHILD, SO_BTN_DELETE, SO_BTN_EXPAND_ALL, SO_BTN_EXPAND_TREE, SO_BTN_COLLAPSE_ALL, SO_BTN_COLLAPSE_TREE, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND, SO_TREELIST_CTX_MENU_COLLAPSE */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6013,30 +6013,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_EDITOR", function() { return SP_EDITOR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_EDITOR_ERROR", function() { return SP_EDITOR_ERROR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_LISTBOX_MEMBER_OF", function() { return SP_LISTBOX_MEMBER_OF; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_LISTBOX_NOT_MEMBER_OF", function() { return SP_LISTBOX_NOT_MEMBER_OF; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_LISTBOX_MEMBERS", function() { return SP_LISTBOX_MEMBERS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_LISTBOX_NON_MEMBERS", function() { return SP_LISTBOX_NON_MEMBERS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_TXT_MEMBER_OF_FILTER", function() { return SP_TXT_MEMBER_OF_FILTER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_TXT_NOT_MEMBER_OF_FILTER", function() { return SP_TXT_NOT_MEMBER_OF_FILTER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_TXT_MEMBERS_FILTER", function() { return SP_TXT_MEMBERS_FILTER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_TXT_NON_MEMBERS_FILTER", function() { return SP_TXT_NON_MEMBERS_FILTER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_MULTISELECT_MEMBER_OF", function() { return SP_MULTISELECT_MEMBER_OF; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_MULTISELECT_MEMBERS", function() { return SP_MULTISELECT_MEMBERS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_BTN_MEMBER_OF_ADD", function() { return SP_BTN_MEMBER_OF_ADD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_BTN_MEMBERS_ADD", function() { return SP_BTN_MEMBERS_ADD; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_TREELIST_GROUP_HIERARCHY", function() { return SP_TREELIST_GROUP_HIERARCHY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_BTN_NEW", function() { return SP_BTN_NEW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_BTN_NEW_USER", function() { return SP_BTN_NEW_USER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_BTN_NEW_GROUP", function() { return SP_BTN_NEW_GROUP; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_VIEW", function() { return SO_VIEW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_SPLITTER", function() { return SO_SPLITTER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREEVIEW", function() { return SO_TREEVIEW; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST", function() { return SO_TREELIST; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_EDITOR", function() { return SO_EDITOR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_EDITOR_ERROR", function() { return SO_EDITOR_ERROR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_GRD_DACL", function() { return SO_GRD_DACL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_GRD_SACL", function() { return SO_GRD_SACL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREEVIEW_MENU", function() { return SO_TREEVIEW_MENU; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREEVIEW_MENU_NEW", function() { return SO_TREEVIEW_MENU_NEW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_NEW", function() { return SO_BTN_NEW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_NEW_ROOT", function() { return SO_BTN_NEW_ROOT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_NEW_CHILD", function() { return SO_BTN_NEW_CHILD; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_DELETE", function() { return SO_BTN_DELETE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_EXPAND_ALL", function() { return SO_BTN_EXPAND_ALL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_EXPAND_TREE", function() { return SO_BTN_EXPAND_TREE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_COLLAPSE_ALL", function() { return SO_BTN_COLLAPSE_ALL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_COLLAPSE_TREE", function() { return SO_BTN_COLLAPSE_TREE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU", function() { return SO_TREELIST_CTX_MENU; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_NEW", function() { return SO_TREELIST_CTX_MENU_NEW; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_DELETE", function() { return SO_TREELIST_CTX_MENU_DELETE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_EXPAND", function() { return SO_TREELIST_CTX_MENU_EXPAND; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_COLLAPSE", function() { return SO_TREELIST_CTX_MENU_COLLAPSE; });
 var TB_MAIN = "#tbMain";
 var BTN_SHOW_SECURITY_PRINCIPALS = "#btnShowSecurityPrincipals";
 var BTN_SHOW_SECURE_OBJECTS = "#btnShowSecureObjects";
@@ -6054,30 +6059,35 @@ var SP_TXT_GRD_FILTER = "#spTxtGrdFilter";
 var SP_EDITOR = "#spEditor";
 var SP_EDITOR_ERROR = "#spEditorError";
 var SP_LISTBOX_MEMBER_OF = "#spLbMemberOf";
-var SP_LISTBOX_NOT_MEMBER_OF = "#spLbNotMemberOf";
 var SP_LISTBOX_MEMBERS = "#spLbMembers";
-var SP_LISTBOX_NON_MEMBERS = "#spLbNonMembers";
-var SP_TXT_MEMBER_OF_FILTER = "#spTxtMemberOfFilter";
-var SP_TXT_NOT_MEMBER_OF_FILTER = "#spTxtNotMemberOfFilter";
-var SP_TXT_MEMBERS_FILTER = "#spTxtMembersFilter";
-var SP_TXT_NON_MEMBERS_FILTER = "#spTxtNonMembersFilter";
+var SP_MULTISELECT_MEMBER_OF = "#spMsMemberOf";
+var SP_MULTISELECT_MEMBERS = "#spMsMembers";
+var SP_BTN_MEMBER_OF_ADD = "#spBtnMemberOfAdd";
+var SP_BTN_MEMBERS_ADD = "#spBtnMembersAdd";
 var SP_TREELIST_GROUP_HIERARCHY = "#spTlGroupHierarchy";
 var SP_BTN_NEW = "#spBtnNew";
 var SP_BTN_NEW_USER = "#spBtnNewUser";
 var SP_BTN_NEW_GROUP = "#spBtnNewGroup";
 var SO_VIEW = "#soView";
 var SO_SPLITTER = "#soSpltr";
-var SO_TREEVIEW = "#soTv";
+var SO_TREELIST = "#soTl";
 var SO_EDITOR = "#soEditor";
 var SO_EDITOR_ERROR = "#soEditorError";
 var SO_GRD_DACL = "#soGrdDacl";
 var SO_GRD_SACL = "#soGrdSacl";
-var SO_TREEVIEW_MENU = "#soTvMnu";
-var SO_TREEVIEW_MENU_NEW = "#soTvMnuNew";
 var SO_BTN_NEW = "#soBtnNew";
 var SO_BTN_NEW_ROOT = "#soBtnNewRoot";
 var SO_BTN_NEW_CHILD = "#soBtnNewChild";
 var SO_BTN_DELETE = "#soBtnDelete";
+var SO_BTN_EXPAND_ALL = "#soBtnExpandAll";
+var SO_BTN_EXPAND_TREE = "#soBtnExpandTree";
+var SO_BTN_COLLAPSE_ALL = "#soBtnCollapseAll";
+var SO_BTN_COLLAPSE_TREE = "#soBtnCollapseTree";
+var SO_TREELIST_CTX_MENU = "#soTlMnu";
+var SO_TREELIST_CTX_MENU_NEW = "#soTlMnuNew";
+var SO_TREELIST_CTX_MENU_DELETE = "#soTlMnuDelete";
+var SO_TREELIST_CTX_MENU_EXPAND = "#soTlMnuExpand";
+var SO_TREELIST_CTX_MENU_COLLAPSE = "#soTlMnuCollapse";
 
 
 /***/ }),
@@ -6086,7 +6096,7 @@ var SO_BTN_DELETE = "#soBtnDelete";
 /*!*********************!*\
   !*** ./src/main.ts ***!
   \*********************/
-/*! exports provided: btnOpenFileClick, btnNewFileClick, btnSaveFileClick, switchView, mainVM, getSecurityPrincipalIconClass, spBtnNewClick, spBtnEditClick, spBtnDeleteClick, spBtnSaveClick, spBtnDiscardClick, soTvDataBound, soTvDrop, soTvDrag, soBtnNewClick, soBtnEditClick, soBtnDeleteClick, soBtnExpandAllClick, soBtnCollapseAllClick, soBtnSaveClick, soBtnDiscardClick */
+/*! exports provided: btnOpenFileClick, btnNewFileClick, btnSaveFileClick, switchView, mainVM, spGetNameIconClass, spBtnNewClick, spBtnDeleteClick, spBtnSaveClick, spBtnDiscardClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spGrdDataSourceChange, soTlDrop, soBtnNewClick, soBtnDeleteClick, soBtnExpandAllClick, soBtnCollapseAllClick, soBtnSaveClick, soBtnDiscardClick */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6101,11 +6111,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
 /* harmony import */ var _sp__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./sp */ "./src/sp.ts");
 /* harmony import */ var _so__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./so */ "./src/so.ts");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "getSecurityPrincipalIconClass", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["getSecurityPrincipalIconClass"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spGetNameIconClass", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spGetNameIconClass"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnNewClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnNewClick"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnEditClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnEditClick"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnDeleteClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnDeleteClick"]; });
 
@@ -6113,15 +6121,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnDiscardClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnDiscardClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTvDataBound", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soTvDataBound"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnMemberOfAddClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnMemberOfAddClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTvDrop", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soTvDrop"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnMembersAddClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnMembersAddClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTvDrag", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soTvDrag"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spMsMemberOfDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spMsMemberOfDataSource"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spMsMembersDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spMsMembersDataSource"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spLbMemberOfDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spLbMemberOfDataSource"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spLbMembersDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spLbMembersDataSource"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spGrdDataSourceChange", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spGrdDataSourceChange"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTlDrop", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soTlDrop"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnNewClick", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soBtnNewClick"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnEditClick", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soBtnEditClick"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnDeleteClick", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soBtnDeleteClick"]; });
 
@@ -6380,8 +6396,8 @@ function init() {
     setupVariables();
     setupEventHandlers();
     kendo.bind($tbMain, mainVM);
-    Object(_sp__WEBPACK_IMPORTED_MODULE_3__["setupSecurityPrincipals"])();
-    Object(_so__WEBPACK_IMPORTED_MODULE_4__["setupSecureObjects"])();
+    Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spSetup"])();
+    Object(_so__WEBPACK_IMPORTED_MODULE_4__["soSetup"])();
     $("input").attr("autocomplete", "off");
     $("input").attr("autocorrect", "off");
     $(_ids__WEBPACK_IMPORTED_MODULE_0__["BTN_SHOW_SECURE_OBJECTS"]).click();
@@ -6415,10 +6431,10 @@ function openFile(fileName) {
             mainVM.init();
             mainVM.set("fileName", fileName);
             setWindowTitle(fileName);
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["resetSecurityPrincipals"])();
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["loadSecurityPrincipals"])();
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["resetSecureObjects"])();
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["loadSecureObjectsTree"])();
+            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spReset"])();
+            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spLoad"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soReset"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soLoad"])();
         }
         else {
             Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])(data.Message);
@@ -6442,8 +6458,8 @@ function newFile() {
         else {
             mainVM.init();
             setWindowTitle();
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["resetSecurityPrincipals"])();
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["resetSecureObjects"])();
+            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spReset"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soReset"])();
         }
     })
         .fail(function (xhr, textStatus) {
@@ -6488,18 +6504,18 @@ function btnSaveFileClick(e) {
             console.log("-- save");
             var fileName = mainVM.get("fileName");
             if (fileName != null) {
-                Object(_utils__WEBPACK_IMPORTED_MODULE_2__["blockUI"])();
-                saveFile(fileName).always(_utils__WEBPACK_IMPORTED_MODULE_2__["unblockUI"]);
+                Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])();
+                saveFile(fileName).always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
                 break;
             }
         case _ids__WEBPACK_IMPORTED_MODULE_0__["BTN_SAVE_FILE_AS"]:
             console.log("-- save file as");
             selectSaveAsFileName.OpenDialog()
                 .then(function (fileName) {
-                Object(_utils__WEBPACK_IMPORTED_MODULE_2__["blockUI"])();
+                Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])();
                 return saveFile(fileName);
             })
-                .always(_utils__WEBPACK_IMPORTED_MODULE_2__["unblockUI"]);
+                .always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
             break;
     }
 }
@@ -6572,16 +6588,16 @@ function switchView(e) {
     console.log("In switchView...");
     switch (e.id) {
         case "btnShowSecurityPrincipals":
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["hideSecureObjects"])();
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["showSecurityPrincipals"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soHide"])();
+            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spShow"])();
             break;
         case "btnShowSecureObjects":
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["hideSecurityPrincipals"])();
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["showSecureObjects"])();
+            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spHide"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soShow"])();
             break;
         default:
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["hideSecurityPrincipals"])();
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["hideSecureObjects"])();
+            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spHide"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soHide"])();
     }
 }
 function setWindowTitle(fileName) {
@@ -6602,27 +6618,25 @@ $(document).ready(function () {
 /*!*******************!*\
   !*** ./src/so.ts ***!
   \*******************/
-/*! exports provided: setupSecureObjects, showSecureObjects, hideSecureObjects, resetSecureObjects, loadSecureObjectsTree, soBtnExpandAllClick, soBtnCollapseAllClick, soTvDataBound, soBtnNewClick, soBtnEditClick, soBtnSaveClick, soBtnDeleteClick, soBtnDiscardClick, soTvDrag, soTvDrop, verifySaveChanges */
+/*! exports provided: trusteesDataSource, soSetup, soShow, soHide, soReset, soLoad, soBtnExpandAllClick, soBtnCollapseAllClick, soBtnNewClick, soBtnSaveClick, soBtnDeleteClick, soBtnDiscardClick, verifySaveChanges, soTlDrop */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setupSecureObjects", function() { return setupSecureObjects; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showSecureObjects", function() { return showSecureObjects; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hideSecureObjects", function() { return hideSecureObjects; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetSecureObjects", function() { return resetSecureObjects; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadSecureObjectsTree", function() { return loadSecureObjectsTree; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "trusteesDataSource", function() { return trusteesDataSource; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soSetup", function() { return soSetup; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soShow", function() { return soShow; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soHide", function() { return soHide; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soReset", function() { return soReset; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soLoad", function() { return soLoad; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnExpandAllClick", function() { return soBtnExpandAllClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnCollapseAllClick", function() { return soBtnCollapseAllClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTvDataBound", function() { return soTvDataBound; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnNewClick", function() { return soBtnNewClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnEditClick", function() { return soBtnEditClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnSaveClick", function() { return soBtnSaveClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnDeleteClick", function() { return soBtnDeleteClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnDiscardClick", function() { return soBtnDiscardClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTvDrag", function() { return soTvDrag; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTvDrop", function() { return soTvDrop; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "verifySaveChanges", function() { return verifySaveChanges; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTlDrop", function() { return soTlDrop; });
 /* harmony import */ var _ids__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ids */ "./src/ids.ts");
 /* harmony import */ var lodash_es_debounce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash-es/debounce */ "./node_modules/lodash-es/debounce.js");
 /* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./main */ "./src/main.ts");
@@ -6643,14 +6657,14 @@ var __assign = (undefined && undefined.__assign) || function () {
 
 
 var $soView = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_VIEW"]);
-var $soTv = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREEVIEW"]);
+var $soTl = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST"]);
 var $soSpltr = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_SPLITTER"]);
 var $soEditor = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_EDITOR"]);
 var $soEditorError = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_EDITOR_ERROR"]);
 var $soGrdDacl = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_DACL"]);
 var $soGrdSacl = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_SACL"]);
 var validator = null;
-var k$soTv = null;
+var k$soTl = null;
 var k$soGrdDacl = null;
 var k$soGrdSacl = null;
 var auditTypes = [];
@@ -6698,17 +6712,22 @@ var dfdRights = $
     var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
     Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
 });
-Object(_utils__WEBPACK_IMPORTED_MODULE_3__["blockUI"])();
-$.when(dfdAuditTypes, dfdRights, dfdSecureObjectDefaults).always(_utils__WEBPACK_IMPORTED_MODULE_3__["unblockUI"]);
-var _kDsTrustees = new kendo.data.DataSource({
-    transport: {
-        read: {
-            url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetAllTrustees", "Admin"),
-            dataType: "json",
-        },
+Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])();
+$.when(dfdAuditTypes, dfdRights, dfdSecureObjectDefaults).always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
+var trusteesDataSource = new kendo.data.DataSource({
+    data: [],
+    schema: {
+        model: {
+            id: "UId",
+            fields: {
+                UId: { type: "string" },
+                Name: { type: "string" }
+            }
+        }
     },
+    sort: { field: "Name", dir: "asc" }
 });
-var _kDsDacl = new kendo.data.DataSource({
+var soDaclDataSource = new kendo.data.DataSource({
     transport: {
         read: function (options) {
             options.success(dacl);
@@ -6717,8 +6736,6 @@ var _kDsDacl = new kendo.data.DataSource({
             options.data.LocalId = ++daclLocalId;
             dacl.push(options.data);
             options.success(options.data);
-            console.log("create ds");
-            console.log(dacl);
         },
         update: function (options) {
             for (var i = 0; i < dacl.length; i++) {
@@ -6781,10 +6798,32 @@ var _kDsDacl = new kendo.data.DataSource({
         },
     },
 });
-var _kDsSacl = new kendo.data.DataSource({
+var soSaclDataSource = new kendo.data.DataSource({
     transport: {
         read: function (options) {
             options.success(sacl);
+        },
+        create: function (options) {
+            options.data.LocalId = ++saclLocalId;
+            sacl.push(options.data);
+            options.success(options.data);
+        },
+        update: function (options) {
+            for (var i = 0; i < sacl.length; i++) {
+                if (sacl[i].LocalId == options.data.LocalId) {
+                    sacl[i] = options.data;
+                }
+            }
+            options.success(options.data);
+        },
+        destroy: function (options) {
+            for (var i = 0; i < sacl.length; i++) {
+                if (sacl[i].LocalId == options.data.LocalId) {
+                    sacl.splice(i, 1);
+                    break;
+                }
+            }
+            options.success(options.data);
         }
     },
     schema: {
@@ -6835,7 +6874,7 @@ var _kDsSacl = new kendo.data.DataSource({
         },
     },
 });
-var _soEditorModel = kendo.data.Model.define({
+var soEditorModel = kendo.data.Model.define({
     id: "UId",
     fields: {
         UId: { editable: false, nullable: true },
@@ -6878,7 +6917,7 @@ var soVM = kendo.observable({
         visible: false,
         hasChanges: false,
         hasError: false,
-        model: new _soEditorModel(),
+        model: new soEditorModel(),
         auditTypes: [],
         daclAllowInheritTextColor: function () {
             if (this.model.get("DaclAllowInherit")) {
@@ -6905,12 +6944,7 @@ var soVM = kendo.observable({
             }
             this.set("hasChanges", false);
             this.set("hasError", false);
-            this.set("model", new _soEditorModel());
-        },
-        setError: function (trueOrFalse) {
-            if (this.get("hasError") == trueOrFalse)
-                return;
-            this.set("hasError", trueOrFalse);
+            this.set("model", new soEditorModel());
         },
         raiseChange: function () {
             var that = this;
@@ -6921,8 +6955,8 @@ var soVM = kendo.observable({
             that.editor.model.set("SaclAuditTypeFilter", secureObjectDefaults["SaclAuditTypeFilterArray"]);
             that.editor.set("hasChanges", true);
         },
-        kDsDacl: _kDsDacl,
-        kDsSacl: _kDsSacl,
+        kDsDacl: soDaclDataSource,
+        kDsSacl: soSaclDataSource,
         daclItemCount: function () {
             return this.get("kDsDacl") ? this.get("kDsDacl").total() : 0;
         },
@@ -6951,31 +6985,32 @@ var soVM = kendo.observable({
         this.editor.reset();
     },
 });
-function setChange(trueorfalse) {
+function setVMEditorHasChangesFlag(trueorfalse) {
     if (soVM.editor.get("hasChanges") == trueorfalse)
         return;
     soVM.editor.set("hasChanges", trueorfalse);
 }
-function setError(trueorfalse) {
+function setVMEditorHasErrorFlag(trueorfalse) {
     if (soVM.editor.get("hasError") == trueorfalse)
         return;
     soVM.editor.set("hasError", trueorfalse);
 }
-function setSelectedUId(uId) {
+function setVMSelectedUId(uId) {
     if (soVM.get("selectedUId") != uId) {
         soVM.set("selectedUId", uId);
     }
 }
-function setupSecureObjects() {
+function soSetup() {
     kendo.bind($soView, soVM);
     setupWidgets();
     setupVariables();
     setupEventHandlers();
-    resetSecureObjects();
 }
 function setupWidgets() {
     $soGrdDacl.kendoGrid({
-        dataSource: _kDsDacl,
+        dataSource: soDaclDataSource,
+        filterable: true,
+        resizable: true,
         columns: [
             {
                 field: "TrusteeUId",
@@ -6996,12 +7031,19 @@ function setupWidgets() {
                 width: "200px",
                 template: getRightAsString,
             },
-            { field: "Allowed", title: "Allowed", width: "80px", editor: boolEditor },
+            {
+                field: "Allowed",
+                title: "Allowed",
+                width: "80px",
+                template: "<input id='1#=UId#' type='checkbox' class='k-checkbox' #: Allowed ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UId#' />",
+                editor: boolEditor
+            },
             {
                 field: "Inheritable",
                 title: "Inheritable",
-                width: "90px",
-                editor: boolEditor,
+                width: "100px",
+                template: "<input id='2#=UId#' type='checkbox' class='k-checkbox' #: Inheritable ? 'checked =\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UId#' />",
+                editor: boolEditor
             },
             {
                 command: [
@@ -7018,7 +7060,7 @@ function setupWidgets() {
                                 .then(function (response) {
                                 if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
                                     k$soGrdDacl.dataSource.remove(data);
-                                    setChange(true);
+                                    setVMEditorHasChangesFlag(true);
                                 }
                             });
                         },
@@ -7026,7 +7068,7 @@ function setupWidgets() {
                 ],
             },
         ],
-        toolbar: [{ name: "create" }],
+        toolbar: [{ name: "create", text: "New Permission" }],
         editable: "inline",
         edit: function (e) {
             var model = e.model;
@@ -7037,17 +7079,19 @@ function setupWidgets() {
         },
         save: function (e) {
             if (this.dataSource.hasChanges()) {
-                setChange(true);
+                setVMEditorHasChangesFlag(true);
                 console.log("save clicked");
                 console.log(e);
             }
         },
         remove: function (e) {
-            setChange(true);
+            setVMEditorHasChangesFlag(true);
         },
     });
     $soGrdSacl.kendoGrid({
-        dataSource: _kDsSacl,
+        dataSource: soSaclDataSource,
+        filterable: true,
+        resizable: true,
         columns: [
             {
                 field: "TrusteeUId",
@@ -7068,12 +7112,25 @@ function setupWidgets() {
                 width: "200px",
                 template: getRightAsString,
             },
-            { field: "Allowed", title: "Success", width: "80px", editor: boolEditor },
-            { field: "Denied", title: "Failure", width: "80px", editor: boolEditor },
+            {
+                field: "Allowed",
+                title: "Allowed",
+                width: "80px",
+                template: "<input id='1#=UId#' type='checkbox' class='k-checkbox' #: Allowed ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UId#' />",
+                editor: boolEditor
+            },
+            {
+                field: "Denied",
+                title: "Denied",
+                width: "80px",
+                template: "<input id='2#=UId#' type='checkbox' class='k-checkbox' #: Denied ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UId#' />",
+                editor: boolEditor
+            },
             {
                 field: "Inheritable",
                 title: "Inheritable",
-                width: "90px",
+                width: "100px",
+                template: "<input id='3#=UId#' type='checkbox' class='k-checkbox' #: Inheritable ? 'checked =\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='3#=UId#' />",
                 editor: boolEditor,
             },
             {
@@ -7091,7 +7148,7 @@ function setupWidgets() {
                                 .then(function (response) {
                                 if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
                                     k$soGrdSacl.dataSource.remove(data);
-                                    setChange(true);
+                                    setVMEditorHasChangesFlag(true);
                                 }
                             });
                         },
@@ -7099,7 +7156,7 @@ function setupWidgets() {
                 ],
             },
         ],
-        toolbar: [{ name: "create" }],
+        toolbar: [{ name: "create", text: "New Audit" }],
         editable: "inline",
         edit: function (e) {
             var model = e.model;
@@ -7110,16 +7167,64 @@ function setupWidgets() {
         },
         save: function (e) {
             if (this.dataSource.hasChanges()) {
-                setChange(true);
+                setVMEditorHasChangesFlag(true);
             }
         },
         remove: function (e) {
-            setChange(true);
+            setVMEditorHasChangesFlag(true);
         },
     });
-    $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREEVIEW_MENU"]).kendoContextMenu({
+    var uniqueNameTemplate = "<span class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='k-sprite #: IsSecure ? \"icon-secure\" : \"icon-non-secure\" #'></span><span>#: UniqueName #</span></span>";
+    var isEnabledTemplate = "<input id='1#=UniqueName#' type='checkbox' class='k-checkbox' #: IsEnabled ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UniqueName#' />";
+    var daclAllowInheritTemplate = "<input id='2#=UniqueName#' type='checkbox' class='k-checkbox' #: DaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UniqueName#' />";
+    var saclAllowInheritTemplate = "<input id='3#=UniqueName#' type='checkbox' class='k-checkbox' #: SaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for=3#=UniqueName#' />";
+    $soTl.kendoTreeList({
+        editable: { move: true },
+        filterable: true,
+        selectable: true,
+        columns: [
+            { field: "UniqueName", width: 200, template: uniqueNameTemplate },
+            { field: "IsEnabled", title: "Enabled", template: isEnabledTemplate },
+            { field: "DaclAllowInherit", title: "Inherit Permissions", template: daclAllowInheritTemplate },
+            { field: "SaclAllowInherit", title: "Inherit Audit", template: saclAllowInheritTemplate }
+        ],
+        dataSource: {
+            type: "aspnetmvc-ajax",
+            transport: {
+                read: {
+                    url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetSecureObjectTree", "Admin")
+                }
+            },
+            schema: {
+                data: "Data",
+                total: "Total",
+                errors: "Errors",
+                model: {
+                    id: "UId",
+                    parentId: "ParentUId",
+                    expanded: true,
+                    fields: {
+                        UId: { type: "string", nullable: false },
+                        ParentUId: { type: "string", nullable: true },
+                        UniqueName: { type: "string" },
+                        IsEnabled: { type: "boolean" },
+                        IsSecure: { type: "boolean" },
+                        DaclAllowInherit: { type: "boolean" },
+                        SaclAllowInherit: { type: "boolean" },
+                    }
+                }
+            },
+            sort: { field: "UniqueName", dir: "asc" },
+            error: _utils__WEBPACK_IMPORTED_MODULE_3__["dataSourceError"]
+        },
+        drop: soTlDrop,
+        messages: {
+            noRows: ""
+        }
+    });
+    $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU"]).kendoContextMenu({
         target: $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_SPLITTER"]).find(".k-pane:first"),
-        filter: ".k-item .k-in, .wrapper",
+        filter: "tbody > tr, .wrapper",
         open: function (e) {
             var ele = $(e.target);
             var ctxMnu = $(e.item);
@@ -7132,36 +7237,48 @@ function setupWidgets() {
         },
         select: function (e) {
             var target = $(e.target);
-            switch (e.item.id) {
-                case "soTvMnuNew":
-                    verifySaveChanges().then(function (proceed) {
+            switch ("#" + e.item.id) {
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_NEW"]:
+                    verifySaveChanges()
+                        .then(function (proceed) {
                         if (proceed) {
                             resetEditor(true);
                             if (target.hasClass("wrapper")) {
-                                deselectSecureObjectTreeNode();
+                                soVM.editor.model.set("UniqueName", "New Root");
+                                clearTreeSelection();
                             }
                             else {
-                                var dataItem = k$soTv.dataItem(target);
-                                selectSecureObjectTreeNode(dataItem.UId);
+                                var dataItem = k$soTl.dataItem(target);
+                                selectTreeItem(dataItem.UId);
+                                soVM.editor.model.set("UniqueName", "New Child");
                                 soVM.editor.model.set("ParentUId", dataItem.UId);
                             }
                         }
                     });
                     break;
-                case "soTvMnuDelete":
-                    k$soTv.select(target);
-                    k$soTv.trigger("click");
-                    $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_DELETE"]).trigger("click");
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_DELETE"]:
+                    var itemToDelete_1 = k$soTl.dataItem(target);
+                    if (itemToDelete_1) {
+                        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete Secure Object <b>" + itemToDelete_1.UniqueName + "</b> and all its child items?")
+                            .then(function (response) {
+                            if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
+                                Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])();
+                                deleteSecureObject(itemToDelete_1)
+                                    .then(function (data) {
+                                    return processDeleteActionResponse(data, itemToDelete_1);
+                                })
+                                    .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
+                            }
+                        });
+                    }
                     break;
-                case "soTvMnuExpand":
-                    var node1 = target.hasClass("wrapper") ? $() : target.closest(".k-item");
-                    expandCollapseAll(true, node1);
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_EXPAND"]:
+                    var item1 = target.hasClass("wrapper") ? $() : target.closest("tr");
+                    expandCollapseAll(true, item1);
                     break;
-                case "soTvMnuCollapse":
-                    var node2 = target.hasClass("wrapper") ? $() : target.closest(".k-item");
-                    expandCollapseAll(false, node2);
-                    break;
-                case "soTvMnuPreview":
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_COLLAPSE"]:
+                    var item2 = target.hasClass("wrapper") ? $() : target.closest("tr");
+                    expandCollapseAll(false, item2);
                     break;
                 default:
                     break;
@@ -7181,7 +7298,7 @@ function setupWidgets() {
         .data("kendoValidator");
 }
 function setupVariables() {
-    k$soTv = $soTv.data("kendoTreeView");
+    k$soTl = $soTl.data("kendoTreeList");
     k$soGrdDacl = $soGrdDacl.data("kendoGrid");
     k$soGrdSacl = $soGrdSacl.data("kendoGrid");
 }
@@ -7189,108 +7306,120 @@ function setupEventHandlers() {
     $(window)
         .resize(Object(lodash_es_debounce__WEBPACK_IMPORTED_MODULE_1__["default"])(resizeSplitter, 500))
         .trigger("resize");
-    $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREEVIEW"]).on("click", ".k-item .k-in", soTvClick);
+    $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST"]).on("click", "tbody tr", soTlClick);
 }
-function showSecureObjects() {
+function soShow() {
     if (!soVM.get("visible"))
         soVM.set("visible", true);
     resizeSplitter();
 }
-function hideSecureObjects() {
+function soHide() {
     if (soVM.get("visible"))
         soVM.set("visible", false);
 }
-function resetSecureObjects() {
+function soReset() {
     soVM.reset();
-    k$soTv.dataSource.data([]);
+    resetEditor(false);
+    k$soTl.dataSource.data([]);
 }
-function loadSecureObjectsTree() {
-    k$soTv.dataSource.read();
+function soLoad() {
+    k$soTl.dataSource.read();
 }
 function resizeSplitter() {
-    console.log("In resizeSplitter...");
     var top = 125;
     var bottom = 25;
     var height = $(window).height() - (top + bottom) - 1;
     height = height <= 0 ? 100 : height;
-    console.log(height);
     $soSpltr.data("kendoSplitter").wrapper.height(height);
     $soSpltr.data("kendoSplitter").resize();
 }
-function soBtnExpandAllClick() {
-    var node = k$soTv.select();
-    expandCollapseAll(true, node);
+function soBtnExpandAllClick(e) {
+    switch ("#" + e.id) {
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_EXPAND_ALL"]:
+            var node = k$soTl.select();
+            expandCollapseAll(true, node);
+            break;
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_EXPAND_TREE"]:
+            expandCollapseAll(true);
+            break;
+    }
 }
-function soBtnCollapseAllClick() {
-    var node = k$soTv.select();
-    expandCollapseAll(false, node);
+function soBtnCollapseAllClick(e) {
+    switch ("#" + e.id) {
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_COLLAPSE_ALL"]:
+            var node = k$soTl.select();
+            expandCollapseAll(false, node);
+            break;
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_COLLAPSE_TREE"]:
+            expandCollapseAll(false);
+            break;
+    }
 }
 function expandCollapseAll(expand, node) {
-    if (node.length == 0) {
-        expand ? k$soTv.expand(".k-item") : k$soTv.collapse(".k-item");
+    if (!node || node.length == 0) {
+        if (expand) {
+            k$soTl.tbody.find(".k-i-expand").closest("tr").map(function (idx, row) {
+                k$soTl.expand(row);
+            });
+        }
+        else {
+            k$soTl.tbody.find(".k-i-collapse").closest("tr").map(function (idx, row) {
+                k$soTl.collapse(row);
+            });
+        }
     }
     else {
-        expand ? k$soTv.expand(node.find(".k-item").addBack()) : k$soTv.collapse(node.find(".k-item").addBack());
+        if (expand) {
+            k$soTl.expand(node);
+        }
+        else {
+            k$soTl.collapse(node);
+        }
+        var model = k$soTl.dataItem(node);
+        var ds = k$soTl.dataSource;
+        expandCollapseChildNodes(expand, ds, ds.childNodes(model));
     }
 }
-function soTvDataBound() { }
+function expandCollapseChildNodes(expand, ds, nodes) {
+    for (var i = 0; i < nodes.length; i++) {
+        nodes[i].set("expanded", expand);
+        expandCollapseChildNodes(expand, ds, ds.childNodes(nodes[i]));
+    }
+}
 function soBtnNewClick(e) {
     console.log("In soBtnNewClick...");
     switch ("#" + e.id) {
         case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_NEW"]:
-            console.log("-- new");
-            var $btn = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_NEW"]).closest('.k-split-button');
-            var popup = $btn.data("kendoPopup");
-            console.log(popup);
-            if (popup) {
-                if (popup.visible()) {
-                    popup.close();
-                }
-                else {
-                    popup.open();
-                }
-            }
-            break;
         case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_NEW_ROOT"]:
-        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_NEW_CHILD"]:
             verifySaveChanges().then(function (proceed) {
                 if (proceed) {
                     resetEditor(true);
-                    if ("#" + e.id == _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_NEW_CHILD"] && soVM.get("selectedUId") != null) {
+                    if ("#" + e.id == _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_NEW"] && soVM.get("selectedUId") != null) {
                         soVM.editor.model.set("ParentUId", soVM.get("selectedUId"));
+                        soVM.editor.model.set("UniqueName", "New Child");
                     }
                     else {
-                        deselectSecureObjectTreeNode();
+                        clearTreeSelection();
+                        k$soTl.clearSelection();
+                        soVM.editor.model.set("UniqueName", "New Root");
                     }
                 }
             });
             break;
     }
 }
-function deselectSecureObjectTreeNode() {
-    k$soTv.select($());
-    soVM.set("selectedUId", null);
-}
-function soBtnEditClick() {
-    console.log("In soBtnEditClick...");
-    var selectedNode = k$soTv.select();
-    var dataItem = k$soTv.dataItem(selectedNode);
-    if (dataItem) {
-        console.log(selectedNode);
-        if (!soVM.editor.get("visible") || soVM.editor.model.get("UId") !== dataItem.UId) {
-            console.log('edit btn trgger click');
-            selectedNode.find(".k-in").first().trigger("click");
-        }
-    }
+function clearTreeSelection() {
+    k$soTl.clearSelection();
+    setVMSelectedUId(null);
 }
 function soBtnSaveClick() {
     console.log("In soBtnSaveClick...");
     clearEditorErrors();
     if (validateEditor()) {
-        $.when(_utils__WEBPACK_IMPORTED_MODULE_3__["blockUI"])
+        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
             .then(saveSecureObject)
             .then(processSaveActionResponse)
-            .always(_utils__WEBPACK_IMPORTED_MODULE_3__["unblockUI"]);
+            .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
     }
 }
 function validateEditor() {
@@ -7311,7 +7440,7 @@ function validateEditor() {
             if (msg_1.length > 0) {
                 $soEditorError.html(msg_1);
             }
-            soVM.editor.setError(true);
+            setVMEditorHasErrorFlag(true);
         }
     }
     return ok;
@@ -7376,58 +7505,37 @@ function processSaveActionResponse(data) {
     var dfd = $.Deferred();
     if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
         _main__WEBPACK_IMPORTED_MODULE_2__["mainVM"].setChange(true);
-        var model = null;
         if (data.Data) {
-            model = data.Data;
-        }
-        if (model) {
-            setChange(false);
+            setVMEditorHasChangesFlag(false);
             populateEditor(data);
-            $.get(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetSecureObjectTreeItem", "Admin"), {
-                uId: data.Data.UId,
-            })
-                .then(function (updatedItem) {
-                var dsItem = k$soTv.dataSource.get(updatedItem.UId);
-                if (typeof dsItem == "undefined") {
-                    if (updatedItem.ParentUId == null) {
-                        k$soTv.append({
-                            UId: updatedItem.UId,
-                            UniqueName: updatedItem.UniqueName,
-                            IsEnabled: updatedItem.IsEnabled,
-                            ParentUId: updatedItem.ParentUId,
-                            HasChildren: updatedItem.HasChildren,
-                            IsDefaultSecuritySettings: updatedItem.IsDefaultSecuritySettings
-                        });
-                    }
-                    else {
-                        var dsItem_1 = k$soTv.dataSource.get(updatedItem.ParentUId);
-                        var parentEle = k$soTv.findByUid(dsItem_1.uid);
-                        k$soTv.append({
-                            UId: updatedItem.UId,
-                            UniqueName: updatedItem.UniqueName,
-                            IsEnabled: updatedItem.IsEnabled,
-                            ParentUId: updatedItem.ParentUId,
-                            HasChildren: updatedItem.HasChildren,
-                            IsDefaultSecuritySettings: updatedItem.IsDefaultSecuritySettings
-                        }, parentEle);
-                        dsItem_1.children.sort({ field: "UniqueName", dir: "asc" });
-                    }
+            var updatedItem = data.Data;
+            var ds = k$soTl.dataSource;
+            var dataItem = ds.get(updatedItem.UId);
+            if (typeof dataItem == "undefined") {
+                ds.add(new soTlModel({
+                    UId: updatedItem.UId,
+                    UniqueName: updatedItem.UniqueName,
+                    ParentUId: updatedItem.ParentUId,
+                    IsEnabled: updatedItem.IsEnabled,
+                    IsSecure: updatedItem.IsSecure,
+                    DaclAllowInherit: updatedItem.DaclAllowInherit,
+                    SaclAllowInherit: updatedItem.SaclAllowInherit
+                }));
+                if (updatedItem.ParentUId) {
+                    k$soTl.expand(k$soTl.itemFor(ds.get(updatedItem.ParentUId)));
                 }
-                else {
-                    dsItem.set("UniqueName", updatedItem.UniqueName);
-                    dsItem.set("IsEnabled", updatedItem.IsEnabled);
-                    dsItem.set("ParentUId", updatedItem.ParentUId);
-                    dsItem.set("HasChildren", updatedItem.HasChildren);
-                    dsItem.set("IsDefaultSecuritySettings", updatedItem.IsDefaultSecuritySettings);
-                }
-                selectSecureObjectTreeNode(data.Data.UId);
-                Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifySuccess"])("Secure Object " + data.Data.UniqueName + " saved successfully.");
-                dfd.resolve();
-            })
-                .fail(function () {
-                Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Error encountered while trying to update secure object tree node");
-                dfd.reject();
-            });
+            }
+            else {
+                dataItem.set("UniqueName", updatedItem.UniqueName);
+                dataItem.set("ParentUId", updatedItem.ParentUId);
+                dataItem.set("IsEnabled", updatedItem.IsEnabled);
+                dataItem.set("IsSecure", updatedItem.IsSecure);
+                dataItem.set("DaclAllowInherit", updatedItem.DaclAllowInherit);
+                dataItem.set("SaclAllowInherit", updatedItem.SaclAllowInherit);
+            }
+            selectTreeItem(updatedItem.UId);
+            Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifySuccess"])("Secure Object <b>" + updatedItem.UniqueName + "</b> saved successfully.");
+            dfd.resolve();
         }
     }
     else {
@@ -7441,28 +7549,28 @@ function processSaveActionResponse(data) {
                     $soEditorError.html(msg_2);
                 }
             }
-            setError(true);
+            setVMEditorHasErrorFlag(true);
         }
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])(data.Message);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Unable to save Secure Object. Correct the error(s) on the form and try again.");
         dfd.reject();
     }
     return dfd.promise();
 }
 function soBtnDeleteClick() {
-    var itemToDelete = k$soTv.dataItem(k$soTv.select());
+    var itemToDelete = k$soTl.dataItem(k$soTl.select());
     if (!itemToDelete)
         return;
-    $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete the Secure Object " + itemToDelete.UniqueName + " and all its child items?"))
+    $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete the Secure Object <b>" + itemToDelete.UniqueName + "</b> and all its child items?"))
         .then(function (response) {
         if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
-            $.when(_utils__WEBPACK_IMPORTED_MODULE_3__["blockUI"])
+            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
                 .then(function () {
                 return deleteSecureObject(itemToDelete);
             })
                 .then(function (data) {
                 return processDeleteActionResponse(data, itemToDelete);
             })
-                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["unblockUI"]);
+                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
         }
     });
 }
@@ -7474,7 +7582,7 @@ function deleteSecureObject(itemToDelete) {
     })
         .fail(function (jqXHR, textStatus) {
         var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem deleting Secure Object " + itemToDelete.UniqueName + ".<br/>" + msg);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem deleting Secure Object <b>" + itemToDelete.UniqueName + "</b>.<br/>" + msg);
         dfd.reject();
     });
     return dfd.promise();
@@ -7482,11 +7590,21 @@ function deleteSecureObject(itemToDelete) {
 function processDeleteActionResponse(data, itemToDelete) {
     if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
         _main__WEBPACK_IMPORTED_MODULE_2__["mainVM"].setChange(true);
-        resetEditor(true);
-        var dataItem = k$soTv.dataSource.get(itemToDelete.UId);
-        k$soTv.dataSource.remove(dataItem);
-        setSelectedUId(null);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifySuccess"])("Secure Object " + itemToDelete.UniqueName + " deleted successfully.");
+        var ds_1 = k$soTl.dataSource;
+        var dataItem = k$soTl.dataSource.get(itemToDelete.UId);
+        var descendents = [];
+        getDescendents(dataItem, descendents);
+        descendents.forEach(function (descendent) { ds_1.remove(descendent); });
+        ds_1.remove(dataItem);
+        if (soVM.get("editor.visible")) {
+            var editorUId = soVM.get("editor.model.UId");
+            var editorParentUId = soVM.get("editor.model.ParentUId");
+            if ((editorUId !== null && !ds_1.get(editorUId)) || (editorParentUId !== null && !ds_1.get(editorParentUId))) {
+                resetEditor(false);
+                clearTreeSelection();
+            }
+        }
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifySuccess"])("Secure Object <b>" + itemToDelete.UniqueName + "</b> deleted successfully.");
         return $
             .Deferred()
             .resolve()
@@ -7500,133 +7618,26 @@ function processDeleteActionResponse(data, itemToDelete) {
             .promise();
     }
 }
+function getDescendents(parent, descendents) {
+    var childNodes = k$soTl.dataSource.childNodes(parent);
+    Array.prototype.push.apply(descendents, childNodes);
+    childNodes.forEach(function (item) {
+        getDescendents(item, descendents);
+    });
+}
 function soBtnDiscardClick() {
     console.log("In soBtnDiscardClick...");
-    Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm discard changes", "Are you sure you want to discard changes? ")
-        .then(function (response) {
-        if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
-            resetEditor(true);
-        }
-    });
-}
-function soTvClick() {
-    console.log("In soTvClick...");
-    var selectedItem = k$soTv.dataItem(k$soTv.select());
-    if (!selectedItem) {
-        return;
-    }
-    if (soVM.editor.model.get("UId") == selectedItem.UId) {
-        return;
-    }
-    verifySaveChanges().then(function (proceed) {
-        console.log("-- " + proceed);
-        if (proceed) {
-            selectSecureObjectTreeNode(selectedItem.UId);
-            resetEditor(true);
-            $.when(_kDsTrustees.read(), getSecureObject(selectedItem.UId))
-                .done(function (arg1, arg2) {
-                var data = arg2;
-                populateEditor(data);
-            })
-                .fail(function () { });
-        }
-        else {
-            selectSecureObjectTreeNode();
-        }
-    });
-}
-function soTvDrag(e) {
-    var srcParent = this.dataItem(this.parent(e.sourceNode));
-    if (e.statusClass == "i-plus") {
-        var tgtParent = this.dataItem(e.dropTarget);
-        if (srcParent == tgtParent) {
-            e.setStatusClass("k-i-cancel");
-            return;
-        }
-    }
-    else if (e.statusClass.indexOf("insert") >= 0) {
-        var tgtParent = this.dataItem(this.parent(e.dropTarget));
-        if (srcParent == tgtParent) {
-            e.setStatusClass("k-i-cancel");
-            return;
-        }
-    }
-}
-function soTvDrop(e) {
-    if (!e.valid)
-        return;
-    if (e.originalEvent.ctrlKey) {
-        console.log("copy node");
+    if (soVM.editor.get("hasChanges")) {
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm discard changes", "Are you sure you want to discard changes? ")
+            .then(function (response) {
+            if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
+                resetEditor(false);
+            }
+        });
     }
     else {
-        console.log("move node");
+        resetEditor(false);
     }
-    var tree = e.sender;
-    var sourceItem = tree.dataItem(e.sourceNode);
-    var destinationItem = tree.dataItem(e.destinationNode);
-    var position = e.dropPosition;
-    var parentItem = destinationItem;
-    if (position != "over") {
-        parentItem = parentItem.parentNode();
-    }
-    var sourceNode = $(e.sourceNode);
-    var destinationNode = $(e.destinationNode);
-    e.preventDefault();
-    $.ajax({
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("UpdateSecureObjectParent", "Admin"),
-        type: "POST",
-        data: {
-            uId: sourceItem.id,
-            parentUId: parentItem ? parentItem.id : null,
-        },
-    })
-        .then(function (data) {
-        var dfd = $.Deferred();
-        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
-            sourceItem.set("ParentUId", parentItem ? parentItem.id : null);
-            if (position == "over") {
-                tree.append(sourceNode, destinationNode);
-            }
-            else {
-                tree.insertAfter(sourceNode, destinationNode);
-            }
-            setTimeout(function () {
-                sortSecureObjectTreeNode(parentItem);
-            }, 0);
-            _main__WEBPACK_IMPORTED_MODULE_2__["mainVM"].setChange(true);
-            dfd.resolve();
-        }
-        else {
-            dfd.reject();
-        }
-        return dfd.promise();
-    })
-        .fail(function () {
-        e.setValid(false);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("An error has occurred while updating parent of Secure Object");
-    });
-}
-function sortSecureObjectTreeNode(parentNode) {
-    console.log("sort parent node:", parentNode);
-    if (parentNode) {
-        parentNode.children.sort({ field: "UniqueName", dir: "asc" });
-    }
-    else {
-    }
-}
-function selectSecureObjectTreeNode(uId) {
-    if (!uId) {
-        uId = soVM.get("selectedUId");
-    }
-    var dataItem = k$soTv.dataSource.get(uId);
-    if (dataItem) {
-        k$soTv.expandTo(dataItem);
-        var nodeElement = k$soTv.findByUid(dataItem.uid);
-        if (nodeElement) {
-            k$soTv.select(nodeElement);
-        }
-    }
-    setSelectedUId(dataItem.UId);
 }
 function getSecureObject(uId) {
     var dfd = $.Deferred();
@@ -7657,7 +7668,7 @@ function resetEditor(showEditor) {
 }
 function clearEditorErrors() {
     $soEditorError.empty();
-    soVM.editor.setError(false);
+    setVMEditorHasErrorFlag(false);
 }
 function populateEditor(data) {
     console.log("In populateEditor...");
@@ -7683,29 +7694,18 @@ function trusteeDropDownEditor(container, options) {
         dataTextField: "Name",
         dataValueField: "UId",
         valuePrimitive: true,
-        dataSource: {
-            dataType: "json",
-            transport: {
-                read: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetAllTrustees", "Admin"),
-            },
-        },
+        dataSource: trusteesDataSource
     });
     $('<span class="k-invalid-msg" data-for="' + options.field + '"></span>').appendTo(container);
 }
-function getTrusteeName(dataItem) {
-    if (dataItem.TrusteeUId == null)
+function getTrusteeName(gridDataItem) {
+    if (gridDataItem.TrusteeUId == null)
         return "";
-    _kDsTrustees.filter({
-        field: "UId",
-        operation: "eq",
-        value: dataItem.TrusteeUId,
-    });
-    var view = _kDsTrustees.view();
-    if (view.length == 0)
+    var trusteeLookupItem = trusteesDataSource.get(gridDataItem.TrusteeUId);
+    if (trusteeLookupItem)
+        return kendo.htmlEncode(trusteeLookupItem.Name);
+    else
         return "";
-    var name = view[0].Name;
-    _kDsTrustees.filter({});
-    return kendo.htmlEncode(name);
 }
 function boolEditor(container, options) {
     var guid = kendo.guid();
@@ -7849,22 +7849,16 @@ function verifySaveChanges() {
         dfd.resolve(true);
     }
     else {
-        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoCancelDialog"])("Save changes", "Save changes to Secure Object " + soVM.editor.model.get("UniqueName") + " ?"))
+        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoCancelDialog"])("Save changes", "Save changes to Secure Object <b>" + soVM.editor.model.get("UniqueName") + "</b> ?"))
             .then(function (response) {
             switch (response) {
                 case _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes:
                     clearEditorErrors();
                     if (validateEditor()) {
-                        $.when(_utils__WEBPACK_IMPORTED_MODULE_3__["blockUI"])
+                        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
                             .then(saveSecureObject)
                             .then(processSaveActionResponse)
-                            .then(function () {
-                            dfd.resolve(true);
-                        })
-                            .fail(function () {
-                            dfd.resolve(false);
-                        })
-                            .always(_utils__WEBPACK_IMPORTED_MODULE_3__["unblockUI"]);
+                            .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
                     }
                     else {
                         Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Please correct the error(s) on the form first.");
@@ -7885,6 +7879,99 @@ function verifySaveChanges() {
     }
     return dfd.promise();
 }
+var soTlModel = kendo.data.TreeListModel.define({
+    id: "UId",
+    parentId: "ParentUId",
+    fields: {
+        UId: { editable: false },
+        UniqueName: { type: "string" },
+        ParentUId: { type: "string" },
+        IsEnabled: { type: "boolean" },
+        IsSecure: { type: "boolean" },
+        DaclAllowInherit: { type: "boolean" },
+        SaclAllowInherit: { type: "boolean" }
+    },
+});
+var dummy = new soTlModel();
+console.log(dummy.id);
+function soTlClick() {
+    console.log("In soTlClick...");
+    var selectedItem = k$soTl.dataItem(k$soTl.select());
+    console.log(selectedItem);
+    if (!selectedItem) {
+        return;
+    }
+    if (soVM.editor.model.get("UId") == selectedItem.UId) {
+        return;
+    }
+    verifySaveChanges().then(function (proceed) {
+        console.log("-- " + proceed);
+        if (proceed) {
+            selectTreeItem(selectedItem.UId);
+            resetEditor(true);
+            Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])();
+            getSecureObject(selectedItem.UId)
+                .done(populateEditor)
+                .fail(function () { })
+                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
+        }
+        else {
+            selectTreeItem();
+        }
+    });
+}
+function selectTreeItem(uId) {
+    if (!uId) {
+        uId = soVM.get("selectedUId");
+    }
+    var dataItem = k$soTl.dataSource.get(uId);
+    if (dataItem) {
+        var row = k$soTl.itemFor(dataItem);
+        if (k$soTl.select() != row) {
+            k$soTl.select(row);
+        }
+        setVMSelectedUId(dataItem.UId);
+    }
+}
+function soTlDrop(e) {
+    console.log("In soTlDrop...");
+    if (!e.valid)
+        return;
+    var parentUId = e.destination ? e.destination.UId : null;
+    if ((!e.source.parentId && !parentUId) || (e.source.parentId == parentUId)) {
+        console.log('-- moving to same parent, cancel move');
+        e.setValid(false);
+        return;
+    }
+    e.preventDefault();
+    $.ajax({
+        url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("UpdateSecureObjectParent", "Admin"),
+        type: "POST",
+        data: {
+            uId: e.source.UId,
+            parentUId: parentUId
+        },
+    })
+        .then(function (data) {
+        var dfd = $.Deferred();
+        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
+            e.source.set("parentId", parentUId);
+            if (soVM.editor.model.get("UId") == e.source.UId) {
+                soVM.editor.model.set("ParentUId", parentUId);
+            }
+            _main__WEBPACK_IMPORTED_MODULE_2__["mainVM"].setChange(true);
+            dfd.resolve();
+        }
+        else {
+            dfd.reject();
+        }
+        return dfd.promise();
+    })
+        .fail(function () {
+        e.setValid(false);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("An error has occurred while updating parent of Secure Object");
+    });
+}
 
 
 /***/ }),
@@ -7893,28 +7980,37 @@ function verifySaveChanges() {
 /*!*******************!*\
   !*** ./src/sp.ts ***!
   \*******************/
-/*! exports provided: setupSecurityPrincipals, resetSecurityPrincipals, showSecurityPrincipals, hideSecurityPrincipals, loadSecurityPrincipals, verifySaveChanges, getSecurityPrincipalIconClass, spBtnSaveClick, spBtnDiscardClick, spBtnNewClick, spBtnEditClick, spBtnDeleteClick */
+/*! exports provided: trustees, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spSetup, spReset, spShow, spHide, spLoad, verifySaveChanges, spGetNameIconClass, spBtnSaveClick, spBtnDiscardClick, spBtnNewClick, spBtnDeleteClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spGrdDataSourceChange */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setupSecurityPrincipals", function() { return setupSecurityPrincipals; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resetSecurityPrincipals", function() { return resetSecurityPrincipals; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showSecurityPrincipals", function() { return showSecurityPrincipals; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hideSecurityPrincipals", function() { return hideSecurityPrincipals; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadSecurityPrincipals", function() { return loadSecurityPrincipals; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "trustees", function() { return trustees; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spMsMemberOfDataSource", function() { return spMsMemberOfDataSource; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spMsMembersDataSource", function() { return spMsMembersDataSource; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spLbMemberOfDataSource", function() { return spLbMemberOfDataSource; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spLbMembersDataSource", function() { return spLbMembersDataSource; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spSetup", function() { return spSetup; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spReset", function() { return spReset; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spShow", function() { return spShow; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spHide", function() { return spHide; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spLoad", function() { return spLoad; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "verifySaveChanges", function() { return verifySaveChanges; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getSecurityPrincipalIconClass", function() { return getSecurityPrincipalIconClass; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spGetNameIconClass", function() { return spGetNameIconClass; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnSaveClick", function() { return spBtnSaveClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnDiscardClick", function() { return spBtnDiscardClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnNewClick", function() { return spBtnNewClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnEditClick", function() { return spBtnEditClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnDeleteClick", function() { return spBtnDeleteClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnMemberOfAddClick", function() { return spBtnMemberOfAddClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnMembersAddClick", function() { return spBtnMembersAddClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spGrdDataSourceChange", function() { return spGrdDataSourceChange; });
 /* harmony import */ var lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash-es/differenceBy */ "./node_modules/lodash-es/differenceBy.js");
 /* harmony import */ var lodash_es_debounce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash-es/debounce */ "./node_modules/lodash-es/debounce.js");
 /* harmony import */ var _ids__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ids */ "./src/ids.ts");
 /* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./main */ "./src/main.ts");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
+/* harmony import */ var _so__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./so */ "./src/so.ts");
+
 
 
 
@@ -7925,23 +8021,70 @@ var $spSpltr = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_SPLITTER"]);
 var $spGrd = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_GRID"]);
 var $spEditor = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_EDITOR"]);
 var $spEditorError = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_EDITOR_ERROR"]);
+var $spMsMemberOf = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_MULTISELECT_MEMBER_OF"]);
+var $spMsMembers = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_MULTISELECT_MEMBERS"]);
 var $spLbMemberOf = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_LISTBOX_MEMBER_OF"]);
-var $spLbNotMemberOf = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_LISTBOX_NOT_MEMBER_OF"]);
 var $spLbMembers = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_LISTBOX_MEMBERS"]);
-var $spLbNonMembers = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_LISTBOX_NON_MEMBERS"]);
 var $spTlGroupHierarchy = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_TREELIST_GROUP_HIERARCHY"]);
-var $spTxtMemberOfFilter = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_TXT_MEMBER_OF_FILTER"]);
-var $spTxtNotMemberOfFilter = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_TXT_NOT_MEMBER_OF_FILTER"]);
-var $spTxtMembersFilter = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_TXT_MEMBERS_FILTER"]);
-var $spTxtNonMembersFilter = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_TXT_NON_MEMBERS_FILTER"]);
 var $spTxtGrdFilter;
 var validator = null;
 var k$spGrd = null;
+var k$spMsMemberOf;
+var k$spMsMembers;
 var k$spLbMemberOf = null;
-var k$spLbNotMemberOf = null;
 var k$spLbMembers = null;
-var k$spLbNonMembers = null;
 var k$spTlGroupHierarchy = null;
+var trustees = [];
+var spMsMemberOfDataSource = new kendo.data.DataSource({
+    data: [],
+    schema: {
+        model: {
+            id: "UId"
+        }
+    },
+    sort: { field: "Name", dir: "asc" }
+});
+var spMsMembersDataSource = new kendo.data.DataSource({
+    data: [],
+    schema: {
+        model: {
+            id: "UId"
+        }
+    },
+    sort: [
+        { field: "Source", dir: "desc" },
+        { field: "Name", dir: "asc" }
+    ]
+});
+var spLbMemberOfDataSource = new kendo.data.DataSource({
+    data: [],
+    schema: {
+        model: {
+            id: "UId"
+        }
+    },
+    sort: { field: "Name", dir: "asc" },
+    push: function (e) {
+        console.log("push", e);
+        setVMEditorHasChangesFlag(true);
+    }
+});
+var spLbMembersDataSource = new kendo.data.DataSource({
+    data: [],
+    schema: {
+        model: {
+            id: "UId"
+        }
+    },
+    sort: [
+        { field: "Source", dir: "desc" },
+        { field: "Name", dir: "asc" }
+    ],
+    push: function (e) {
+        console.log("push", e);
+        setVMEditorHasChangesFlag(true);
+    }
+});
 var memberOfOriginal = [];
 var membersOriginal = [];
 var spEditorModel = kendo.data.Model.define({
@@ -7953,14 +8096,13 @@ var spEditorModel = kendo.data.Model.define({
             validation: { required: true },
         },
         Description: { type: "string" },
-        IsBuiltIn: { type: "boolean" },
         IsUser: { type: "boolean" },
         IsEnabled: { type: "boolean" },
         IsLocal: { type: "boolean" },
         Mask: { type: "string" },
     },
 });
-var spGridModel = kendo.data.Model.define({
+var spGrdModel = kendo.data.Model.define({
     id: "UId",
     fields: {
         UId: { editable: false },
@@ -8014,69 +8156,29 @@ var spVM = kendo.observable({
         this.editor.reset();
     },
 });
-function setError(trueorfalse) {
+function setVMEditorHasErrorFlag(trueorfalse) {
     if (spVM.editor.get("hasError") == trueorfalse)
         return;
     spVM.editor.set("hasError", trueorfalse);
 }
-function setChange(trueorfalse) {
+function setVMEditorHasChangesFlag(trueorfalse) {
     if (spVM.editor.get("hasChanges") == trueorfalse)
         return;
     spVM.editor.set("hasChanges", trueorfalse);
 }
-function setupSecurityPrincipals() {
+function setVMSelectedUId(uId) {
+    if (spVM.get("selectedUId") != uId) {
+        spVM.set("selectedUId", uId);
+    }
+}
+function spSetup() {
     kendo.bind($spView, spVM);
     setupWidgets();
     setupVariables();
     setupEventHandlers();
+    k$spGrd.dataSource.data([]);
 }
 function setupWidgets() {
-    $spLbMemberOf.kendoListBox({
-        dataSource: [],
-        connectWith: "spLbNotMemberOf",
-        toolbar: {
-            tools: ["transferTo", "transferFrom"],
-            position: "right",
-        },
-        dropSources: ["spLbNotMemberOf"],
-        dataTextField: "Name",
-        dataValueField: "UId",
-        template: "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
-        add: spLbMemberOfAdd,
-        remove: spLbMemberOfRemove,
-    });
-    $spLbNotMemberOf.kendoListBox({
-        dataSource: [],
-        dataTextField: "Name",
-        dataValueField: "UId",
-        template: "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
-        dropSources: ["spLbMemberOf"],
-        add: spLbNotMemberOfAdd,
-    });
-    $spLbMembers.kendoListBox({
-        dataSource: [],
-        connectWith: "spLbNonMembers",
-        toolbar: {
-            tools: ["transferTo", "transferFrom"],
-            position: "right",
-        },
-        draggable: true,
-        dropSources: ["spLbNonMembers"],
-        dataTextField: "Name",
-        dataValueField: "UId",
-        template: "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
-        add: spLbMembersAdd,
-        remove: spLbMembersRemove,
-    });
-    $spLbNonMembers.kendoListBox({
-        dataSource: [],
-        dataTextField: "Name",
-        dataValueField: "UId",
-        template: "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
-        draggable: true,
-        dropSources: ["spLbMembers"],
-        add: spLbNonMembersAdd,
-    });
     validator = $spEditor
         .kendoValidator({
         validateOnBlur: false,
@@ -8092,6 +8194,7 @@ function setupWidgets() {
                 model: {
                     id: "MemberUId",
                     parentId: "GroupUId",
+                    expanded: true,
                     fields: {
                         MemberUId: { type: "string", nullable: false },
                         GroupUId: { type: "string", nullable: true },
@@ -8099,7 +8202,10 @@ function setupWidgets() {
                 },
             },
         },
-        columns: [{ field: "Name" }, { field: "Description" }],
+        columns: [
+            { field: "Name", template: $("#spNameTemplate").html() },
+            { field: "Description" }
+        ],
         selectable: true,
     });
 }
@@ -8122,99 +8228,58 @@ function setupEventHandlers() {
             k$spGrd.dataSource.filter({});
         }
     });
-    $spTxtMemberOfFilter.on("input", function (e) {
-        e.preventDefault();
-        var searchString = $(this).val();
-        if (searchString.length > 0) {
-            k$spLbMemberOf.dataSource.filter({
-                field: "Name",
-                operator: "contains",
-                value: searchString,
-            });
+    k$spLbMemberOf.wrapper.find(".k-list").on("click", ".k-item .clickable", function (e) {
+        console.log("In MemberOf listbox item click event handler...");
+        var item = $(e.target).closest(".k-item");
+        var dataItem = k$spLbMemberOf.dataItem(item);
+        if (!spMsMemberOfDataSource.get(dataItem.UId)) {
+            spMsMemberOfDataSource.add(dataItem);
         }
-        else {
-            k$spLbMemberOf.dataSource.filter({});
-        }
+        spLbMemberOfDataSource.pushDestroy(dataItem);
     });
-    $spTxtNotMemberOfFilter.on("input", function (e) {
-        e.preventDefault();
-        var searchString = $(this).val();
-        if (searchString.length > 0) {
-            k$spLbNotMemberOf.dataSource.filter({
-                field: "Name",
-                operator: "contains",
-                value: searchString,
-            });
+    k$spLbMembers.wrapper.find(".k-list").on("click", ".k-item .clickable", function (e) {
+        console.log("In Members listbox item click event handler...");
+        var item = $(e.target).closest(".k-item");
+        var dataItem = k$spLbMembers.dataItem(item);
+        if (!spMsMembersDataSource.get(dataItem.UId)) {
+            spMsMembersDataSource.add(dataItem);
         }
-        else {
-            k$spLbNotMemberOf.dataSource.filter({});
-        }
-    });
-    $spTxtMembersFilter.on("input", function (e) {
-        e.preventDefault();
-        var searchString = $(this).val();
-        if (searchString.length > 0) {
-            k$spLbMembers.dataSource.filter({
-                field: "Name",
-                operator: "contains",
-                value: searchString,
-            });
-        }
-        else {
-            k$spLbMembers.dataSource.filter({});
-        }
-    });
-    $spTxtNonMembersFilter.on("input", function (e) {
-        e.preventDefault();
-        var searchString = $(this).val();
-        if (searchString.length > 0) {
-            k$spLbNonMembers.dataSource.filter({
-                field: "Name",
-                operator: "contains",
-                value: searchString,
-            });
-        }
-        else {
-            k$spLbNonMembers.dataSource.filter({});
-        }
+        spLbMembersDataSource.pushDestroy(dataItem);
     });
 }
 function setupVariables() {
     $spTxtGrdFilter = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_TXT_GRD_FILTER"]);
     k$spGrd = $spGrd.data("kendoGrid");
+    k$spMsMemberOf = $spMsMemberOf.data("kendoMultiSelect");
+    k$spMsMembers = $spMsMembers.data("kendoMultiSelect");
     k$spLbMemberOf = $spLbMemberOf.data("kendoListBox");
-    k$spLbNotMemberOf = $spLbNotMemberOf.data("kendoListBox");
     k$spLbMembers = $spLbMembers.data("kendoListBox");
-    k$spLbNonMembers = $spLbNonMembers.data("kendoListBox");
     k$spTlGroupHierarchy = $spTlGroupHierarchy.data("kendoTreeList");
 }
 function resizeSplitter() {
-    console.log("In resizeSplitter...");
     var top = 125;
     var bottom = 25;
     var height = $(window).height() - (top + bottom) - 1;
     height = height <= 0 ? 100 : height;
-    console.log(height);
     $spSpltr.data("kendoSplitter").wrapper.height(height);
     $spSpltr.data("kendoSplitter").resize(true);
 }
-function resetSecurityPrincipals() {
+function spReset() {
     spVM.reset();
     resetEditor(false);
     k$spGrd.dataSource.data([]);
 }
-function showSecurityPrincipals() {
+function spShow() {
     if (!spVM.get("visible"))
         spVM.set("visible", true);
     resizeSplitter();
 }
-function hideSecurityPrincipals() {
+function spHide() {
     if (spVM.get("visible"))
         spVM.set("visible", false);
 }
-function loadSecurityPrincipals() {
-    var ds = k$spGrd.dataSource;
-    ds.read();
+function spLoad() {
+    k$spGrd.dataSource.read();
 }
 function spGrdClick() {
     console.log("In spGrdClick...");
@@ -8228,32 +8293,33 @@ function spGrdClick() {
     verifySaveChanges().then(function (proceed) {
         console.log("-- " + proceed);
         if (proceed) {
-            selectSecurityPrincipalGridItem(selectedItem.UId);
+            selectGridItem(selectedItem.UId);
             resetEditor(true);
-            spVM.set("selectedUId", selectedItem.UId);
             spVM.editor.model.set("IsUser", selectedItem.IsUser);
-            var promise = void 0;
-            if (selectedItem.IsUser) {
-                promise = getUser(selectedItem.UId);
-            }
-            else {
-                promise = getGroup(selectedItem.UId);
-            }
-            promise
+            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
+                .then(function () {
+                if (selectedItem.IsUser) {
+                    return getUser(selectedItem.UId);
+                }
+                else {
+                    return getGroup(selectedItem.UId);
+                }
+            })
                 .done(function (data) {
                 if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_4__["AjaxResponseStatus"].Success) {
                     populateEditor(data);
                 }
                 else {
-                    Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem retrieving " + (selectedItem.IsUser ? "user" : "group") + " information.");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem retrieving " + (selectedItem.IsUser ? "User" : "Group") + " information.");
                 }
             })
                 .fail(function () {
-                Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem retrieving " + (selectedItem.IsUser ? 'user' : 'group') + " information.");
-            });
+                Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem retrieving " + (selectedItem.IsUser ? 'User' : 'Group') + " information.");
+            })
+                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
         }
         else {
-            selectSecurityPrincipalGridItem(spVM.get("selectedUId"));
+            selectGridItem(spVM.get("selectedUId"));
         }
     });
 }
@@ -8265,7 +8331,7 @@ function verifySaveChanges() {
     }
     else {
         var isEditingUser_1 = spVM.editor.model.get("IsUser");
-        var message = "Save changes to " + (isEditingUser_1 ? "User " : "Group ") + spVM.editor.model.get("Name") + "?";
+        var message = "Save changes to " + (isEditingUser_1 ? "User" : "Group") + " <b>" + spVM.editor.model.get("Name") + "</b> ?";
         $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showYesNoCancelDialog"])("Save changes", message))
             .then(function (response) {
             console.log("-- Response is " + response);
@@ -8274,28 +8340,16 @@ function verifySaveChanges() {
                     clearEditorErrors();
                     if (validateEditor()) {
                         if (isEditingUser_1) {
-                            $.when(_utils__WEBPACK_IMPORTED_MODULE_4__["blockUI"])
+                            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
                                 .then(saveUser)
                                 .then(processSaveActionResponse)
-                                .then(function () {
-                                dfd.resolve(true);
-                            })
-                                .fail(function () {
-                                dfd.resolve(false);
-                            })
-                                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["unblockUI"]);
+                                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
                         }
                         else {
-                            $.when(_utils__WEBPACK_IMPORTED_MODULE_4__["blockUI"])
+                            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
                                 .then(saveGroup)
                                 .then(processSaveActionResponse)
-                                .then(function () {
-                                dfd.resolve(true);
-                            })
-                                .fail(function () {
-                                dfd.resolve(false);
-                            })
-                                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["unblockUI"]);
+                                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
                         }
                     }
                     else {
@@ -8322,52 +8376,62 @@ function populateEditor(data) {
     if (data) {
         if (data.Data.User) {
             spVM.editor.set("model", data.Data.User);
+            membersOriginal = [];
             memberOfOriginal = JSON.parse(JSON.stringify(data.Data.MemberOf));
             k$spLbMemberOf.dataSource.data(data.Data.MemberOf);
-            k$spLbNotMemberOf.dataSource.data(data.Data.NotMemberOf);
+            spMsMemberOfDataSource.data(data.Data.NotMemberOf);
+            spMsMembersDataSource.data([]);
+            spLbMemberOfDataSource.data(data.Data.MemberOf);
+            k$spTlGroupHierarchy.dataSource.data([]);
         }
         else if (data.Data.Group) {
             spVM.editor.set("model", data.Data.Group);
+            memberOfOriginal = JSON.parse(JSON.stringify(data.Data.MemberOf));
             membersOriginal = JSON.parse(JSON.stringify(data.Data.Members));
+            k$spLbMemberOf.dataSource.data(data.Data.MemberOf);
             k$spLbMembers.dataSource.data(data.Data.Members);
-            k$spLbNonMembers.dataSource.data(data.Data.NonMembers);
+            spMsMemberOfDataSource.data(data.Data.NotMemberOf);
+            spMsMembersDataSource.data(data.Data.NotMembers);
             k$spTlGroupHierarchy.dataSource.data(data.Data.GroupHierarchy);
         }
     }
 }
 function resetEditor(showEditor) {
     spVM.editor.reset(showEditor);
+    k$spMsMemberOf.value([]);
+    k$spMsMembers.value([]);
     k$spLbMemberOf.dataSource.data([]);
-    k$spLbNotMemberOf.dataSource.data([]);
     k$spLbMembers.dataSource.data([]);
-    k$spLbNonMembers.dataSource.data([]);
+    spMsMemberOfDataSource.data([]);
+    spMsMembersDataSource.data([]);
+    k$spTlGroupHierarchy.dataSource.data([]);
     clearEditorErrors();
     memberOfOriginal = [];
     membersOriginal = [];
 }
-function getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) {
+function spGetNameIconClass(IsUser, IsLocal) {
     var cls = IsUser ? "icon-user" : IsLocal ? "icon-group" : "icon-group-ext";
-    return "k-sprite " + cls + (IsEnabled ? "" : " k-state-disabled");
+    return "k-sprite " + cls;
 }
 function spBtnSaveClick() {
     console.log("In spBtnSaveClick...");
-    if (spVM.editor.model.get("IsUser")) {
-        clearEditorErrors();
-        if (validateEditor()) {
-            $.when(_utils__WEBPACK_IMPORTED_MODULE_4__["blockUI"])
+    clearEditorErrors();
+    if (validateEditor()) {
+        if (spVM.editor.model.get("IsUser")) {
+            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
                 .then(saveUser)
                 .then(processSaveActionResponse)
-                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["unblockUI"]);
+                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
+        }
+        else {
+            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
+                .then(saveGroup)
+                .then(processSaveActionResponse)
+                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
         }
     }
     else {
-        clearEditorErrors();
-        if (validateEditor()) {
-            $.when(_utils__WEBPACK_IMPORTED_MODULE_4__["blockUI"])
-                .then(saveGroup)
-                .then(processSaveActionResponse)
-                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["unblockUI"]);
-        }
+        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("Please correct the error(s) on the form first.");
     }
 }
 function processSaveActionResponse(data) {
@@ -8377,26 +8441,25 @@ function processSaveActionResponse(data) {
         _main__WEBPACK_IMPORTED_MODULE_3__["mainVM"].setChange(true);
         var model = null;
         if (data.Data.User) {
-            spVM.set("selectedUId", data.Data.User.UId);
             model = data.Data.User;
         }
         else if (data.Data.Group) {
-            spVM.set("selectedUId", data.Data.Group.UId);
             model = data.Data.Group;
         }
         if (model) {
-            setChange(false);
-            spVM.editor.set("model", model);
-            updateSecurityPrincipalsGrid(new spGridModel({
+            setVMEditorHasChangesFlag(false);
+            populateEditor(data);
+            updateGrid(new spGrdModel({
                 UId: model.UId,
                 Name: model.Name,
                 Description: model.Description,
                 IsEnabled: model.IsEnabled,
                 IsUser: model.IsUser,
                 IsLocal: model.IsLocal,
-                Source: model.IsUser ? "User" : model.IsLocal ? "Suplex" : "External",
+                Source: model.IsUser ? "User" : model.IsLocal ? "Local (Suplex)" : "External",
             }));
-            Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifySuccess"])((model.IsUser ? 'User' : 'Group') + " " + model.Name + " saved successfully.");
+            selectGridItem(model.UId);
+            Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifySuccess"])((model.IsUser ? 'User' : 'Group') + " <b>" + model.Name + "</b> saved successfully.");
             dfd.resolve();
         }
     }
@@ -8411,9 +8474,9 @@ function processSaveActionResponse(data) {
                     $spEditorError.html(msg_1);
                 }
             }
-            setError(true);
+            setVMEditorHasErrorFlag(true);
         }
-        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])(data.Message);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("Unable to save. Correct the error(s) on the form and try again.");
         dfd.reject();
     }
     return dfd.promise();
@@ -8421,16 +8484,16 @@ function processSaveActionResponse(data) {
 function saveUser() {
     console.log("In saveUser...");
     var memberOf = k$spLbMemberOf.dataSource.data();
-    var toAdd = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(memberOf, memberOfOriginal, "UId");
-    var toRemove = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(memberOfOriginal, memberOf, "UId");
+    var memberOfToAdd = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(memberOf, memberOfOriginal, "UId");
+    var memberOfToRemove = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(memberOfOriginal, memberOf, "UId");
     return $.ajax({
         method: "POST",
         url: Object(_utils__WEBPACK_IMPORTED_MODULE_4__["getActionUrl"])("SaveUser", "Admin"),
         contentType: "application/json",
         data: JSON.stringify({
             User: spVM.editor.get("model"),
-            MembersOfToAdd: toAdd,
-            MembersOfToRemove: toRemove,
+            MemberOfToAdd: memberOfToAdd,
+            MemberOfToRemove: memberOfToRemove,
         }),
         dataType: "json",
     })
@@ -8444,11 +8507,16 @@ function saveUser() {
 function saveGroup() {
     console.log("In saveGroup...");
     var members = k$spLbMembers.dataSource.data();
-    var toAdd = [];
-    var toRemove = [];
+    var memberOf = k$spLbMemberOf.dataSource.data();
+    var membersToAdd = [];
+    var membersToRemove = [];
+    var memberOfToAdd = [];
+    var memberOfToRemove = [];
+    memberOfToAdd = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(memberOf, memberOfOriginal, "UId");
+    memberOfToRemove = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(memberOfOriginal, memberOf, "UId");
     if (spVM.editor.model.get("IsLocal")) {
-        toAdd = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(members, membersOriginal, "UId");
-        toRemove = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(membersOriginal, members, "UId");
+        membersToAdd = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(members, membersOriginal, "UId");
+        membersToRemove = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(membersOriginal, members, "UId");
     }
     return $.ajax({
         method: "POST",
@@ -8456,8 +8524,10 @@ function saveGroup() {
         contentType: "application/json",
         data: JSON.stringify({
             Group: spVM.editor.get("model"),
-            MembersToAdd: toAdd,
-            MembersToRemove: toRemove,
+            MemberOfToAdd: memberOfToAdd,
+            MemberOfToRemove: memberOfToRemove,
+            MembersToAdd: membersToAdd,
+            MembersToRemove: membersToRemove
         }),
         dataType: "json",
     })
@@ -8480,31 +8550,35 @@ function validateEditor() {
         if (msg_2.length > 0) {
             $spEditorError.html(msg_2);
         }
-        setError(true);
+        setVMEditorHasErrorFlag(true);
     }
     return ok;
 }
-function selectSecurityPrincipalGridItem(uId) {
+function selectGridItem(uId) {
     if (!uId)
         return;
-    console.log("In selectSecurityPrincipalGridItem...");
+    console.log("In selectGridItem...");
+    setVMSelectedUId(uId);
     var ds = k$spGrd.dataSource;
     var currentSelectedItem = k$spGrd.dataItem(k$spGrd.select());
-    if (currentSelectedItem)
-        if (currentSelectedItem.UId == uId)
-            return;
-    var rowuid = ds.get(uId).uid;
-    var foundrow = k$spGrd.table.find('tr[data-uid="' + rowuid + '"]');
-    if (foundrow.length > 0) {
-        k$spGrd.select(foundrow);
-    }
-    else {
-        k$spGrd.clearSelection();
-        console.log("-- Cannot locate grid item with UId " + uId);
+    if (!currentSelectedItem || (uId !== currentSelectedItem.uId)) {
+        var rowuid = ds.get(uId).uid;
+        var foundrow = k$spGrd.table.find('tr[data-uid="' + rowuid + '"]');
+        if (foundrow.length > 0) {
+            k$spGrd.select(foundrow);
+        }
+        else {
+            clearGridSelection();
+            console.log("-- Cannot locate grid item with UId " + uId);
+        }
     }
 }
-function updateSecurityPrincipalsGrid(gridModel) {
-    console.log("In updateSecurityPrincipalsGrid...");
+function clearGridSelection() {
+    k$spGrd.clearSelection();
+    setVMSelectedUId(null);
+}
+function updateGrid(gridModel) {
+    console.log("In updateGrid...");
     console.log(gridModel);
     var ds = k$spGrd.dataSource;
     var dataItem = ds.get(gridModel.UId);
@@ -8520,20 +8594,24 @@ function updateSecurityPrincipalsGrid(gridModel) {
         ds.add(gridModel);
         console.log("-- New item added to security principals grid");
     }
-    selectSecurityPrincipalGridItem(gridModel.UId);
 }
 function clearEditorErrors() {
     $spEditorError.empty();
-    setError(false);
+    setVMEditorHasErrorFlag(false);
 }
 function spBtnDiscardClick() {
     console.log("In spBtnDiscardClick...");
-    Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showYesNoDialog"])("Confirm discard changes", "Are you sure you want to discard changes? ")
-        .then(function (response) {
-        if (response == _utils__WEBPACK_IMPORTED_MODULE_4__["DialogResponse"].Yes) {
-            resetEditor(true);
-        }
-    });
+    if (spVM.editor.get("hasChanges")) {
+        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showYesNoDialog"])("Confirm discard changes", "Are you sure you want to discard changes? ")
+            .then(function (response) {
+            if (response == _utils__WEBPACK_IMPORTED_MODULE_4__["DialogResponse"].Yes) {
+                resetEditor(false);
+            }
+        });
+    }
+    else {
+        resetEditor(false);
+    }
 }
 function spBtnNewClick(e) {
     console.log("In spBtnNewClick...");
@@ -8570,7 +8648,9 @@ function newUser() {
             getNewUser()
                 .done(function (data) {
                 if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_4__["AjaxResponseStatus"].Success) {
+                    data.Data.User.Name = "New User";
                     populateEditor(data);
+                    clearGridSelection();
                 }
                 else {
                     Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("Error retrieving information for new user");
@@ -8591,7 +8671,9 @@ function newGroup() {
             getNewGroup()
                 .done(function (data) {
                 if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_4__["AjaxResponseStatus"].Success) {
+                    data.Data.Group.Name = "New Group";
                     populateEditor(data);
+                    clearGridSelection();
                 }
                 else {
                     Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("Error retrieving information for new group");
@@ -8604,27 +8686,17 @@ function newGroup() {
         }
     });
 }
-function spBtnEditClick() {
-    console.log("In spBtnEditClick...");
-    var selectedItem = k$spGrd.select();
-    var dataItem = k$spGrd.dataItem(selectedItem);
-    if (dataItem) {
-        if (!spVM.editor.get("visible") || spVM.editor.model.get("UId") !== dataItem.UId) {
-            selectedItem.trigger("click");
-        }
-    }
-}
 function spBtnDeleteClick() {
     console.log("In spBtnDeleteClick...");
     var itemToDelete = k$spGrd.dataItem(k$spGrd.select());
     if (!itemToDelete)
         return;
-    var message = "Are you sure you want to delete " + (itemToDelete.IsUser ? "User " : "Group ") + " " + itemToDelete.Name + " ?";
+    var message = "Are you sure you want to delete " + (itemToDelete.IsUser ? "User " : "Group ") + " <b>" + itemToDelete.Name + "</b> ?";
     var action = itemToDelete.IsUser ? "DeleteUser" : "DeleteGroup";
     $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showYesNoDialog"])("Confirm Delete", message))
         .then(function (response) {
         if (response == _utils__WEBPACK_IMPORTED_MODULE_4__["DialogResponse"].Yes) {
-            $.when(_utils__WEBPACK_IMPORTED_MODULE_4__["blockUI"])
+            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
                 .then(function () {
                 return $.post(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["getActionUrl"])(action, "Admin"), { uId: itemToDelete.UId })
                     .then(function (data) {
@@ -8632,14 +8704,14 @@ function spBtnDeleteClick() {
                 })
                     .fail(function (jqXHR, textStatus) {
                     var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_4__["decipherJqXhrError"])(jqXHR, textStatus);
-                    Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem deleting Secure Object " + itemToDelete.UniqueName + ".<br/>" + msg);
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem deleting " + (itemToDelete.IsUser ? "User" : "Group") + " <b>" + itemToDelete.Name + ".</b><br/>" + msg);
                     $.Deferred().reject();
                 });
             })
                 .then(function (data) {
                 return processDeleteActionResponse(data, itemToDelete);
             })
-                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["unblockUI"]);
+                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
         }
     });
 }
@@ -8647,10 +8719,10 @@ function processDeleteActionResponse(data, gridDataItemToDelete) {
     if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_4__["AjaxResponseStatus"].Success) {
         var ds = k$spGrd.dataSource;
         ds.remove(gridDataItemToDelete);
-        spVM.set("selectedUId", null);
+        setVMSelectedUId(null);
         resetEditor(true);
         _main__WEBPACK_IMPORTED_MODULE_3__["mainVM"].setChange(true);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifySuccess"])((gridDataItemToDelete.IsUser ? 'User' : 'Group') + " " + gridDataItemToDelete.Name + " deleted successfully.");
+        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifySuccess"])((gridDataItemToDelete.IsUser ? 'User' : 'Group') + " <b>" + gridDataItemToDelete.Name + "</b> deleted successfully.");
         return $
             .Deferred()
             .resolve()
@@ -8695,37 +8767,28 @@ function getNewGroup() {
         dataType: "json",
     });
 }
-function spLbMemberOfAdd(e) {
-    console.log("In spLbMemberOfAdd...");
-    e.preventDefault();
-    this.dataSource.data().push(e.dataItems[0]);
-    this.dataSource.sort({ field: "Name", dir: "asc" });
-    setChange(true);
+function spBtnMemberOfAddClick(e) {
+    console.log("In spBtnMemberOfAddClick...");
+    var selectedItems = k$spMsMemberOf.dataItems();
+    if (selectedItems.length == 0)
+        return;
+    spLbMemberOfDataSource.pushCreate(selectedItems);
+    spMsMemberOfDataSource.pushDestroy(selectedItems);
 }
-function spLbMemberOfRemove(e) {
-    setChange(true);
+function spBtnMembersAddClick(e) {
+    console.log("In spBtnMembersAddClick...");
+    var selectedItems = k$spMsMembers.dataItems();
+    if (selectedItems.length == 0)
+        return;
+    spLbMembersDataSource.pushCreate(selectedItems);
+    spMsMembersDataSource.pushDestroy(selectedItems);
 }
-function spLbNotMemberOfAdd(e) {
-    console.log("In spLbNotMemberOfAdd...");
-    e.preventDefault();
-    this.dataSource.data().push(e.dataItems[0]);
-    this.dataSource.sort({ field: "Name", dir: "asc" });
-}
-function spLbMembersAdd(e) {
-    console.log("In spLbMembersAdd...");
-    e.preventDefault();
-    this.dataSource.data().push(e.dataItems[0]);
-    this.dataSource.sort({ field: "Name", dir: "asc" });
-    setChange(true);
-}
-function spLbMembersRemove(e) {
-    setChange(true);
-}
-function spLbNonMembersAdd(e) {
-    console.log("In spLbNonMembersAdd...");
-    e.preventDefault();
-    this.dataSource.data().push(e.dataItems[0]);
-    this.dataSource.sort({ field: "Name", dir: "asc" });
+function spGrdDataSourceChange(e) {
+    console.log(e);
+    var data = this.data().toJSON();
+    var trustees = data.filter(function (item) { return !item.IsUser; })
+        .map(function (item) { return { "UId": item.UId, "Name": item.Name }; });
+    _so__WEBPACK_IMPORTED_MODULE_5__["trusteesDataSource"].data(trustees);
 }
 
 
@@ -8735,7 +8798,7 @@ function spLbNonMembersAdd(e) {
 /*!**********************!*\
   !*** ./src/utils.ts ***!
   \**********************/
-/*! exports provided: notifyError, notifyInfo, notifySuccess, notifyWarning, showNotification, getActionUrl, dataSourceError, decipherJqXhrError, DialogResponse, showYesNoCancelDialog, showYesNoDialog, showAlert, blockUI, unblockUI, isValidFileName, isPowerOfTwo, AjaxResponseStatus */
+/*! exports provided: notifyError, notifyInfo, notifySuccess, notifyWarning, showNotification, getActionUrl, dataSourceError, decipherJqXhrError, DialogResponse, showYesNoCancelDialog, showYesNoDialog, showAlert, showProgress, hideProgress, isValidFileName, isPowerOfTwo, AjaxResponseStatus */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8752,8 +8815,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showYesNoCancelDialog", function() { return showYesNoCancelDialog; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showYesNoDialog", function() { return showYesNoDialog; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showAlert", function() { return showAlert; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "blockUI", function() { return blockUI; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unblockUI", function() { return unblockUI; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showProgress", function() { return showProgress; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hideProgress", function() { return hideProgress; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isValidFileName", function() { return isValidFileName; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPowerOfTwo", function() { return isPowerOfTwo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AjaxResponseStatus", function() { return AjaxResponseStatus; });
@@ -8773,7 +8836,7 @@ function showNotification(msg, msgType, allowHideAfter, autoHideAfter) {
     if (allowHideAfter === undefined)
         allowHideAfter = 5000;
     if (autoHideAfter === undefined)
-        autoHideAfter = 15000;
+        autoHideAfter = 10000;
     if (msg == null)
         return;
     var id = "#noti";
@@ -8936,10 +8999,10 @@ function showAlert(title, content) {
         .data("kendoAlert")
         .open();
 }
-function blockUI() {
+function showProgress() {
     kendo.ui.progress($(document.body), true);
 }
-function unblockUI() {
+function hideProgress() {
     kendo.ui.progress($(document.body), false);
 }
 function isValidFileName(fileName) {

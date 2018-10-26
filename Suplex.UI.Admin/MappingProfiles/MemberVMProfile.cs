@@ -8,8 +8,9 @@ namespace Suplex.UI.Modules.Admin.MappingProfiles
     {
         public MemberVMProfile()
         {
-            CreateMap<Group, MemberVM>();
-            CreateMap<User, MemberVM>();
+            CreateMap<Group, MemberVM>().ForMember(dest => dest.Source, opt => opt.MapFrom(src => src.IsLocal ? "Local (Suplex)" : "External"));
+            CreateMap<User, MemberVM>().ForMember(dest => dest.Source, opt => opt.UseValue("User"));
+            
         }
     }
 }

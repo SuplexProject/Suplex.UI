@@ -36,6 +36,7 @@ namespace Suplex.UI.Modules.Admin.ViewModels
         public bool DaclAllowInherit { get; set; }
         public bool SaclAllowInherit { get; set; }
         public int SaclAuditTypeFilter { get; set; }
+        public bool IsSecure { get; set; }
 
         public List<DaclVM> Dacl { get; set; }
         public List<SaclVM> Sacl { get; set; }

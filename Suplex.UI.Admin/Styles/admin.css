@@ -7,7 +7,9 @@
     clear: both;
     height: 0;
 }
-
+b, strong {
+    font-weight: bold;
+}
 /* hides placeholder when input gets the focus - not tested */
 input:focus::-webkit-input-placeholder {
     color: transparent;
@@ -69,47 +71,37 @@ input:-ms-input-placeholder {
 #tbMain, #spTb, #soTb {
     margin-bottom: -1px;
 }
-
-.icon-user {
-    /*background-image: url('/Images.user-16x16.png');*/
-    /*background: url('/Images.spicons-sprite.png') 0px 0px;*/
-    background: url('/Images.sp-sprite.png') 0px 0px;
-    margin-right: 2px !important;
+/* toolbar split buttons - restore style as it is overwritten by bootstrap style */
+.k-split-container .k-button {
+    border-width: 0;
+    color: inherit;
 }
-
-/*.k-state-disabled .icon-user {*/
-    /*background-image: url('/Images.user-16x16_disabled.png');*/
-    /*background: url('/Images.spicons-sprite.png') 0px -16px;*/
-    /*opacity: 0.5;*/
-/*}*/
-
+/* security principal icons */
+.icon-user {
+    background: url('/Images.sp-sprite.png') 0px 0px;
+    margin-right: 5px !important;
+}
 .icon-group {
     /*background-image: url('/Images.users-16x16.png');*/
     /*background: url('/Images.spicons-sprite.png') 0px -64px;*/
     background: url('/Images.sp-sprite.png') 0px -16px;
-    margin-right: 2px !important;
+    margin-right: 5px !important;
 }
-
-/*.k-state-disabled .icon-group {*/
-    /*background-image: url('/Images.users-16x16_disabled.png');*/
-    /*background: url('/Images.spicons-sprite.png') 0px -80px;*/
-    /*opacity: 0.5;*/
-/*}*/
-
 .icon-group-ext {
-    /*background-image: url('/Images.users-16x16_ext.png');*/
-    /*background: url('/Images.spicons-sprite.png') 0px -96px;*/
     background: url('/Images.sp-sprite.png') 0px -32px;
-    margin-right: 2px !important;
+    margin-right: 5px !important;
 }
 
-/*.k-state-disabled .icon-group-ext {*/
-    /*background-image: url('/Images.users-16x16_ext_disabled.png');*/
-    /*background: url('/Images.spicons-sprite.png') 0px -112px;*/
-    /*opacity: 0.5;*/
-/*}*/
-
-/* styles for show errors on editors */
+/* secure object icons */
+.icon-secure {
+    background: url('/Images.so-sprite.png') 0px -32px;
+    margin-right: 5px !important;
+}
+.icon-non-secure {
+    background: url('/Images.so-sprite.png') 0px -16px;
+    margin-right: 5px !important;
+}
+/* errors on editors */
 .error {
     border: 1px solid #f66;
     margin-bottom: 5px;
@@ -122,7 +114,7 @@ input:-ms-input-placeholder {
     padding: 5px;
 }
 
-/* styles for file select dialog */
+/* file select dialog */
 #tvSelectFile, #tvSaveAs {
     height: 300px;
 }
@@ -167,19 +159,19 @@ input:-ms-input-placeholder {
 .formElement .formLabel {
     display: inline-block;    
     width: 120px;
-    text-align: right;
+    text-align: left; /*right;*/
     padding-right: 25px;
     padding-bottom: 7px;
     padding-top: 7px;
 }
 .formElement .formInput {
-    width: 400px;
+    width: 500px;
 }
 .formElement .formInput .k-checkbox-label,
 .formElement .formInput .k-radio-label {
     margin-top: 7px;
 }
-.formInput input, .formInput textarea {
+.formInput input[type='text'], .formInput textarea {
     width: 100%;
 }
 textarea.k-textbox {
@@ -235,22 +227,30 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     min-width: 0;
 }
 
-    #soGrdDacl.k-grid .k-grid-toolbar .k-grid-add .k-icon,
-    #soGrdDacl.k-grid tbody .k-grid-edit .k-icon,
-    #soGrdDacl.k-grid tbody .k-grid-update .k-icon,
-    #soGrdDacl.k-grid tbody .k-grid-cancel .k-icon,
-    #soGrdDacl.k-grid tbody .k-grid-customdelete .k-icon,
-    #soGrdSacl.k-grid .k-grid-toolbar .k-grid-add .k-icon,
-    #soGrdSacl.k-grid tbody .k-grid-edit .k-icon,
-    #soGrdSacl.k-grid tbody .k-grid-update .k-icon,
-    #soGrdSacl.k-grid tbody .k-grid-cancel .k-icon,
-    #soGrdSacl.k-grid tbody .k-grid-customdelete .k-icon {
-        margin: 0;
-    }
+#soGrdDacl.k-grid .k-grid-toolbar .k-grid-add .k-icon,
+#soGrdDacl.k-grid tbody .k-grid-edit .k-icon,
+#soGrdDacl.k-grid tbody .k-grid-update .k-icon,
+#soGrdDacl.k-grid tbody .k-grid-cancel .k-icon,
+#soGrdDacl.k-grid tbody .k-grid-customdelete .k-icon,
+#soGrdSacl.k-grid .k-grid-toolbar .k-grid-add .k-icon,
+#soGrdSacl.k-grid tbody .k-grid-edit .k-icon,
+#soGrdSacl.k-grid tbody .k-grid-update .k-icon,
+#soGrdSacl.k-grid tbody .k-grid-cancel .k-icon,
+#soGrdSacl.k-grid tbody .k-grid-customdelete .k-icon {
+    margin: 0;
+}
 
 #soSecurityInheritance .formElement .formLabel {
     width: 300px;
     text-align: left;
+}
+#soTl th:nth-child(n+2),
+#soTl td:nth-child(n+2),
+#soGrdDacl th:nth-child(n+4):nth-child(-n+5),
+#soGrdDacl td:nth-child(n+4):nth-child(-n+5),
+#soGrdSacl th:nth-child(n+4):nth-child(-n+6),
+#soGrdSacl td:nth-child(n+4):nth-child(-n+6) {
+    text-align: center;
 }
 /* security principals tool bar */
 #spView {
@@ -278,14 +278,17 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 #spGrd.k-grid tr + .k-grouping-row td {
     border-top-width: 1px
 }
-
+#spGrd th:nth-child(4),
+#spGrd td:nth-child(4) {
+    text-align: center;
+}
 /* security principal editor */
 #spEditorError,
 #soEditorError {
     margin-bottom: 5px;
 }
 
-#memberOfSection .k-listbox,
+/*#memberOfSection .k-listbox,
 #membersSection .k-listbox {
     width: 335px;
     height: 320px;
@@ -307,21 +310,13 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     margin-bottom: 5px;
     display: inline-block;
     width: 300px !important;
-}
+}*/
 
 #spTlGroupHierarchy {
     width: 640px;
 }
 
-/* https://docs.telerik.com/kendo-ui/controls/navigation/button/overview#font-icons */
-/* https://docs.telerik.com/kendo-ui/controls/navigation/toolbar/how-to/use-font-awesome-icons */
-/*.fa.k-sprite,
-.fa.k-sprite::before {
-    font-size: inherit;
-    line-height: inherit;*/
-    /*font-size: inherit;
-    line-height: inherit;
-    width: auto;
-    height: auto;
-    margin-left: 0;*/
-/*}*/
+.clickable {
+    cursor: pointer;
+    outline: none;
+}

@@ -16,7 +16,7 @@ namespace Suplex.UI.Modules.Admin.MappingProfiles
             CreateMap<IAccessControlEntry, DaclVM>()
                 .ForMember(d => d.Right, opts => opts.MapFrom(s => s.RightData.Value))
                 .ForMember(d => d.RightType, opts => opts.MapFrom(s => s.RightData.FriendlyTypeName));
-            
+
             CreateMap<IAccessControlEntryAudit, SaclVM>()
                 .ForMember(d => d.Right, opts => opts.MapFrom(s => s.RightData.Value))
                 .ForMember(d => d.RightType, opts => opts.MapFrom(s => s.RightData.FriendlyTypeName));
@@ -36,7 +36,8 @@ namespace Suplex.UI.Modules.Admin.MappingProfiles
                 .ForMember(d => d.Sacl, opt => opt.Ignore());
                 
             CreateMap<SecureObjectEditorVM, SecureObject>()
-                .ForMember(d => d.Children, opts => opts.MapFrom(s => new List<ISecureObject>()))
+                .ForMember(d => d.UId, opts => opts.Ignore())
+                .ForMember(d => d.Children, opts => opts.MapFrom(s => new List<SecureObject>()))
                 .ForMember(d => d.Security, opts => opts.MapFrom(s => s));
             
         }

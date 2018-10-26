@@ -7,40 +7,89 @@ import {
     decipherJqXhrError,
     showYesNoCancelDialog,
     showYesNoDialog,
-    blockUI,
-    unblockUI,
+    showProgress,
+    hideProgress,
     notifyError,
     notifySuccess,
     DialogResponse,
     AjaxResponse,
     AjaxResponseStatus
 } from "./utils";
+import { trusteesDataSource } from "./so"
 
 let $spView = $(ID.SP_VIEW);
 let $spSpltr = $(ID.SP_SPLITTER);
 let $spGrd = $(ID.SP_GRID);
 let $spEditor = $(ID.SP_EDITOR);
-let $spEditorError = $(ID.SP_EDITOR_ERROR);
+let $spEditorError = $( ID.SP_EDITOR_ERROR );
+let $spMsMemberOf = $( ID.SP_MULTISELECT_MEMBER_OF );
+let $spMsMembers = $( ID.SP_MULTISELECT_MEMBERS );
 let $spLbMemberOf = $(ID.SP_LISTBOX_MEMBER_OF);
-let $spLbNotMemberOf = $(ID.SP_LISTBOX_NOT_MEMBER_OF);
-let $spLbMembers = $(ID.SP_LISTBOX_MEMBERS);
-let $spLbNonMembers = $(ID.SP_LISTBOX_NON_MEMBERS);
-let $spTlGroupHierarchy = $(ID.SP_TREELIST_GROUP_HIERARCHY);
-let $spTxtMemberOfFilter = $(ID.SP_TXT_MEMBER_OF_FILTER);
-let $spTxtNotMemberOfFilter = $(ID.SP_TXT_NOT_MEMBER_OF_FILTER);
-let $spTxtMembersFilter = $(ID.SP_TXT_MEMBERS_FILTER);
-let $spTxtNonMembersFilter = $(ID.SP_TXT_NON_MEMBERS_FILTER);
+let $spLbMembers = $( ID.SP_LISTBOX_MEMBERS );
+let $spTlGroupHierarchy = $( ID.SP_TREELIST_GROUP_HIERARCHY );
+
 let $spTxtGrdFilter: JQuery; // value set in setupVariables 
 
 let validator: kendo.ui.Validator = null;
 
 let k$spGrd: kendo.ui.Grid = null;
+let k$spMsMemberOf: kendo.ui.MultiSelect;
+let k$spMsMembers: kendo.ui.MultiSelect;
 let k$spLbMemberOf: kendo.ui.ListBox = null;
-let k$spLbNotMemberOf: kendo.ui.ListBox = null;
 let k$spLbMembers: kendo.ui.ListBox = null;
-let k$spLbNonMembers: kendo.ui.ListBox = null;
 let k$spTlGroupHierarchy: kendo.ui.TreeList = null;
+export let trustees: any[] = [];
 
+export let spMsMemberOfDataSource: kendo.data.DataSource = new kendo.data.DataSource( {
+    data: [],
+    schema: {
+        model: {
+            id: "UId"   // required so we can call the datasource get method
+        }
+    },
+    sort: { field: "Name", dir: "asc" }
+} )
+export let spMsMembersDataSource: kendo.data.DataSource = new kendo.data.DataSource( {
+    data: [],
+    schema: {
+        model: {
+            id: "UId"
+        }
+    },
+    sort: [
+        { field: "Source", dir: "desc" },
+        { field: "Name", dir: "asc" }
+    ]
+})
+export let spLbMemberOfDataSource: kendo.data.DataSource = new kendo.data.DataSource( {
+    data: [],
+    schema: {
+        model: {
+            id: "UId"  // needed so we can call datasource.get(UId)
+        }
+    },
+    sort: { field: "Name", dir: "asc" },
+    push: function ( e: kendo.data.DataSourcePushEvent ) {
+        console.log( "push", e );
+        setVMEditorHasChangesFlag( true );
+    }
+} )
+export let spLbMembersDataSource: kendo.data.DataSource = new kendo.data.DataSource( {
+    data: [],
+    schema: {
+        model: {
+            id: "UId"  // needed so we can call datasource.get(UId)
+        }
+    },
+    sort: [
+        { field: "Source", dir: "desc" },
+        { field: "Name", dir: "asc" }
+    ],
+    push: function ( e: kendo.data.DataSourcePushEvent ) {
+        console.log( "push", e );
+        setVMEditorHasChangesFlag( true );
+    }
+})
 let memberOfOriginal: any[] = [];
 let membersOriginal: any[] = [];
 
@@ -53,7 +102,6 @@ let spEditorModel = kendo.data.Model.define({
             validation: { required: true },
         },
         Description: { type: "string" },
-        IsBuiltIn: { type: "boolean" },
         IsUser: { type: "boolean" },
         IsEnabled: { type: "boolean" },
         IsLocal: { type: "boolean" },
@@ -61,7 +109,7 @@ let spEditorModel = kendo.data.Model.define({
     },
 });
 
-let spGridModel = kendo.data.Model.define({
+let spGrdModel = kendo.data.Model.define({
     id: "UId",
     fields: {
         UId: { editable: false },
@@ -117,17 +165,21 @@ let spVM = kendo.observable({
     },
 });
 
-// functions to set view model fields
-function setError(trueorfalse: boolean) : void {
+// view model
+function setVMEditorHasErrorFlag(trueorfalse: boolean) : void {
     if ((spVM as any).editor.get("hasError") == trueorfalse) return;
     (spVM as any).editor.set("hasError", trueorfalse);
 }
-function setChange(trueorfalse: boolean) : void {
+function setVMEditorHasChangesFlag(trueorfalse: boolean) : void {
     if ((spVM as any).editor.get("hasChanges") == trueorfalse) return;
     (spVM as any).editor.set("hasChanges", trueorfalse);
 }
-
-export function setupSecurityPrincipals() : void {
+function setVMSelectedUId( uId: string ) {
+    if ( spVM.get( "selectedUId" ) != uId ) {
+        spVM.set( "selectedUId", uId );
+    }
+}
+export function spSetup() : void {
     kendo.bind($spView, spVM);
 
     setupWidgets();
@@ -135,65 +187,10 @@ export function setupSecurityPrincipals() : void {
     setupVariables();
 
     setupEventHandlers();
+    k$spGrd.dataSource.data( [] );
 }
 
-function setupWidgets() : void {
-    $spLbMemberOf.kendoListBox({
-        dataSource: [],
-        connectWith: "spLbNotMemberOf",
-        toolbar: {
-            tools: ["transferTo", "transferFrom"],
-            position: "right",
-        },
-        //draggable: true,      // true allows items within the same listbox to be reordered. we don't want that as we want items to be sorted
-        dropSources: ["spLbNotMemberOf"],
-        dataTextField: "Name",
-        dataValueField: "UId",
-        template:
-            "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
-        add: spLbMemberOfAdd,
-        remove: spLbMemberOfRemove,
-    });
-
-    $spLbNotMemberOf.kendoListBox({
-        dataSource: [],
-        dataTextField: "Name",
-        dataValueField: "UId",
-        template:
-            "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
-        //draggable: true,      // true allows items within the same listbox to be reordered. we don't want that as we want items to be sorted
-        dropSources: ["spLbMemberOf"],
-        add: spLbNotMemberOfAdd,
-    });
-
-    $spLbMembers.kendoListBox({
-        dataSource: [],
-        connectWith: "spLbNonMembers",
-        toolbar: {
-            tools: ["transferTo", "transferFrom"],
-            position: "right",
-        },
-        draggable: true, // true allows items within the same listbox to be reordered. we don't want that as we want items to be sorted
-        dropSources: ["spLbNonMembers"],
-        dataTextField: "Name",
-        dataValueField: "UId",
-        template:
-            "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
-        add: spLbMembersAdd,
-        remove: spLbMembersRemove,
-    });
-
-    $spLbNonMembers.kendoListBox({
-        dataSource: [],
-        dataTextField: "Name",
-        dataValueField: "UId",
-        template:
-            "<div class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='#=SUPLEXUI.getSecurityPrincipalIconClass(IsUser, IsLocal, IsEnabled) #'></span><span>#: Name #</span></div>",
-        draggable: true, // true allows items within the same listbox to be reordered. we don't want that as we want items to be sorted
-        dropSources: ["spLbMembers"],
-        add: spLbNonMembersAdd,
-    });
-
+function setupWidgets(): void {
     validator = $spEditor
         .kendoValidator({
             validateOnBlur: false,
@@ -210,6 +207,7 @@ function setupWidgets() : void {
                 model: {
                     id: "MemberUId",
                     parentId: "GroupUId",
+                    expanded: true,
                     fields: {
                         MemberUId: { type: "string", nullable: false },
                         GroupUId: { type: "string", nullable: true },
@@ -217,7 +215,10 @@ function setupWidgets() : void {
                 },
             },
         },
-        columns: [{ field: "Name" }, { field: "Description" }],
+        columns: [
+            { field: "Name", template: $("#spNameTemplate").html() },
+            { field: "Description" }
+        ],
         selectable: true,
     });
 }
@@ -246,149 +247,114 @@ function setupEventHandlers() : void {
         } else {
             k$spGrd.dataSource.filter({});
         }
-    });
-    // member of filter
-    $spTxtMemberOfFilter.on("input", function(e) {
-        e.preventDefault();
-        let searchString = $(this).val() as string;
-        if (searchString.length > 0) {
-            k$spLbMemberOf.dataSource.filter({
-                field: "Name",
-                operator: "contains",
-                value: searchString,
-            });
-        } else {
-            k$spLbMemberOf.dataSource.filter({});
+    } );
+
+    k$spLbMemberOf.wrapper.find( ".k-list" ).on( "click", ".k-item .clickable", function ( e ) {
+        console.log( "In MemberOf listbox item click event handler..." );
+        let item: JQuery = $( e.target ).closest( ".k-item" );
+        let dataItem: any = k$spLbMemberOf.dataItem( item );
+        if ( !spMsMemberOfDataSource.get( dataItem.UId ) ) {
+            spMsMemberOfDataSource.add( dataItem );
+        }        
+        spLbMemberOfDataSource.pushDestroy( dataItem );
+    } )
+    k$spLbMembers.wrapper.find( ".k-list" ).on( "click", ".k-item .clickable", function ( e ) {
+        console.log( "In Members listbox item click event handler..." );
+        let item: JQuery = $( e.target ).closest( ".k-item" );
+        let dataItem: any = k$spLbMembers.dataItem( item );
+        if ( !spMsMembersDataSource.get( dataItem.UId ) ) {
+            spMsMembersDataSource.add( dataItem );
         }
-    });
-    // not member of filter
-    $spTxtNotMemberOfFilter.on("input", function(e) {
-        e.preventDefault();
-        let searchString = $(this).val() as string;
-        if (searchString.length > 0) {
-            k$spLbNotMemberOf.dataSource.filter({
-                field: "Name",
-                operator: "contains",
-                value: searchString,
-            });
-        } else {
-            k$spLbNotMemberOf.dataSource.filter({});
-        }
-    });
-    // members filter
-    $spTxtMembersFilter.on("input", function(e) {
-        e.preventDefault();
-        let searchString = $(this).val() as string;
-        if (searchString.length > 0) {
-            k$spLbMembers.dataSource.filter({
-                field: "Name",
-                operator: "contains",
-                value: searchString,
-            });
-        } else {
-            k$spLbMembers.dataSource.filter({});
-        }
-    });
-    // non members filter
-    $spTxtNonMembersFilter.on("input", function(e) {
-        e.preventDefault();
-        let searchString = $(this).val() as string;
-        if (searchString.length > 0) {
-            k$spLbNonMembers.dataSource.filter({
-                field: "Name",
-                operator: "contains",
-                value: searchString,
-            });
-        } else {
-            k$spLbNonMembers.dataSource.filter({});
-        }
-    });
+        spLbMembersDataSource.pushDestroy( dataItem );
+    } )
+
 }
 
 function setupVariables() {
     $spTxtGrdFilter = $( ID.SP_TXT_GRD_FILTER );
-    k$spGrd = $spGrd.data("kendoGrid");
+    k$spGrd = $spGrd.data( "kendoGrid" );
+    k$spMsMemberOf = $spMsMemberOf.data( "kendoMultiSelect" );
+    k$spMsMembers = $spMsMembers.data( "kendoMultiSelect" );
     k$spLbMemberOf = $spLbMemberOf.data("kendoListBox");
-    k$spLbNotMemberOf = $spLbNotMemberOf.data("kendoListBox");
     k$spLbMembers = $spLbMembers.data("kendoListBox");
-    k$spLbNonMembers = $spLbNonMembers.data("kendoListBox");
     k$spTlGroupHierarchy = $spTlGroupHierarchy.data("kendoTreeList");
 }
 
 function resizeSplitter() {
-    console.log("In resizeSplitter...");
+    //console.log("In resizeSplitter...");
     let top = 125; // height occupied above splitter
     let bottom = 25; // height occupied below splitter
     let height = $(window).height() - (top + bottom) - 1;
     height = height <= 0 ? 100 : height;
     //$spSpltr.height(height);
-    console.log( height );
+    //console.log( height );
     //$spSpltr.trigger( "resize" )
     //$spSpltr.data('kendoSplitter').trigger( "resize" )
     $spSpltr.data( "kendoSplitter" ).wrapper.height( height );
     $spSpltr.data("kendoSplitter").resize(true);
 }
-export function resetSecurityPrincipals() : void {
+export function spReset() : void {
     (spVM as any).reset();
     resetEditor(false);
     k$spGrd.dataSource.data([]);
 }
-export function showSecurityPrincipals() : void {
+export function spShow() : void {
     if ( !spVM.get( "visible" ) ) spVM.set( "visible", true );
     resizeSplitter();
 }
 
-export function hideSecurityPrincipals() : void {
+export function spHide() : void {
     if (spVM.get("visible")) spVM.set("visible", false);
 }
 
-export function loadSecurityPrincipals() : void {
-    let ds = k$spGrd.dataSource;
-    ds.read();
+export function spLoad() : void {
+    k$spGrd.dataSource.read();
 }
 
 function spGrdClick() : void {
     console.log("In spGrdClick...");
 
-    // var selectedItem = e.sender.dataItem(this.select())
     // click event is triggered after change event. so by now we would have the selected row
-    let selectedItem: any = k$spGrd.dataItem(k$spGrd.select()); // or k$spGrd.select()[0] ? // TODO: Put explicit type
+    let selectedItem: any = k$spGrd.dataItem(k$spGrd.select()); 
     console.log(selectedItem);
 
     if (!selectedItem) return;
 
+    // do nothing if the editor is already showing the same record
     if (spVM.get("selectedUId") == selectedItem.UId && selectedItem.UId == (spVM as any).editor.model.get("UId")) {
         return;
     }
-    /// changes start here
+    
     verifySaveChanges().then(function(proceed) {
         console.log("-- " + proceed);
-        if (proceed) {
-            selectSecurityPrincipalGridItem(selectedItem.UId); // verifySaveChanges() could have cleared/changed the selection
-            resetEditor(true);
-            spVM.set("selectedUId", selectedItem.UId);
-            (spVM as any).editor.model.set("IsUser", selectedItem.IsUser); // to ensure the correct view is displayed
-            let promise : JQueryXHR;
-            if (selectedItem.IsUser) {
-                promise = getUser(selectedItem.UId);
-            } else {
-                promise = getGroup(selectedItem.UId);
-            }
-            promise
+        if ( proceed ) {
+            selectGridItem( selectedItem.UId ); // verifySaveChanges() could have cleared/changed the selection
+            resetEditor( true );
+            ( spVM as any ).editor.model.set( "IsUser", selectedItem.IsUser ); // to ensure the correct view is displayed
+            
+            $.when( showProgress() )                    
+                .then( () => {
+                    if ( selectedItem.IsUser ) {
+                        return getUser( selectedItem.UId );
+                    }
+                    else {
+                        return getGroup( selectedItem.UId );
+                    }
+                })
                 .done((data: AjaxResponse) => {
                     if (data.Status == AjaxResponseStatus.Success) {
                         populateEditor(data);
                     } else {
-                        notifyError(`There is a problem retrieving ${selectedItem.IsUser ? "user" : "group"} information.`);
+                        notifyError(`There is a problem retrieving ${selectedItem.IsUser ? "User" : "Group"} information.`);
                     }
                 })
-                .fail(function() {
-                    // TODO: Original parameters - jqXHR?, textStatus?, errorThrown?
-                    notifyError(`There is a problem retrieving ${selectedItem.IsUser ? 'user' : 'group'} information.`);
-                });
+                .fail( function () {
+                    notifyError(`There is a problem retrieving ${selectedItem.IsUser ? 'User' : 'Group'} information.`);
+                } )
+                .always(hideProgress);
         } else {
             // restore previous grid selection
-            selectSecurityPrincipalGridItem(spVM.get("selectedUId"));
+            selectGridItem(spVM.get("selectedUId"));
         }
     });
 }
@@ -400,8 +366,9 @@ export function verifySaveChanges() : JQueryPromise<boolean> {
     if (!(spVM as any).editor.get("hasChanges")) {
         dfd.resolve(true);
     } else {
-        let isEditingUser = (spVM as any).editor.model.get("IsUser");
-        let message = "Save changes to " + (isEditingUser ? "User " : "Group ") + (spVM as any).editor.model.get("Name") + "?";
+        let isEditingUser = ( spVM as any ).editor.model.get( "IsUser" );
+        let message = `Save changes to ${( isEditingUser ? "User" : "Group" )} <b>${( spVM as any ).editor.model.get( "Name" )}</b> ?`;
+        //let message = "Save changes to " + (isEditingUser ? "User " : "Group ") + (spVM as any).editor.model.get("Name") + "?";
         $.when( showYesNoCancelDialog( "Save changes", message ) )
             .then( ( response: DialogResponse ): void => {
                 console.log("-- Response is " + response);
@@ -410,56 +377,17 @@ export function verifySaveChanges() : JQueryPromise<boolean> {
                         clearEditorErrors();
                         if (validateEditor()) {                        
                             if ( isEditingUser ) {
-                                $.when( blockUI )
+                                $.when( showProgress() )
                                     .then( saveUser )
                                     .then( processSaveActionResponse )
-                                    .then( () => {
-                                        dfd.resolve( true );
-                                    } )
-                                    .fail( () => {
-                                        dfd.resolve( false );
-                                    } )
-                                    .always( unblockUI );
+                                    .always( hideProgress );
 
                             } else {
-                                $.when( blockUI )
+                                $.when( showProgress() )
                                     .then( saveGroup )
                                     .then( processSaveActionResponse )
-                                    .then( () => {
-                                        dfd.resolve( true );
-                                    } )
-                                    .fail( () => {
-                                        dfd.resolve( false );
-                                    } )
-                                    .always( unblockUI );
+                                    .always( hideProgress );
                             }
-
-                            //promise
-                            //    .then(function(data) {
-                            //        return checkResponseStatus(data, $spEditorError);
-                            //    }) // resolve(data), reject(data)
-                            //    .then(updateUIPostSave)
-                            //    .then(
-                            //        function(data) {
-                            //            // success callback
-
-                            //            // notify user of successful save
-                            //            if (isEditingUser) notifySaveUserOK(data);
-                            //            else notifySaveGroupOK(data);
-
-                            //            dfd.resolve(true);
-                            //        },
-                            //        function(jqXHR, textStatus, errorThrown) {
-                            //            // failure callback
-
-                            //            // notify user of error
-                            //            if (isEditingUser) notifySaveUserFailed(jqXHR, textStatus, errorThrown);
-                            //            else notifySaveGroupFailed(jqXHR, textStatus, errorThrown);
-
-                            //            dfd.resolve(false);
-                            //        }
-                            //    )
-                            //    .always(unblockUI);
                         } else {
                             // failed client validation
                             notifyError("Please correct the error(s) on the form first.");
@@ -488,92 +416,106 @@ export function verifySaveChanges() : JQueryPromise<boolean> {
     return dfd.promise();
 }
 
-function populateEditor(data: AjaxResponse) : void {
-    // TODO: Put explicit type
+function populateEditor( data: AjaxResponse ) : void {
     console.log("In populateEditor...");
     if (data) {
         if (data.Data.User) {
-            (spVM as any).editor.set("model", data.Data.User);
-            memberOfOriginal = JSON.parse(JSON.stringify(data.Data.MemberOf)); // clone
-            k$spLbMemberOf.dataSource.data(data.Data.MemberOf);
-            k$spLbNotMemberOf.dataSource.data(data.Data.NotMemberOf);
+            ( spVM as any ).editor.set( "model", data.Data.User );
+            membersOriginal = [];
+            memberOfOriginal = JSON.parse( JSON.stringify( data.Data.MemberOf)); // clone
+            k$spLbMemberOf.dataSource.data( data.Data.MemberOf );
+            spMsMemberOfDataSource.data( data.Data.NotMemberOf );
+            spMsMembersDataSource.data( [] );
+            spLbMemberOfDataSource.data( data.Data.MemberOf );
+            k$spTlGroupHierarchy.dataSource.data( [] );
         } else if (data.Data.Group) {
-            (spVM as any).editor.set("model", data.Data.Group);
-            membersOriginal = JSON.parse(JSON.stringify(data.Data.Members)); // clone
-            k$spLbMembers.dataSource.data(data.Data.Members);
-            k$spLbNonMembers.dataSource.data(data.Data.NonMembers);
-            k$spTlGroupHierarchy.dataSource.data(data.Data.GroupHierarchy);
+            ( spVM as any ).editor.set( "model", data.Data.Group);
+            memberOfOriginal = JSON.parse( JSON.stringify( data.Data.MemberOf ) ); // clone
+            membersOriginal = JSON.parse( JSON.stringify( data.Data.Members ) ); // clone
+            k$spLbMemberOf.dataSource.data( data.Data.MemberOf );
+            k$spLbMembers.dataSource.data( data.Data.Members );
+            spMsMemberOfDataSource.data( data.Data.NotMemberOf );
+            spMsMembersDataSource.data( data.Data.NotMembers );
+            k$spTlGroupHierarchy.dataSource.data( data.Data.GroupHierarchy);
         }
     }
 }
 function resetEditor(showEditor: boolean) : void {
     (spVM as any).editor.reset(showEditor);
-   
+    k$spMsMemberOf.value( [] )
+    k$spMsMembers.value( [] )
     k$spLbMemberOf.dataSource.data([]);
-    k$spLbNotMemberOf.dataSource.data([]);
-    k$spLbMembers.dataSource.data([]);
-    k$spLbNonMembers.dataSource.data([]);
+    k$spLbMembers.dataSource.data( [] );
+    spMsMemberOfDataSource.data( [] );
+    spMsMembersDataSource.data( [] );
+    k$spTlGroupHierarchy.dataSource.data( [] );
     clearEditorErrors();
     memberOfOriginal = [];
     membersOriginal = [];
 }
 
-export function getSecurityPrincipalIconClass(IsUser: boolean, IsLocal: boolean, IsEnabled: boolean) : string {
+export function spGetNameIconClass(IsUser: boolean, IsLocal: boolean) : string {
     let cls = IsUser ? "icon-user" : IsLocal ? "icon-group" : "icon-group-ext";
-    return "k-sprite " + cls + (IsEnabled ? "" : " k-state-disabled");
+    return "k-sprite " + cls ;
 }
 
 export function spBtnSaveClick() : void {
     // TODO: Put explicit type
-    console.log("In spBtnSaveClick...");
-    if ((spVM as any).editor.model.get("IsUser")) {
-        clearEditorErrors();
-        if ( validateEditor() ) {
-            $.when( blockUI )
+    console.log( "In spBtnSaveClick..." );
+    clearEditorErrors();
+    if ( validateEditor() ) {
+        if ( ( spVM as any ).editor.model.get( "IsUser" ) ) {
+            $.when( showProgress() )
                 .then( saveUser )
                 .then( processSaveActionResponse )
-                .always(unblockUI);
+                .always( hideProgress );
         }
-    } else {
-        //do the same for group
-        clearEditorErrors();
-        if ( validateEditor() ) {
-            $.when( blockUI )
+        else {
+            $.when( showProgress() )
                 .then( saveGroup )
                 .then( processSaveActionResponse )
-                .always(unblockUI);
+                .always( hideProgress );
         }
     }
+    else {
+        notifyError( "Please correct the error(s) on the form first." );
+    }
+
 }
 function processSaveActionResponse( data: AjaxResponse ) : JQueryPromise<void> {
     console.log( "In processSaveActionResponse..." );
     let dfd = $.Deferred<void>();
+
+    
     if ( data.Status == AjaxResponseStatus.Success ) {
         ( mainVM as any ).setChange( true );
 
         let model = null;
         if ( data.Data.User ) {
-            spVM.set( "selectedUId", data.Data.User.UId );
             model = data.Data.User;
         } else if ( data.Data.Group ) {
-            spVM.set( "selectedUId", data.Data.Group.UId );
             model = data.Data.Group;
         }
         if ( model ) {
-            setChange( false );
-            ( spVM as any ).editor.set( "model", model );
-            updateSecurityPrincipalsGrid(
-                new spGridModel( {
+            setVMEditorHasChangesFlag( false );
+            populateEditor( data );
+            // ( spVM as any ).editor.set( "model", model );
+
+            updateGrid(
+                new spGrdModel( {
                     UId: model.UId,
                     Name: model.Name,
                     Description: model.Description,
                     IsEnabled: model.IsEnabled,
                     IsUser: model.IsUser,
                     IsLocal: model.IsLocal,
-                    Source: model.IsUser ? "User" : model.IsLocal ? "Suplex" : "External",
+                    Source: model.IsUser ? "User" : model.IsLocal ? "Local (Suplex)" : "External",
                 } )
             );
-            notifySuccess( `${ model.IsUser ? 'User' : 'Group' } ${model.Name} saved successfully.` );
+            // above action will cause grid selection to clear, so we need to select the row again
+            selectGridItem( model.UId );
+
+            notifySuccess( `${ model.IsUser ? 'User' : 'Group' } <b>${model.Name}</b> saved successfully.` );
             dfd.resolve(); 
         }
     }
@@ -588,122 +530,27 @@ function processSaveActionResponse( data: AjaxResponse ) : JQueryPromise<void> {
                     $spEditorError.html( msg );
                 }
             }
-            setError( true );
+            setVMEditorHasErrorFlag( true );
         }
-        notifyError( data.Message );
+        notifyError( `Unable to save. Correct the error(s) on the form and try again.` );
         dfd.reject(); 
     }
     return dfd.promise();
 }
 
-//function notifySaveUserOK(data: any) {
-//    // TODO: Put explicit type
-//    console.log("In notifySaveUserOK...");
-//    notifySuccess("User " + data.Data.User.Name + " saved successfully.");
-//    return true;
-//}
-//function notifySaveUserFailed(jqXHR: any, textStatus: string, errorThrown?: any) {
-//    // TODO: Put explicit type
-//    console.log("In notifySaveUserFailed...");
-//    if (jqXHR.Data.User) {
-//        // reject because of form error
-//        notifyError(jqXHR.Data.Message);
-//    } else {
-//        // reject because of ajax call
-//        let msg = decipherJqXhrError(jqXHR, textStatus);
-//        notifyError("An error has occurred while saving User." + "<br/>" + "Error: " + msg);
-//    }
-//    return false;
-//}
-//function notifySaveGroupOK(data: any) {
-//    // TODO: Put explicit type
-//    console.log("In notifySaveGroupOK...");
-//    notifySuccess("Group " + data.Data.Group.Name + " saved successfully.");
-//    return true;
-//}
-//function notifySaveGroupFailed(jqXHR: any, textStatus: string, errorThrown?: any) {
-//    // TODO: Put explicit type
-//    console.log("In notifySaveGroupFailed...");
-//    if (jqXHR.Data.Group) {
-//        // reject because of form error
-//        notifyError(jqXHR.Data.Message);
-//    } else {
-//        // reject from ajax call
-//        let msg = decipherJqXhrError(jqXHR, textStatus);
-//        notifyError("An error has occurred while saving Group." + "<br/>" + "Error: " + msg);
-//    }
-
-//    return false;
-//}
-//function checkResponseStatus(data: any, $formErrorContainer?: JQuery) {
-//    console.log("In checkResponseStatus...");
-//    if (data.Status != constants.SUCCESS) {
-//        if (data.ValidationErrors) {
-//            if ($formErrorContainer) {
-//                let msg = "";
-//                $(data.ValidationErrors).each(function() {
-//                    console.log(this);
-//                    msg += this + "<br/>";
-//                });
-//                if (msg.length > 0) {
-//                    $formErrorContainer.html(msg);
-//                }
-//            }
-//            setError(true);
-//        }
-//        return $.Deferred().reject(data);
-//    } else {
-//        return $.Deferred().resolve(data);
-//    }
-//}
-
-//function updateUIPostSave(data: any) {
-//    // TODO: Put explicit type
-//    console.log("In updateUIPostSave...");
-
-//    (mainVM as any).setChange(true);
-
-//    let model = null;
-//    if (data.Data.User) {
-//        spVM.set("selectedUId", data.Data.User.UId);
-//        model = data.Data.User;
-//    } else if (data.Data.Group) {
-//        spVM.set("selectedUId", data.Data.Group.UId);
-//        model = data.Data.Group;
-//    }
-//    if (model) {
-//        setChange(false);
-//        (spVM as any).editor.set("model", model);
-//        updateSecurityPrincipalsGrid(
-//            new spGridModel({
-//                UId: model.UId,
-//                Name: model.Name,
-//                Description: model.Description,
-//                IsEnabled: model.IsEnabled,
-//                IsUser: model.IsUser,
-//                IsLocal: model.IsLocal,
-//                Source: model.IsUser ? "User" : model.IsLocal ? "Suplex" : "External",
-//            })
-//        );
-//    }
-//    return $.Deferred().resolve(data);
-//}
 function saveUser() : JQueryPromise<AjaxResponse> {
     console.log("In saveUser...");
-    // JSON.parse(JSON.stringify()) will clone and remove all the unnecessary functions wrapped inside the array by the kendo widget
-    // but it looks like it is not necessary. lodash's differenceBy still works
-    // var memberOf = JSON.parse( JSON.stringify( k$spLbMemberOf.dataSource.data() ) )
     let memberOf = k$spLbMemberOf.dataSource.data();
-    let toAdd = differenceBy(memberOf, memberOfOriginal, "UId");
-    let toRemove = differenceBy(memberOfOriginal, memberOf, "UId");
+    let memberOfToAdd = differenceBy(memberOf, memberOfOriginal, "UId");
+    let memberOfToRemove = differenceBy(memberOfOriginal, memberOf, "UId");
     return $.ajax( {
         method: "POST",
         url: getActionUrl( "SaveUser", "Admin" ),
         contentType: "application/json",
         data: JSON.stringify( {
             User: ( spVM as any ).editor.get( "model" ),
-            MembersOfToAdd: toAdd,
-            MembersOfToRemove: toRemove,
+            MemberOfToAdd: memberOfToAdd,
+            MemberOfToRemove: memberOfToRemove,
         } ),
         dataType: "json",
     } )
@@ -718,11 +565,16 @@ function saveUser() : JQueryPromise<AjaxResponse> {
 function saveGroup() : JQueryPromise<AjaxResponse> {
     console.log("In saveGroup...");
     let members = k$spLbMembers.dataSource.data();
-    let toAdd = [];
-    let toRemove = [];
-    if ((spVM as any).editor.model.get("IsLocal")) {
-        toAdd = differenceBy(members, membersOriginal, "UId");
-        toRemove = differenceBy(membersOriginal, members, "UId");
+    let memberOf = k$spLbMemberOf.dataSource.data();
+    let membersToAdd = [];
+    let membersToRemove = [];
+    let memberOfToAdd = [];
+    let memberOfToRemove = [];
+    memberOfToAdd = differenceBy( memberOf, memberOfOriginal, "UId" );
+    memberOfToRemove = differenceBy( memberOfOriginal, memberOf, "UId" );
+    if ( ( spVM as any ).editor.model.get( "IsLocal" ) ) {
+        membersToAdd = differenceBy(members, membersOriginal, "UId");
+        membersToRemove = differenceBy(membersOriginal, members, "UId");
     }
     
     return $.ajax( {
@@ -731,8 +583,10 @@ function saveGroup() : JQueryPromise<AjaxResponse> {
         contentType: "application/json",
         data: JSON.stringify( {
             Group: ( spVM as any ).editor.get( "model" ),
-            MembersToAdd: toAdd,
-            MembersToRemove: toRemove,
+            MemberOfToAdd: memberOfToAdd,
+            MemberOfToRemove: memberOfToRemove,
+            MembersToAdd: membersToAdd,
+            MembersToRemove: membersToRemove
         } ),
         dataType: "json",
     } )
@@ -756,42 +610,37 @@ function validateEditor() : boolean {
         if (msg.length > 0) {
             $spEditorError.html(msg);
         }
-        setError(true);
+        setVMEditorHasErrorFlag(true);
     }
     return ok;
 }
-
-function selectSecurityPrincipalGridItem(uId: string) : void {
+function selectGridItem(uId: string) : void {
     if (!uId) return;
 
-    console.log("In selectSecurityPrincipalGridItem...");
+    console.log("In selectGridItem...");
+    setVMSelectedUId( uId );
 
     let ds = k$spGrd.dataSource;
-
-    // explanation from kendo support
-    // the grid table row data-uid reflects the uid of the underlying ObservableObject representing the data item
-    // in the grid datasoure. The uid is generated on the fly when an object is created.
-    // each time the grid datasource is refreshed, the uid values change because the ObservableObjects
-    // are re-created with the new data. These uids are not implemented to match the model Id in the datasource
-
     // if is already selected, don't select again
-    let currentSelectedItem: any = k$spGrd.dataItem(k$spGrd.select()); // TODO: Put explicit type
-    if (currentSelectedItem) if (currentSelectedItem.UId == uId) return;
-
-    let rowuid = ds.get(uId).uid;
-    // console.log("-- Locating row uid " + rowuid)
-    let foundrow = k$spGrd.table.find('tr[data-uid="' + rowuid + '"]');
-    if (foundrow.length > 0) {
-        // console.log("-- Found grid item with UId " + uId)
-        k$spGrd.select(foundrow);
-    } else {
-        k$spGrd.clearSelection();
-        console.log("-- Cannot locate grid item with UId " + uId);
-    }
+    let currentSelectedItem: any = k$spGrd.dataItem( k$spGrd.select() ); 
+    if ( !currentSelectedItem || ( uId !== currentSelectedItem.uId ) ) {
+        let rowuid = ds.get( uId ).uid;
+        let foundrow = k$spGrd.table.find( 'tr[data-uid="' + rowuid + '"]' );
+        if ( foundrow.length > 0 ) {
+            k$spGrd.select( foundrow );
+        } else {
+            clearGridSelection();
+            console.log( "-- Cannot locate grid item with UId " + uId );
+        }
+    }   
 }
-function updateSecurityPrincipalsGrid(gridModel: any) : void {
+function clearGridSelection() {
+    k$spGrd.clearSelection();
+    setVMSelectedUId( null );
+}
+function updateGrid(gridModel: any) : void {
     // TODO: Put explicit type
-    console.log("In updateSecurityPrincipalsGrid...");
+    console.log("In updateGrid...");
     console.log(gridModel);
 
     let ds = k$spGrd.dataSource;
@@ -814,31 +663,28 @@ function updateSecurityPrincipalsGrid(gridModel: any) : void {
         console.log("-- New item added to security principals grid");
     }
 
-    // above action will cause grid selection to clear
-    selectSecurityPrincipalGridItem(gridModel.UId);
+ 
 }
 function clearEditorErrors() : void {
-    //$spEditorError.empty()
     $spEditorError.empty();
-    setError(false);
+    setVMEditorHasErrorFlag(false);
 }
 
 export function spBtnDiscardClick() : void {
     // TODO: Put explicit type
     console.log("In spBtnDiscardClick...");
 
-    showYesNoDialog( "Confirm discard changes", "Are you sure you want to discard changes? " )
-        .then( (response: DialogResponse) => {
-            if ( response == DialogResponse.Yes ) {
-                resetEditor( true );
-            }
-        } );
-
-    //verifySaveChanges().then(function(proceed) {
-    //    if (proceed) {
-    //        resetEditor(false);
-    //    }
-    //});
+    if ( ( spVM as any ).editor.get( "hasChanges" ) ) {
+        showYesNoDialog( "Confirm discard changes", "Are you sure you want to discard changes? " )
+            .then( ( response: DialogResponse ) => {
+                if ( response == DialogResponse.Yes ) {
+                    resetEditor( false );   // should we restore the form with original record. if so get from server or keep a copy of the original record?
+                }
+            } );
+    }
+    else {
+        resetEditor( false ); 
+    }
 }
 
 
@@ -879,7 +725,6 @@ function newUser(): void {
     
 
     verifySaveChanges().then( function ( proceed ) {
-        //console.log( "-- Verify save changes return value: " + proceed )
 
         if ( proceed ) {
             // go ahead and prepare the editor
@@ -888,7 +733,9 @@ function newUser(): void {
             getNewUser()
                 .done( ( data: AjaxResponse ) => {
                     if ( data.Status == AjaxResponseStatus.Success ) {
+                        data.Data.User.Name = "New User";   // default the name
                         populateEditor( data );
+                        clearGridSelection();
                     } else {
                         notifyError( "Error retrieving information for new user" );
                     }
@@ -897,18 +744,13 @@ function newUser(): void {
                     let errorMsg = decipherJqXhrError( jqXHR, textStatus );
                     notifyError( errorMsg );
                 } );
-            //.always( function () {
-            //    // unselect grid?
-            //} )
         }
     } );
 }
 function newGroup() : void {
     // TODO: Put explicit type
     
-
     verifySaveChanges().then(function(proceed) {
-        //console.log( "-- Verify save changes return value: " + proceed )
 
         if (proceed) {
             // go on and prepare the editor
@@ -916,8 +758,10 @@ function newGroup() : void {
             (spVM as any).editor.model.set("IsUser", false); // to make sure the correct fields are displayed
             getNewGroup()
                 .done((data: AjaxResponse) => {
-                    if (data.Status == AjaxResponseStatus.Success) {
-                        populateEditor(data);
+                    if ( data.Status == AjaxResponseStatus.Success ) {
+                        data.Data.Group.Name = "New Group";   // default the name
+                        populateEditor( data );
+                        clearGridSelection();
                     } else {
                         notifyError("Error retrieving information for new group");
                     }
@@ -926,23 +770,8 @@ function newGroup() : void {
                     let errorMsg = decipherJqXhrError(jqXHR, textStatus);
                     notifyError(errorMsg);
                 });
-            //.always( function () {
-            //    // unselect grid?
-            //} )
         }
     });
-}
-export function spBtnEditClick() : void {
-    console.log( "In spBtnEditClick..." );
-
-    let selectedItem: JQuery = k$spGrd.select();
-    let dataItem: any = k$spGrd.dataItem( selectedItem ); 
-
-    if ( dataItem ) {
-        if ( !( spVM as any ).editor.get( "visible" ) || ( spVM as any ).editor.model.get( "UId" ) !== dataItem.UId ) {
-            selectedItem.trigger( "click" );
-        }
-    } 
 }
 
 export function spBtnDeleteClick() : void {
@@ -953,14 +782,14 @@ export function spBtnDeleteClick() : void {
     let itemToDelete: any = k$spGrd.dataItem(k$spGrd.select()); // TODO; Put explicit type
     if (!itemToDelete) return;
 
-    let message = `Are you sure you want to delete ${itemToDelete.IsUser ? "User " : "Group "} ${itemToDelete.Name} ?`;
+    let message = `Are you sure you want to delete ${itemToDelete.IsUser ? "User " : "Group "} <b>${itemToDelete.Name}</b> ?`;
 
     let action = itemToDelete.IsUser ? "DeleteUser" : "DeleteGroup";
     $.when( showYesNoDialog( "Confirm Delete", message ) )
         .then( ( response: DialogResponse ) => {
             if ( response == DialogResponse.Yes ) {
                 // ok
-                $.when( blockUI )
+                $.when( showProgress() )
                     .then( () => {
                         return $.post( getActionUrl( action, "Admin" ), { uId: itemToDelete.UId } )
                             .then( data => {
@@ -968,14 +797,14 @@ export function spBtnDeleteClick() : void {
                             } )
                             .fail( ( jqXHR: JQueryXHR, textStatus: string ) => {
                                 let msg = decipherJqXhrError( jqXHR, textStatus );
-                                notifyError( `There is a problem deleting Secure Object ${itemToDelete.UniqueName}.<br/>${msg}` );
+                                notifyError( `There is a problem deleting ${itemToDelete.IsUser ? "User" : "Group"} <b>${itemToDelete.Name}.</b><br/>${msg}` );
                                 $.Deferred().reject();
                             } );
                     } )
                     .then( (data:AjaxResponse) => {
                         return processDeleteActionResponse( data, itemToDelete );
                     } )
-                    .always( unblockUI );
+                    .always( hideProgress );
             }
         });
 }
@@ -984,14 +813,14 @@ function processDeleteActionResponse( data: AjaxResponse, gridDataItemToDelete: 
     if ( data.Status == AjaxResponseStatus.Success ) {
         let ds: kendo.data.DataSource = k$spGrd.dataSource;
         ds.remove( gridDataItemToDelete );
-        spVM.set("selectedUId", null);
+        setVMSelectedUId( null );
 
         // reset editor 
         resetEditor(true);
 
         ( mainVM as any ).setChange( true );
 
-        notifySuccess( `${gridDataItemToDelete.IsUser ? 'User' : 'Group' } ${gridDataItemToDelete.Name} deleted successfully.` );
+        notifySuccess( `${gridDataItemToDelete.IsUser ? 'User' : 'Group' } <b>${gridDataItemToDelete.Name}</b> deleted successfully.` );
         return $
             .Deferred()
             .resolve()
@@ -1005,21 +834,6 @@ function processDeleteActionResponse( data: AjaxResponse, gridDataItemToDelete: 
             .promise();
     }
 }
-//function updateUIPostDelete(gridDataItem: any) {
-//    // TODO: Put explicit type
-//    // remove item from grid
-//    let ds = k$spGrd.dataSource;
-//    ds.remove(gridDataItem);
-//    spVM.set("selectedUId", null);
-
-//    // reset editor & hide it
-//    resetEditor(false);
-
-//    (mainVM as any).setChange(true);
-
-//    return true;
-//}
-
 function getUser(uId: string) : JQueryXHR {
     return $.ajax({
         method: "GET",
@@ -1052,44 +866,49 @@ function getNewGroup() : JQueryXHR {
         dataType: "json",
     });
 }
+export function spBtnMemberOfAddClick( e: MouseEvent ) {
+    console.log( "In spBtnMemberOfAddClick..." )
+    let selectedItems: any[] = k$spMsMemberOf.dataItems();
+    if ( selectedItems.length == 0 ) return;
 
-function spLbMemberOfAdd( e: kendo.ui.ListBoxAddEvent ) {
-    //help on how to auto sort
-    //https://github.com/telerik/kendo-ui-core/blob/master/docs/knowledge-base/listbox-sort-items-on-add.md
-    console.log("In spLbMemberOfAdd...");
-    e.preventDefault();
-    this.dataSource.data().push(e.dataItems[0]);
-    this.dataSource.sort({ field: "Name", dir: "asc" });
-    setChange(true);
+    //selectedItems.forEach( ( item ) => {
+        //if ( item.UId == ( spVM as any ).editor.model.get( "UId" ) ) {
+        //    return;
+        //}
+        //if ( spLbMemberOfDataSource.get( item.UId ) === undefined ) {
+        //    spLbMemberOfDataSource.pushCreate( item );
+        //}
+    //} )
+    //k$spMsMemberOf.value( [] );
+    spLbMemberOfDataSource.pushCreate( selectedItems );
+    spMsMemberOfDataSource.pushDestroy( selectedItems );
+    
 }
-function spLbMemberOfRemove( e: kendo.ui.ListBoxRemoveEvent ) {
-    setChange(true);
+export function spBtnMembersAddClick( e: MouseEvent ) {
+    console.log( "In spBtnMembersAddClick..." )
+    let selectedItems: any[] = k$spMsMembers.dataItems();
+    if ( selectedItems.length == 0 ) return;
+
+    //selectedItems.forEach( ( item ) => {
+        //if ( item.UId == ( spVM as any ).editor.model.get( "UId" ) ) {
+        //    return;
+        //}
+        //if ( spLbMembersDataSource.get( item.UId ) === undefined ) {
+        //    spLbMembersDataSource.pushCreate( item );
+        //}
+    //} )
+    //k$spMsMembers.value( [] ); 
+    spLbMembersDataSource.pushCreate( selectedItems );
+    spMsMembersDataSource.pushDestroy( selectedItems );
 }
 
-function spLbNotMemberOfAdd( e: kendo.ui.ListBoxAddEvent ) {
-    console.log("In spLbNotMemberOfAdd...");
-    e.preventDefault();
-    this.dataSource.data().push(e.dataItems[0]);
-    this.dataSource.sort({ field: "Name", dir: "asc" });
-}
+export function spGrdDataSourceChange( e: kendo.data.DataSourceChangeEvent ) {
+    console.log( e );
+    // update the trustee datasource
+    var data = this.data().toJSON();
+    // take only groups and only UId and Name
+    var trustees = data.filter( ( item:any ) => { return !item.IsUser } )
+        .map( ( item: any ) => { return { "UId": item.UId, "Name": item.Name } } )
+    trusteesDataSource.data( trustees );
 
-function spLbMembersAdd( e: kendo.ui.ListBoxAddEvent ) {
-    //help on how to auto sort
-    //https://github.com/telerik/kendo-ui-core/blob/master/docs/knowledge-base/listbox-sort-items-on-add.md
-    console.log("In spLbMembersAdd...");
-    e.preventDefault();
-    this.dataSource.data().push(e.dataItems[0]);
-    this.dataSource.sort({ field: "Name", dir: "asc" });
-    setChange(true);
-}
-
-function spLbMembersRemove( e: kendo.ui.ListBoxRemoveEvent ) {
-    setChange(true);
-}
-
-function spLbNonMembersAdd( e: kendo.ui.ListBoxAddEvent ) {
-    console.log("In spLbNonMembersAdd...");
-    e.preventDefault();
-    this.dataSource.data().push(e.dataItems[0]);
-    this.dataSource.sort({ field: "Name", dir: "asc" });
 }

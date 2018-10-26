@@ -2,7 +2,7 @@
 
 namespace Suplex.UI.Modules.Admin.ViewModels
 {
-    public class SecurityPrincipalListItemVM
+    public class SecurityPrincipalGridVM
     {
         public Guid? UId { get; set; }
         public string Name { get; set; }

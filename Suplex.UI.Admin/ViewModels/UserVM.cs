@@ -14,7 +14,7 @@ namespace Suplex.UI.Modules.Admin.ViewModels
     public class UserSaveVM
     {
         public SecurityPrincipalEditorVM User { get; set; }
-        public List<MemberVM> MembersOfToAdd { get; set; }
-        public List<MemberVM> MembersOfToRemove { get; set; }
+        public List<MemberVM> MemberOfToAdd { get; set; }
+        public List<MemberVM> MemberOfToRemove { get; set; }
     }
 }

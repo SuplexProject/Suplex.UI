@@ -41,6 +41,12 @@
     <ProjectReference Include="..\Suplex.UI.Infrastructure\Suplex.UI.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Suplex.Security.FileSystemDal">
+      <HintPath>References\Suplex.Security.FileSystemDal.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
   </PropertyGroup>

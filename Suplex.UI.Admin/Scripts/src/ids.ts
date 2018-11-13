@@ -1,15 +1,9 @@
 ﻿// main toolbar
 export const TB_MAIN = "#tbMain";
-export const BTN_SHOW_SECURITY_PRINCIPALS = "#btnShowSecurityPrincipals";
-export const BTN_SHOW_SECURE_OBJECTS = "#btnShowSecureObjects";
-export const BTN_SAVE_FILE_AS = "#btnSaveFileAs";
-export const BTN_SAVE_FILE = "#btnSaveFile";
-
-export const DLG_SELECT_FILE = "#dlgSelectFile";
-export const TREEVIEW_SELECT_FILE = "#tvSelectFile";
-export const DLG_SAVE_AS = "#dlgSaveAs";
-export const TREEVIEW_SAVE_AS = "#tvSaveAs";
-export const TXT_SAVE_AS_NAME = "#txtSaveAsName";
+export const TBB_SHOW_SECURITY_PRINCIPALS = "#tbbShowSecurityPrincipals";
+export const TBB_SHOW_SECURE_OBJECTS = "#tbbShowSecureObjects";
+export const DLG_REMOTE_SERVICE = "#dlgRemoteService";
+export const TXT_WEBAPI_URL = "#txtWebApiUrl";
 
 // security principals
 export const SP_VIEW = "#spView";
@@ -32,21 +26,34 @@ export const SP_BTN_NEW_GROUP = "#spBtnNewGroup";
 // secure objects
 export const SO_VIEW = "#soView";
 export const SO_SPLITTER = "#soSpltr";
+export const SO_TB = "#soTb"
+export const SO_TBB_NEW = "#soTbbNew";
+export const SO_TBB_NEW_ROOT = "#soTbbNewRoot";
+export const SO_TBB_NEW_CHILD = "#soTbbNewChild";
+export const SO_TBB_COPY = "#soTbbCopy";
+export const SO_TBB_COPY_AS_ROOT = "#soTbbCopyAsRoot";
+export const SO_TBB_COPY_AS_CHILD = "#soTbbCopyAsChild";
+export const SO_TBB_DELETE = "#soTbbDelete";
+export const SO_TBB_EXPAND = "#soTbbExpand";
+export const SO_TBB_EXPAND_NODE = "#soTbbExpandNode";
+export const SO_TBB_EXPAND_TREE = "#soTbbExpandTree";
+export const SO_TBB_COLLAPSE = "#soTbbCollapse";
+export const SO_TBB_COLLAPSE_TREE = "#soTbbCollapseTree";
+export const SO_TBB_COLLAPSE_NODE = "#soTbbCollapseNode";
+
 export const SO_TREELIST = "#soTl";
 export const SO_EDITOR = "#soEditor";
 export const SO_EDITOR_ERROR = "#soEditorError";
 export const SO_GRD_DACL = "#soGrdDacl";
 export const SO_GRD_SACL = "#soGrdSacl";
-export const SO_BTN_NEW = "#soBtnNew";
-export const SO_BTN_NEW_ROOT = "#soBtnNewRoot";
-export const SO_BTN_NEW_CHILD = "#soBtnNewChild";
-export const SO_BTN_DELETE = "#soBtnDelete";
-export const SO_BTN_EXPAND_ALL = "#soBtnExpandAll";
-export const SO_BTN_EXPAND_TREE = "#soBtnExpandTree";
-export const SO_BTN_COLLAPSE_ALL = "#soBtnCollapseAll";
-export const SO_BTN_COLLAPSE_TREE = "#soBtnCollapseTree";
+
 export const SO_TREELIST_CTX_MENU = "#soTlMnu";
-export const SO_TREELIST_CTX_MENU_NEW = "#soTlMnuNew";
+export const SO_TREELIST_CTX_MENU_NEW_ROOT = "#soTlMnuNewRoot";
+export const SO_TREELIST_CTX_MENU_NEW_CHILD = "#soTlMnuNewChild";
+export const SO_TREELIST_CTX_MENU_COPY_AS_ROOT = "#soTlMnuCopyAsRoot";
+export const SO_TREELIST_CTX_MENU_COPY_AS_CHILD = "#soTlMnuCopyAsChild";
 export const SO_TREELIST_CTX_MENU_DELETE = "#soTlMnuDelete";
-export const SO_TREELIST_CTX_MENU_EXPAND = "#soTlMnuExpand";
-export const SO_TREELIST_CTX_MENU_COLLAPSE = "#soTlMnuCollapse";
+export const SO_TREELIST_CTX_MENU_EXPAND_TREE = "#soTlMnuExpandTree";
+export const SO_TREELIST_CTX_MENU_EXPAND_NODE = "#soTlMnuExpandNode";
+export const SO_TREELIST_CTX_MENU_COLLAPSE_TREE = "#soTlMnuCollapseTree";
+export const SO_TREELIST_CTX_MENU_COLLAPSE_NODE = "#soTlMnuCollapseNode";

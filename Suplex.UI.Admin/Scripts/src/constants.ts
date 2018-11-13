@@ -1,1 +1,1 @@
-﻿export const FILE_EXTENSION = ".splx";
+﻿// export const FILE_EXTENSION = ".splx";

@@ -242,9 +242,6 @@ export function hideProgress() {
 //    maskDiv.remove();
 //}
 
-export function isValidFileName(fileName: string) : boolean {
-    return !fileName ? false : true;
-}
 export function isPowerOfTwo(x: number) : boolean {
     return (x & (x - 1)) == 0 ? true : false;
 }

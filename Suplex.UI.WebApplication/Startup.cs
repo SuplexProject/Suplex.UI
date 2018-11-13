@@ -165,6 +165,7 @@ namespace Suplex.UI.WebApplication
             }
             if (modulesSettings.Include != null)
             {
+                
                 foreach (var f in modulesSettings.Include)
                 {
                     // folder directory valid?

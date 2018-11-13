@@ -1,6 +1,5 @@
 ﻿import * as ID from "./ids";
 import debounce from "lodash-es/debounce";
-import { mainVM } from "./main";
 import {
     getActionUrl,
     decipherJqXhrError,
@@ -18,7 +17,7 @@ import {
     AjaxResponseStatus,
 } from "./utils";
 
-let $soView = $(ID.SO_VIEW);
+let $soView = $( ID.SO_VIEW );
 let $soTl = $( ID.SO_TREELIST );
 let $soSpltr = $(ID.SO_SPLITTER);
 
@@ -27,11 +26,16 @@ let $soEditorError = $(ID.SO_EDITOR_ERROR);
 let $soGrdDacl = $(ID.SO_GRD_DACL);
 let $soGrdSacl = $(ID.SO_GRD_SACL);
 
+let $soTb: JQuery = null;
+let k$soTb: kendo.ui.ToolBar = null;
 let validator: kendo.ui.Validator = null;
 
 let k$soTl: kendo.ui.TreeList = null;
 let k$soGrdDacl: kendo.ui.Grid = null;
 let k$soGrdSacl: kendo.ui.Grid = null;
+
+let $soCtxMnu: JQuery = null;
+let k$soCtxMnu: kendo.ui.ContextMenu = null;
 
 let auditTypes: string[] = [];
 let rightTypes: string[] = [];
@@ -100,12 +104,6 @@ export let trusteesDataSource = new kendo.data.DataSource( {
         }
     },
     sort: { field: "Name", dir: "asc" }
-    //transport: {
-    //    read: {
-    //        url: getActionUrl("GetAllTrustees", "Admin"),
-    //        dataType: "json",
-    //    },
-    //},
 });
 
 let soDaclDataSource = new kendo.data.DataSource({
@@ -262,6 +260,7 @@ let soSaclDataSource = new kendo.data.DataSource({
             },
         },
     },
+    
 });
 
 let soEditorModel = kendo.data.Model.define({
@@ -412,13 +411,15 @@ function setVMSelectedUId(uId: string) {
 }
 
 export function soSetup() {
-    kendo.bind($soView, soVM);
+    kendo.bind($soView, soVM);   
 
     setupWidgets();
 
     setupVariables();
 
     setupEventHandlers();
+
+    enableDisableToolBarButtons( false );   // disable the buttons initially as nothing was selected
 
     // resetSecureObjects(); // without this data wont show up on the treeview when adding item to the datasouce right after launch
 
@@ -627,9 +628,12 @@ function setupWidgets() {
     const daclAllowInheritTemplate = "<input id='2#=UniqueName#' type='checkbox' class='k-checkbox' #: DaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UniqueName#' />";
     const saclAllowInheritTemplate = "<input id='3#=UniqueName#' type='checkbox' class='k-checkbox' #: SaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for=3#=UniqueName#' />";
     $soTl.kendoTreeList( {
+        autoBind: false,
         editable: { move: true },
         filterable: true,
         selectable: true,
+        resizable: true,
+        scrollable: true,
         columns: [
             { field: "UniqueName", width: 200, template: uniqueNameTemplate },
             { field: "IsEnabled", title: "Enabled", template: isEnabledTemplate },
@@ -672,27 +676,32 @@ function setupWidgets() {
     } )
 
     $(ID.SO_TREELIST_CTX_MENU).kendoContextMenu({
-        target: $(ID.SO_SPLITTER).find(".k-pane:first"),
-        filter: "tbody > tr, .wrapper",
+        target: "#soTl", //$(ID.SO_SPLITTER).find(".k-pane:first"),
+        filter: "tbody > tr, thead > tr", //, .wrapper",
         open: function ( e: kendo.ui.ContextMenuOpenEvent ) {
             let ele = $(e.target);
-            let ctxMnu = $(e.item);
-            if (ele.hasClass("wrapper")) {
-                ctxMnu.find(".node-only").hide();
-            } else {
-                ctxMnu.find(".node-only").show();
-            }
+            let ctxMnuEle = $( e.item );
+            let headerSelected = ( ele.closest( 'thead' ).length > 0 );
+            ctxMnuEle.find( ".tree-node-selected" ).each( ( idx, ele ) => {
+                //$( ele ).prop( "disabled", headerSelected );
+
+                k$soCtxMnu.enable( ele, !headerSelected );
+            } );
+            $( "body" ).addClass( "no-scroll" );    // prevent scrollbar from appearing unnecessarily in the <body> 
         },
+        close: function ( e: kendo.ui.ContextMenuCloseEvent ) {
+            $( "body" ).removeClass( "no-scroll" );
+        }, 
         select: function ( e: kendo.ui.ContextMenuSelectEvent ) {
             let target = $(e.target);
             switch ("#" + e.item.id) {
-                case ID.SO_TREELIST_CTX_MENU_NEW:
-                    verifySaveChanges()
+                case ID.SO_TREELIST_CTX_MENU_NEW_ROOT:
+                case ID.SO_TREELIST_CTX_MENU_NEW_CHILD:
+                    soVerifySaveChanges()
                         .then( ( proceed ) => {
                             if ( proceed ) {
                                 resetEditor( true );
-                                if ( target.hasClass( "wrapper" ) ) {
-                                    // nothing selected, so create a top level node
+                                if ( ( "#" + e.item.id ) == ID.SO_TREELIST_CTX_MENU_NEW_ROOT ) {
                                     ( soVM as any ).editor.model.set( "UniqueName", "New Root" );
                                     clearTreeSelection();
                                 } else {
@@ -704,6 +713,23 @@ function setupWidgets() {
                             }
                         });
                     break;
+
+                case ID.SO_TREELIST_CTX_MENU_COPY_AS_ROOT:
+                case ID.SO_TREELIST_CTX_MENU_COPY_AS_CHILD:
+                    soVerifySaveChanges()
+                        .then( () => {
+                            let dataItem = k$soTl.dataItem( target as JQuery );
+                            selectTreeItem( ( dataItem as any ).UId ); // select the node pointed by the context menu
+                            if ( ( "#" + e.item.id ) == ID.SO_TREELIST_CTX_MENU_COPY_AS_ROOT ) {
+                                $( ID.SO_TBB_COPY_AS_ROOT ).click();
+                            }
+                            else {
+                                $( ID.SO_TBB_COPY_AS_CHILD ).click();
+                            }
+                            
+                        })
+                    break;
+
                 case ID.SO_TREELIST_CTX_MENU_DELETE:
                     let itemToDelete: any = k$soTl.dataItem( target as JQuery );
                     if ( itemToDelete ) {
@@ -722,14 +748,25 @@ function setupWidgets() {
                     }
 
                     break;
-                case ID.SO_TREELIST_CTX_MENU_EXPAND:
-                    let item1: JQuery<HTMLElement> = target.hasClass("wrapper") ? $(): target.closest("tr") as JQuery<HTMLElement>;
-                    expandCollapseAll( true, item1 );
+
+                case ID.SO_TREELIST_CTX_MENU_EXPAND_TREE:
+                    expandCollapse( true );
                     break;
-                case ID.SO_TREELIST_CTX_MENU_COLLAPSE:
-                    let item2: JQuery<HTMLElement> = target.hasClass( "wrapper" ) ? $() : target.closest( "tr" ) as JQuery<HTMLElement>;
-                    expandCollapseAll(false, item2 );
+
+                case ID.SO_TREELIST_CTX_MENU_EXPAND_NODE:
+                    let item1: JQuery<HTMLElement> = target.closest("tr") as JQuery<HTMLElement>;
+                    expandCollapse( true, item1 );
                     break;
+
+                case ID.SO_TREELIST_CTX_MENU_COLLAPSE_TREE:
+                    expandCollapse( false );
+                    break;
+
+                case ID.SO_TREELIST_CTX_MENU_COLLAPSE_NODE:
+                    let item2: JQuery<HTMLElement> = target.closest( "tr" ) as JQuery<HTMLElement>;
+                    expandCollapse(false, item2 );
+                    break;
+
                 default:
                     break;
             }
@@ -750,9 +787,13 @@ function setupWidgets() {
         .data("kendoValidator");
 }
 function setupVariables() {
+    $soTb = $( ID.SO_TB );
+    k$soTb = $soTb.data( 'kendoToolBar' );
     k$soTl = $soTl.data( "kendoTreeList" );
     k$soGrdDacl = $soGrdDacl.data("kendoGrid");
-    k$soGrdSacl = $soGrdSacl.data("kendoGrid");
+    k$soGrdSacl = $soGrdSacl.data( "kendoGrid" );
+    $soCtxMnu = $( ID.SO_TREELIST_CTX_MENU );
+    k$soCtxMnu = $soCtxMnu.data( "kendoContextMenu" );
 }
 function setupEventHandlers() {
     $(window)
@@ -760,7 +801,20 @@ function setupEventHandlers() {
         .trigger("resize");
 
     $( ID.SO_TREELIST ).on( "click", "tbody tr", soTlClick );
-    
+
+    soVM.bind( 'change', function ( e: any ) {
+        if ( e.field == "selectedUId" ) {
+            enableDisableToolBarButtons( this.secureObjectSelected() );
+        };
+    } )
+
+}
+
+function enableDisableToolBarButtons( enable: boolean ) {
+    k$soTb.enable( $( ID.SO_TBB_COPY ), enable );
+    k$soTb.enable( $( ID.SO_TBB_NEW_CHILD ), enable );
+    k$soTb.enable( $( ID.SO_TBB_EXPAND_NODE ), enable );
+    k$soTb.enable( $( ID.SO_TBB_COLLAPSE_NODE ), enable );
 }
 
 export function soShow() {
@@ -780,7 +834,7 @@ export function soLoad() {
 }
 function resizeSplitter() {
     //console.log( "In resizeSplitter..." );
-    let top = 125; // height occupied above splitter
+    let top = 85; //125; // height occupied above splitter
     let bottom = 25; // height occupied below splitter
     let height = $(window).height() - (top + bottom) - 1; // to stop the body scrollbar from appearing
     height = height <= 0 ? 100 : height;
@@ -788,37 +842,78 @@ function resizeSplitter() {
     //console.log( height );
     // let width = $( window ).width() -
     $soSpltr.data( "kendoSplitter" ).wrapper.height( height );
-    $soSpltr.data("kendoSplitter").resize();
+    $soSpltr.data( "kendoSplitter" ).resize(true);
+    //const soTbHeight = 40;
+    //$soSpltr.closest( '.wrapper' ).height( height - soTbHeight );
+    //k$soTl.wrapper.height( height - soTbHeight );
+    //k$soTl.resize();
 }
-export function soBtnExpandAllClick(e: any) {
+export function soTbbExpandClick(e: any) {
 
     switch ( "#" + e.id ) {
-        case ID.SO_BTN_EXPAND_ALL:
-            let node = k$soTl.select();
-            expandCollapseAll( true, node );
+        case ID.SO_TBB_EXPAND:
+            console.log( "-- expand" );
+
+            //https://www.telerik.com/forums/open-split-button-with-js
+            let $btn = $( "#" + e.id ).closest( '.k-split-button' );
+            let popup = $btn.data( "kendoPopup" );
+            if ( popup ) {
+                if ( popup.visible() ) {
+                    $( "body" ).removeClass( "no-scroll" );
+                    popup.close();
+                }
+                else {
+                    $( "body" ).addClass( "no-scroll" );
+                    popup.open();
+                }
+            }
+
             break;
 
-        case ID.SO_BTN_EXPAND_TREE:
-            expandCollapseAll( true );
+        case ID.SO_TBB_EXPAND_NODE:
+            let node = k$soTl.select();
+            expandCollapse( true, node );
+            break;
+
+        case ID.SO_TBB_EXPAND_TREE:
+            expandCollapse( true );
             break;
 
     }
 }
-export function soBtnCollapseAllClick( e: any ) {
+export function soTbbCollapseClick( e: any ) {
 
     switch ( "#" + e.id ) {
-        case ID.SO_BTN_COLLAPSE_ALL:
+        case ID.SO_TBB_COLLAPSE:
+            console.log( "-- collapse" );
+
+            //https://www.telerik.com/forums/open-split-button-with-js
+            let $btn = $( "#" + e.id ).closest( '.k-split-button' );
+            let popup = $btn.data( "kendoPopup" );
+            if ( popup ) {
+                if ( popup.visible() ) {
+                    $( "body" ).removeClass( "no-scroll" );
+                    popup.close();
+                }
+                else {
+                    $( "body" ).addClass( "no-scroll" );
+                    popup.open();
+                }
+            }
+
+            break;
+        case ID.SO_TBB_COLLAPSE_NODE:
             let node = k$soTl.select();
-            expandCollapseAll( false, node );
+            expandCollapse( false, node );
             break;
 
-        case ID.SO_BTN_COLLAPSE_TREE:
-            expandCollapseAll( false );
+        case ID.SO_TBB_COLLAPSE_TREE:
+            expandCollapse( false );
             break;
     }
     
 }
-function expandCollapseAll( expand: boolean, node?: JQuery<HTMLElement> ) {
+function expandCollapse( expand: boolean, node?: JQuery<HTMLElement> ) {
 
     if ( !node || node.length == 0 ) {
         //let rows = k$soTl.tbody.find( "tr.k-treelist-group" );
@@ -851,31 +946,112 @@ function expandCollapseChildNodes( expand: boolean, ds: kendo.data.TreeListDataS
         expandCollapseChildNodes( expand, ds, ds.childNodes( nodes[i] ) );
     }
 }
-export function soBtnNewClick(e: any) {
-    console.log( "In soBtnNewClick..." );
+export function soTbbNewClick(e: any) {
+    console.log( "In soTbbNewClick..." );
 
     switch ( "#" + e.id ) {        
-        case ID.SO_BTN_NEW:
-        case ID.SO_BTN_NEW_ROOT:
+        case ID.SO_TBB_NEW:
+            console.log( "-- new" );
 
-            verifySaveChanges().then( function ( proceed ) {
+            //https://www.telerik.com/forums/open-split-button-with-js
+            let $btn = $( "#" + e.id ).closest( '.k-split-button' );
+            let popup = $btn.data( "kendoPopup" );
+            if ( popup ) {
+                if ( popup.visible() ) {
+                    $( "body" ).removeClass( "no-scroll" );
+                    popup.close();
+                }
+                else {
+                    $( "body" ).addClass( "no-scroll" );
+                    popup.open();
+                }
+            }
+
+            break;
+        case ID.SO_TBB_NEW_ROOT:
+        case ID.SO_TBB_NEW_CHILD:
+
+            soVerifySaveChanges().then( function ( proceed ) {
                 if ( proceed ) {
                     // go ahead and prepare the editor
                     resetEditor( true );
                     // if there is a selected node, set the parent of the model
                     // else assume new root
-                    if ( "#" + e.id == ID.SO_BTN_NEW && soVM.get( "selectedUId" ) != null ) {
+                    if ( "#" + e.id == ID.SO_TBB_NEW_CHILD && soVM.get( "selectedUId" ) != null ) {
                         ( soVM as any ).editor.model.set( "ParentUId", soVM.get( "selectedUId" ) );
                         ( soVM as any ).editor.model.set( "UniqueName", "New Child" );
                     }
                     else {
                         // clear node selection
                         clearTreeSelection();
-                        k$soTl.clearSelection();
                         ( soVM as any ).editor.model.set( "UniqueName", "New Root" );
                     }
                 }
             } );
+            break;
+
+    }
+}
+export function soTbbCopyClick( e: any ): void {
+    console.log( "In spTbbCopyClick..." );
+    let asRoot: boolean = false;
+
+    switch ( "#" + e.id ) {
+        case ID.SO_TBB_COPY:
+            //https://www.telerik.com/forums/open-split-button-with-js
+            let $btn = $( "#" + e.id ).closest( '.k-split-button' );
+            let popup = $btn.data( "kendoPopup" );
+            if ( popup ) {
+                if ( popup.visible() ) {
+                    $( "body" ).removeClass( "no-scroll" );
+                    popup.close();
+                }
+                else {
+                    $( "body" ).addClass( "no-scroll" );
+                    popup.open();
+                }
+            }
+
+            break;
+
+        case ID.SO_TBB_COPY_AS_ROOT:
+            asRoot = true;
+        case ID.SO_TBB_COPY_AS_CHILD:
+            
+            let selectedItem: any = k$soTl.dataItem( k$soTl.select() );
+            if ( selectedItem ) {
+                let parentUId: string = asRoot ? null : selectedItem.UId;    
+                // if editor has unsaved changes, prompt to save first
+                // select destination node (if root, deselect all nodes)
+                // reset editor, populate editor with source node, updte parentUId
+                // set uniquename = source unique name( copy )
+                // make sure has changes = false so they have to make a change in order to save
+                soVerifySaveChanges().then( function ( proceed: boolean ) {
+                    console.log( "-- " + proceed );
+                    if ( proceed ) {
+                        resetEditor( true );
+                        getSecureObject( selectedItem.UId ) 
+                            .done( (data: any ) => {
+                                if ( parentUId ) {
+                                    selectTreeItem( parentUId );
+                                }
+                                else {
+                                    clearTreeSelection();
+                                }
+                                // reset UId, override ParentUId, UniqueName
+                                data.Data.UId = null;
+                                data.Data.ParentUId = parentUId;
+                                data.Data.UniqueName = `New ${parentUId ? "Child" : "Root"} (copy of ${data.Data.UniqueName})`;
+                                populateEditor( data );
+                            } )
+                            .fail( () => { } );
+                    } else {
+                        // make prev node the selected node
+                        //selectSecureObjectTreeNode();
+                        selectTreeItem();
+                    }
+                } );
+            }
             break;
 
     }
@@ -993,7 +1169,6 @@ function processSaveActionResponse( data: AjaxResponse ) : JQueryPromise<boolean
     let dfd = $.Deferred();
 
     if ( data.Status == AjaxResponseStatus.Success ) {
-        ( mainVM as any ).setChange( true );
 
         if ( data.Data ) {
             setVMEditorHasChangesFlag( false );
@@ -1035,7 +1210,7 @@ function processSaveActionResponse( data: AjaxResponse ) : JQueryPromise<boolean
 
             selectTreeItem( updatedItem.UId );
 
-            notifySuccess( `Secure Object <b>${updatedItem.UniqueName}</b> saved successfully.` );
+            notifySuccess( `Secure Object <b>${updatedItem.UniqueName}</b> saved.` );
             dfd.resolve();
             
         }
@@ -1057,7 +1232,7 @@ function processSaveActionResponse( data: AjaxResponse ) : JQueryPromise<boolean
     }
     return dfd.promise();
 }
-export function soBtnDeleteClick() {
+export function soTbbDeleteClick() {
     // get the selected item
     let itemToDelete: any = k$soTl.dataItem( k$soTl.select() ); // TODO: Put explicit type
     if (!itemToDelete) return;
@@ -1095,7 +1270,6 @@ function deleteSecureObject(itemToDelete: any) {
 function processDeleteActionResponse( data: AjaxResponse, itemToDelete: any ) {
     // TODO: Put explicit type
     if ( data.Status == AjaxResponseStatus.Success ) {
-        ( mainVM as any ).setChange( true );
         
         // remove item from tree
         let ds: kendo.data.TreeListDataSource = k$soTl.dataSource as kendo.data.TreeListDataSource;
@@ -1218,26 +1392,6 @@ function populateEditor(data: AjaxResponse) {
     }
 }
 
-// TODO: Check if this is indeed unused function
-// not sure to use this or the datasource
-// function getAllTrustees() {
-
-//     let dfd = $.Deferred();
-
-//     $.get( getActionUrl( "GetAllTrustees", "Admin" ) )
-//         .done( function ( data ) {
-//             _allTrustees = data;
-//             dfd.resolve();
-//         } )
-//         .fail( function ( jqXHR, textStatus, errorThrown ) {
-//             let msg = decipherJqXhrError( jqXHR, textStatus );
-//             notifyError( "There is a problem retrieving trustees" + "<br/>" + msg );
-//             dfd.reject();
-//         } );
-
-//     return dfd.promise();
-// }
-
 // ddl used inside dacl, sacl grid
 function trusteeDropDownEditor(container: JQuery<HTMLElement>, options: kendo.ui.GridColumnEditorOptions) {
     // TODO: Put explicit type
@@ -1249,12 +1403,6 @@ function trusteeDropDownEditor(container: JQuery<HTMLElement>, options: kendo.ui
             dataValueField: "UId",
             valuePrimitive: true,
             dataSource: trusteesDataSource
-            //dataSource: {
-            //    dataType: "json",
-            //    transport: {
-            //        read: getActionUrl("GetAllTrustees", "Admin"),
-            //    },
-            //},
         });
     $('<span class="k-invalid-msg" data-for="' + options.field + '"></span>').appendTo(container);
 }
@@ -1262,17 +1410,6 @@ function getTrusteeName(gridDataItem: any) {
     // TODO: Put explicit type
     if (gridDataItem.TrusteeUId == null) return "";
 
-    // TODO: Check filter item, which does not match the definition.
-    //trusteesDataSource.filter({
-    //    field: "UId",
-    //    operation: "eq",
-    //    value: dataItem.TrusteeUId,
-    //} as kendo.data.DataSourceFilterItem);
-    //let view = trusteesDataSource.view();
-    //if (view.length == 0) return "";
-    //let name = view[0].Name;
-    //trusteesDataSource.filter({}); // clear filter
-    //return kendo.htmlEncode( name );
     var trusteeLookupItem: any = trusteesDataSource.get( gridDataItem.TrusteeUId );
     if ( trusteeLookupItem )
         return kendo.htmlEncode( trusteeLookupItem.Name );
@@ -1299,8 +1436,6 @@ function boolEditor( container: JQuery<HTMLElement>, options: kendo.ui.GridColum
 function rightTypeDropDownListEditor( container: JQuery<HTMLElement>, options: kendo.ui.GridColumnEditorOptions ) {
     // TODO: Put explicit type
     console.log("In rightTypeDropDownListEditor...");
-    //let guid = kendo.guid()
-    // options.model --> returns the row data item. to access a field, use options.model.<fieldname>
 
     $('<input data-bind="value:' + options.field + '" name="' + options.field + '" required="required" />')
         .appendTo(container)
@@ -1451,8 +1586,8 @@ function validateRightType(input: JQuery) {
         return ok;
     } else return true;
 }
-export function verifySaveChanges(): JQueryPromise<boolean>  {
-    console.log("In verifySaveChanges...");
+export function soVerifySaveChanges(): JQueryPromise<boolean>  {
+    console.log("In soVerifySaveChanges...");
     let dfd = $.Deferred();
     if (!(soVM as any).editor.get("hasChanges")) {
         dfd.resolve(true);
@@ -1463,20 +1598,27 @@ export function verifySaveChanges(): JQueryPromise<boolean>  {
                     case DialogResponse.Yes: // 1: // go ahead and save
                         clearEditorErrors();
                         if (validateEditor()) {
-                            $.when(showProgress())
-                                .then(saveSecureObject)
-                                .then(processSaveActionResponse)
-                                .always(hideProgress);
+                            $.when( showProgress() )
+                                .then( saveSecureObject )
+                                .then( processSaveActionResponse )
+                                .then( () => {
+                                    dfd.resolve( true );
+                                } )
+                                .fail( () => {
+                                    dfd.resolve( false );
+                                })
+                                .always( hideProgress )
                         } else {
                             // failed client validation
                             notifyError("Please correct the error(s) on the form first.");
-                            dfd.resolve(true);
+                            dfd.resolve(false);
                         }
                         break;
-                    case DialogResponse.No: // 2: // discard changes and continue
+                    case DialogResponse.No: // discard changes and continue
+                        resetEditor( false ); 
                         dfd.resolve(true);
                         break;
-                    case DialogResponse.Cancel: // 3: // cancel action
+                    case DialogResponse.Cancel: // cancel action
                         dfd.resolve(false);
                         break;
                     default:
@@ -1490,7 +1632,6 @@ export function verifySaveChanges(): JQueryPromise<boolean>  {
     return dfd.promise();
 }
 
-// TO DELETE?: secure object tree
 let soTlModel = kendo.data.TreeListModel.define( {
     id: "UId",
     parentId: "ParentUId",
@@ -1504,9 +1645,6 @@ let soTlModel = kendo.data.TreeListModel.define( {
         SaclAllowInherit: { type: "boolean" }
     },
 } );
-// TO DELETE?
-let dummy = new soTlModel();
-console.log( dummy.id );
 
 function soTlClick() {
     console.log( "In soTlClick..." );
@@ -1520,7 +1658,7 @@ function soTlClick() {
         return;
     }
 
-    verifySaveChanges().then( function ( proceed: boolean ) {
+    soVerifySaveChanges().then( function ( proceed: boolean ) {
         console.log( "-- " + proceed );
         if ( proceed ) {
             selectTreeItem( selectedItem.UId )
@@ -1561,8 +1699,8 @@ function selectTreeItem( uId?: string ) {
         }
         setVMSelectedUId( dataItem.UId );
     }
-    
 }
+
 export function soTlDrop( e: any ) { // can't use kendo.ui.TreeListDropEvent. the statement e.setValid(false) will give an error
     console.log( "In soTlDrop..." );
     // if source and destination belong to the same parent, do nothing
@@ -1578,95 +1716,58 @@ export function soTlDrop( e: any ) { // can't use kendo.ui.TreeListDropEvent. th
     
     const parentUId = e.destination ? e.destination.UId : null;
 
+    // retain code for future reference. this is the way to test if a ctrl key is pressed
     //if ( e.originalEvent.ctrlKey ) {
     //    console.log( "-- copy node" );
     //} else {
     //    console.log( "-- move node" );
     //}
 
-
-    // const isCopy = e.originalEvent.ctrlKey ? true : false;
-    //if ( !isCopy ) {
-        // if moving to same parent, cancel the move
-        if ( ( !e.source.parentId && !parentUId ) || ( e.source.parentId == parentUId ) ) {
-            console.log( '-- moving to same parent, cancel move' );
-            e.setValid( false );
-            return;
-        }
-    //}
-
+    // if moving to same parent, cancel the move
     // cant use e.source.ParentUId --> not sure why the datasource doesnt register ParentUId
-    //console.log( e.source, e.destination );
+    if ( ( !e.source.ParentUId && !parentUId ) || ( e.source.ParentUId == parentUId ) ) {
+        console.log( '-- moving to same parent, cancel move' );
+        e.setValid( false );
+        return;
+    }
 
     e.preventDefault(); // we will handle the move / copy manually
-    // drag n drop cannot be used for copy as we can't drop to descendents
-    //if ( isCopy ) { // cant use as we cannot drop an existing node to its descendents
-    //    // if editor has unsaved changes, prompt to save first
-    //    // select destination node (if root, deselect all nodes)
-    //    // reset editor, populate editor with source node, updte parentUId
-    //    // set uniquename = source unique name( copy )
-    //    // make sure has changes = false so they have to make a change in order to save
-    //    verifySaveChanges().then( function ( proceed: boolean ) {
-    //        console.log( "-- " + proceed );
-    //        if ( proceed ) {
-    //            // soTlSelectRow( selectedItem.UId )
-    //            //selectSecureObjectTreeNode( selectedItem.UId );
-    //            resetEditor( true );
 
-    //            $.when( trusteesDataSource.read(), getSecureObject( e.source.UId ) )
-    //                .done( ( arg1: any, arg2: any ) => {
-    //                    let data = arg2;
-    //                    if ( parentUId ) {
-    //                        selectTreeItem( parentUId );
-    //                    }
-    //                    else {
-    //                        k$soTl.clearSelection();
-    //                    }
-    //                    // reset UId, override ParentUId, UniqueName
-    //                    data.Data.UId = null;
-    //                    data.Data.ParentUId = parentUId;
-    //                    data.Data.UniqueName = `New ${parentUId ? "Child" : "Root"} (copy of ${data.Data.UniqueName})` ;
-    //                    populateEditor( data );
-    //                } )
-    //                .fail( () => { } );
-    //        } else {
-    //            // make prev node the selected node
-    //            //selectSecureObjectTreeNode();
-    //            selectTreeItem();
-    //        }
-    //    } );
-    //}
-    //else {
-        $.ajax( {
-            url: getActionUrl( "UpdateSecureObjectParent", "Admin" ),
-            type: "POST",
-            data: {
-                uId: e.source.UId,
-                parentUId: parentUId
-            },
-        } )
-            .then( ( data: AjaxResponse ) => {
-                let dfd = $.Deferred();
-                if ( data.Status == AjaxResponseStatus.Success ) {
-                    e.source.set( "parentId", parentUId );
-
-                    // update editor 
-                    if ( ( soVM as any ).editor.model.get( "UId" ) == e.source.UId ) {
-                        ( soVM as any ).editor.model.set( "ParentUId", parentUId );
-                    }
-
-                    ( mainVM as any ).setChange( true );
-                    dfd.resolve();
-                } else {
-                    dfd.reject();
+    $.ajax( {
+        url: getActionUrl( "UpdateSecureObjectParent", "Admin" ),
+        type: "POST",
+        data: {
+            uId: e.source.UId,
+            parentUId: parentUId
+        },
+    } )
+        .then( ( data: AjaxResponse ) => {
+            let dfd = $.Deferred();
+            if ( data.Status == AjaxResponseStatus.Success ) {
+                // update the tree
+                e.source.set( "ParentUId", parentUId );
+                if ( parentUId ) {
+                    let parentItem = k$soTl.dataSource.get( parentUId );
+                    ( parentItem as any ).hasChildren = true;
+                    ( parentItem as any ).expanded = true;
                 }
-                return dfd.promise();
-            } )
-            .fail( () => {
-                e.setValid( false );        // TO DO: delete? dont think this statement is needed
-                notifyError( "An error has occurred while updating parent of Secure Object" );
-            } );
-    //}
+                k$soTl.refresh();
+
+                // update the editor 
+                if ( ( soVM as any ).editor.model.get( "UId" ) == e.source.UId ) {
+                    ( soVM as any ).editor.model.set( "ParentUId", parentUId );
+                }
+
+                dfd.resolve();
+            } else {
+                dfd.reject();
+            }
+            return dfd.promise();
+        } )
+        .fail( () => {
+            // e.setValid( false );        // TO DO: delete? dont think this statement is needed
+            notifyError( "An error has occurred while updating the parent of Secure Object" );
+        } );
     
     //kendo.confirm( "Are you sure that you want to move " + e.source.FirstName
     //    + " under " + e.destination.FirstName + "?" ).then( function () {

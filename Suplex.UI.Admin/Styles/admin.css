@@ -68,8 +68,11 @@ input:-ms-input-placeholder {
     width: 3px;
 }
 /* tool bars */
-#tbMain, #spTb, #soTb {
+#tbMain { /*, #spTb, #soTb { */
     margin-bottom: -1px;
+}
+#spTb, #soTb {
+    border-width: 0;
 }
 /* toolbar split buttons - restore style as it is overwritten by bootstrap style */
 .k-split-container .k-button {
@@ -114,8 +117,8 @@ input:-ms-input-placeholder {
     padding: 5px;
 }
 
-/* file select dialog */
-#tvSelectFile, #tvSaveAs {
+/* TO DELETE : file select dialog */
+/*#tvSelectFile, #tvSaveAs {
     height: 300px;
 }
 
@@ -130,17 +133,17 @@ input:-ms-input-placeholder {
 
 .file {
     background-position: 0 -16px;
-}
+}*/
 
 /* -- controls inside grid editor */
 /* can delete these 2 if confirm not using treeview inside grid */
-.gridEditor.k-treeview .k-item {
+/*.gridEditor.k-treeview .k-item {
     padding: 0px;
 }
 .gridEditor.k-treeview .k-state-focused {
     border-color: transparent !important;
     box-shadow: none !important;
-}
+}*/
 .gridEditor ul li {
     white-space: nowrap;
     overflow:hidden;
@@ -209,9 +212,18 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     overflow: hidden;
 }
 
+/* splitter bar */
+.k-splitter .k-splitbar-horizontal {
+    width: 1px;
+}
+.k-splitbar-draggable-horizontal .k-resize-handle {
+    margin-left: -1px;  
+}
+.k-splitbar-horizontal .k-arrow-60-left {
+    margin-left: -5px;
+}
 /* styles for secure object editor */
 /* =============================== */
-
 /* -- edit/delete/save/cancel buttons with no text */
 /* https://docs.telerik.com/kendo-ui/knowledge-base/grid-icon-only-buttons */
 #soGrdDacl.k-grid .k-grid-toolbar .k-grid-add,
@@ -252,10 +264,11 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 #soGrdSacl td:nth-child(n+4):nth-child(-n+6) {
     text-align: center;
 }
-/* security principals tool bar */
 #spView {
     position: relative; /* required for kendo ui progress to work */
 }
+
+/* tool bar */
 
 /*#spTb .k-button,*/
 #spTb .k-textbox {
@@ -288,30 +301,6 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     margin-bottom: 5px;
 }
 
-/*#memberOfSection .k-listbox,
-#membersSection .k-listbox {
-    width: 335px;
-    height: 320px;
-    margin-right: 1px;
-}
-
-#notMemberOfSection .k-listbox,
-#nonMembersSection .k-listbox {
-    width: 300px;
-    height: 320px;
-}
-
-.groupMembership label {
-    font-weight: bold;
-}
-
-.groupMembership label,
-.groupMembership input {
-    margin-bottom: 5px;
-    display: inline-block;
-    width: 300px !important;
-}*/
-
 #spTlGroupHierarchy {
     width: 640px;
 }
@@ -319,4 +308,15 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 .clickable {
     cursor: pointer;
     outline: none;
+}
+
+/* hide treelist horizontal scrollbar as it is not being used. the widget height is not set. Scrollbar is enabled on the splitter pane */
+/* can't disable scrolling as it makes it impossible to set or resize column width to smaller than the content (including header) */
+/* https://docs.telerik.com/kendo-ui/controls/data-management/grid/how-to/Layout/hide-scrollbar-when-not-needed */
+#soTl .k-grid-header {
+    padding: 0 !important;
+}
+#soTl .k-grid-content
+{
+    overflow-y: visible;
 }

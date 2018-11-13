@@ -5972,40 +5972,20 @@ module.exports = function(originalModule) {
 
 /***/ }),
 
-/***/ "./src/constants.ts":
-/*!**************************!*\
-  !*** ./src/constants.ts ***!
-  \**************************/
-/*! exports provided: FILE_EXTENSION */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FILE_EXTENSION", function() { return FILE_EXTENSION; });
-var FILE_EXTENSION = ".splx";
-
-
-/***/ }),
-
 /***/ "./src/ids.ts":
 /*!********************!*\
   !*** ./src/ids.ts ***!
   \********************/
-/*! exports provided: TB_MAIN, BTN_SHOW_SECURITY_PRINCIPALS, BTN_SHOW_SECURE_OBJECTS, BTN_SAVE_FILE_AS, BTN_SAVE_FILE, DLG_SELECT_FILE, TREEVIEW_SELECT_FILE, DLG_SAVE_AS, TREEVIEW_SAVE_AS, TXT_SAVE_AS_NAME, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SO_VIEW, SO_SPLITTER, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_BTN_NEW, SO_BTN_NEW_ROOT, SO_BTN_NEW_CHILD, SO_BTN_DELETE, SO_BTN_EXPAND_ALL, SO_BTN_EXPAND_TREE, SO_BTN_COLLAPSE_ALL, SO_BTN_COLLAPSE_TREE, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND, SO_TREELIST_CTX_MENU_COLLAPSE */
+/*! exports provided: TB_MAIN, TBB_SHOW_SECURITY_PRINCIPALS, TBB_SHOW_SECURE_OBJECTS, DLG_REMOTE_SERVICE, TXT_WEBAPI_URL, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SO_VIEW, SO_SPLITTER, SO_TB, SO_TBB_NEW, SO_TBB_NEW_ROOT, SO_TBB_NEW_CHILD, SO_TBB_COPY, SO_TBB_COPY_AS_ROOT, SO_TBB_COPY_AS_CHILD, SO_TBB_DELETE, SO_TBB_EXPAND, SO_TBB_EXPAND_NODE, SO_TBB_EXPAND_TREE, SO_TBB_COLLAPSE, SO_TBB_COLLAPSE_TREE, SO_TBB_COLLAPSE_NODE, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW_ROOT, SO_TREELIST_CTX_MENU_NEW_CHILD, SO_TREELIST_CTX_MENU_COPY_AS_ROOT, SO_TREELIST_CTX_MENU_COPY_AS_CHILD, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND_TREE, SO_TREELIST_CTX_MENU_EXPAND_NODE, SO_TREELIST_CTX_MENU_COLLAPSE_TREE, SO_TREELIST_CTX_MENU_COLLAPSE_NODE */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TB_MAIN", function() { return TB_MAIN; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BTN_SHOW_SECURITY_PRINCIPALS", function() { return BTN_SHOW_SECURITY_PRINCIPALS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BTN_SHOW_SECURE_OBJECTS", function() { return BTN_SHOW_SECURE_OBJECTS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BTN_SAVE_FILE_AS", function() { return BTN_SAVE_FILE_AS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BTN_SAVE_FILE", function() { return BTN_SAVE_FILE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DLG_SELECT_FILE", function() { return DLG_SELECT_FILE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TREEVIEW_SELECT_FILE", function() { return TREEVIEW_SELECT_FILE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DLG_SAVE_AS", function() { return DLG_SAVE_AS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TREEVIEW_SAVE_AS", function() { return TREEVIEW_SAVE_AS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TXT_SAVE_AS_NAME", function() { return TXT_SAVE_AS_NAME; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TBB_SHOW_SECURITY_PRINCIPALS", function() { return TBB_SHOW_SECURITY_PRINCIPALS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TBB_SHOW_SECURE_OBJECTS", function() { return TBB_SHOW_SECURE_OBJECTS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DLG_REMOTE_SERVICE", function() { return DLG_REMOTE_SERVICE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TXT_WEBAPI_URL", function() { return TXT_WEBAPI_URL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_VIEW", function() { return SP_VIEW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_SPLITTER", function() { return SP_SPLITTER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_GRID", function() { return SP_GRID; });
@@ -6024,34 +6004,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_BTN_NEW_GROUP", function() { return SP_BTN_NEW_GROUP; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_VIEW", function() { return SO_VIEW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_SPLITTER", function() { return SO_SPLITTER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TB", function() { return SO_TB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_NEW", function() { return SO_TBB_NEW; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_NEW_ROOT", function() { return SO_TBB_NEW_ROOT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_NEW_CHILD", function() { return SO_TBB_NEW_CHILD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_COPY", function() { return SO_TBB_COPY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_COPY_AS_ROOT", function() { return SO_TBB_COPY_AS_ROOT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_COPY_AS_CHILD", function() { return SO_TBB_COPY_AS_CHILD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_DELETE", function() { return SO_TBB_DELETE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_EXPAND", function() { return SO_TBB_EXPAND; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_EXPAND_NODE", function() { return SO_TBB_EXPAND_NODE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_EXPAND_TREE", function() { return SO_TBB_EXPAND_TREE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_COLLAPSE", function() { return SO_TBB_COLLAPSE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_COLLAPSE_TREE", function() { return SO_TBB_COLLAPSE_TREE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_COLLAPSE_NODE", function() { return SO_TBB_COLLAPSE_NODE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST", function() { return SO_TREELIST; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_EDITOR", function() { return SO_EDITOR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_EDITOR_ERROR", function() { return SO_EDITOR_ERROR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_GRD_DACL", function() { return SO_GRD_DACL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_GRD_SACL", function() { return SO_GRD_SACL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_NEW", function() { return SO_BTN_NEW; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_NEW_ROOT", function() { return SO_BTN_NEW_ROOT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_NEW_CHILD", function() { return SO_BTN_NEW_CHILD; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_DELETE", function() { return SO_BTN_DELETE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_EXPAND_ALL", function() { return SO_BTN_EXPAND_ALL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_EXPAND_TREE", function() { return SO_BTN_EXPAND_TREE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_COLLAPSE_ALL", function() { return SO_BTN_COLLAPSE_ALL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_COLLAPSE_TREE", function() { return SO_BTN_COLLAPSE_TREE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU", function() { return SO_TREELIST_CTX_MENU; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_NEW", function() { return SO_TREELIST_CTX_MENU_NEW; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_NEW_ROOT", function() { return SO_TREELIST_CTX_MENU_NEW_ROOT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_NEW_CHILD", function() { return SO_TREELIST_CTX_MENU_NEW_CHILD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_COPY_AS_ROOT", function() { return SO_TREELIST_CTX_MENU_COPY_AS_ROOT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_COPY_AS_CHILD", function() { return SO_TREELIST_CTX_MENU_COPY_AS_CHILD; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_DELETE", function() { return SO_TREELIST_CTX_MENU_DELETE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_EXPAND", function() { return SO_TREELIST_CTX_MENU_EXPAND; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_COLLAPSE", function() { return SO_TREELIST_CTX_MENU_COLLAPSE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_EXPAND_TREE", function() { return SO_TREELIST_CTX_MENU_EXPAND_TREE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_EXPAND_NODE", function() { return SO_TREELIST_CTX_MENU_EXPAND_NODE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_COLLAPSE_TREE", function() { return SO_TREELIST_CTX_MENU_COLLAPSE_TREE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_COLLAPSE_NODE", function() { return SO_TREELIST_CTX_MENU_COLLAPSE_NODE; });
 var TB_MAIN = "#tbMain";
-var BTN_SHOW_SECURITY_PRINCIPALS = "#btnShowSecurityPrincipals";
-var BTN_SHOW_SECURE_OBJECTS = "#btnShowSecureObjects";
-var BTN_SAVE_FILE_AS = "#btnSaveFileAs";
-var BTN_SAVE_FILE = "#btnSaveFile";
-var DLG_SELECT_FILE = "#dlgSelectFile";
-var TREEVIEW_SELECT_FILE = "#tvSelectFile";
-var DLG_SAVE_AS = "#dlgSaveAs";
-var TREEVIEW_SAVE_AS = "#tvSaveAs";
-var TXT_SAVE_AS_NAME = "#txtSaveAsName";
+var TBB_SHOW_SECURITY_PRINCIPALS = "#tbbShowSecurityPrincipals";
+var TBB_SHOW_SECURE_OBJECTS = "#tbbShowSecureObjects";
+var DLG_REMOTE_SERVICE = "#dlgRemoteService";
+var TXT_WEBAPI_URL = "#txtWebApiUrl";
 var SP_VIEW = "#spView";
 var SP_SPLITTER = "#spSpltr";
 var SP_GRID = "#spGrd";
@@ -6070,24 +6056,35 @@ var SP_BTN_NEW_USER = "#spBtnNewUser";
 var SP_BTN_NEW_GROUP = "#spBtnNewGroup";
 var SO_VIEW = "#soView";
 var SO_SPLITTER = "#soSpltr";
+var SO_TB = "#soTb";
+var SO_TBB_NEW = "#soTbbNew";
+var SO_TBB_NEW_ROOT = "#soTbbNewRoot";
+var SO_TBB_NEW_CHILD = "#soTbbNewChild";
+var SO_TBB_COPY = "#soTbbCopy";
+var SO_TBB_COPY_AS_ROOT = "#soTbbCopyAsRoot";
+var SO_TBB_COPY_AS_CHILD = "#soTbbCopyAsChild";
+var SO_TBB_DELETE = "#soTbbDelete";
+var SO_TBB_EXPAND = "#soTbbExpand";
+var SO_TBB_EXPAND_NODE = "#soTbbExpandNode";
+var SO_TBB_EXPAND_TREE = "#soTbbExpandTree";
+var SO_TBB_COLLAPSE = "#soTbbCollapse";
+var SO_TBB_COLLAPSE_TREE = "#soTbbCollapseTree";
+var SO_TBB_COLLAPSE_NODE = "#soTbbCollapseNode";
 var SO_TREELIST = "#soTl";
 var SO_EDITOR = "#soEditor";
 var SO_EDITOR_ERROR = "#soEditorError";
 var SO_GRD_DACL = "#soGrdDacl";
 var SO_GRD_SACL = "#soGrdSacl";
-var SO_BTN_NEW = "#soBtnNew";
-var SO_BTN_NEW_ROOT = "#soBtnNewRoot";
-var SO_BTN_NEW_CHILD = "#soBtnNewChild";
-var SO_BTN_DELETE = "#soBtnDelete";
-var SO_BTN_EXPAND_ALL = "#soBtnExpandAll";
-var SO_BTN_EXPAND_TREE = "#soBtnExpandTree";
-var SO_BTN_COLLAPSE_ALL = "#soBtnCollapseAll";
-var SO_BTN_COLLAPSE_TREE = "#soBtnCollapseTree";
 var SO_TREELIST_CTX_MENU = "#soTlMnu";
-var SO_TREELIST_CTX_MENU_NEW = "#soTlMnuNew";
+var SO_TREELIST_CTX_MENU_NEW_ROOT = "#soTlMnuNewRoot";
+var SO_TREELIST_CTX_MENU_NEW_CHILD = "#soTlMnuNewChild";
+var SO_TREELIST_CTX_MENU_COPY_AS_ROOT = "#soTlMnuCopyAsRoot";
+var SO_TREELIST_CTX_MENU_COPY_AS_CHILD = "#soTlMnuCopyAsChild";
 var SO_TREELIST_CTX_MENU_DELETE = "#soTlMnuDelete";
-var SO_TREELIST_CTX_MENU_EXPAND = "#soTlMnuExpand";
-var SO_TREELIST_CTX_MENU_COLLAPSE = "#soTlMnuCollapse";
+var SO_TREELIST_CTX_MENU_EXPAND_TREE = "#soTlMnuExpandTree";
+var SO_TREELIST_CTX_MENU_EXPAND_NODE = "#soTlMnuExpandNode";
+var SO_TREELIST_CTX_MENU_COLLAPSE_TREE = "#soTlMnuCollapseTree";
+var SO_TREELIST_CTX_MENU_COLLAPSE_NODE = "#soTlMnuCollapseNode";
 
 
 /***/ }),
@@ -6096,314 +6093,113 @@ var SO_TREELIST_CTX_MENU_COLLAPSE = "#soTlMnuCollapse";
 /*!*********************!*\
   !*** ./src/main.ts ***!
   \*********************/
-/*! exports provided: btnOpenFileClick, btnNewFileClick, btnSaveFileClick, switchView, mainVM, spGetNameIconClass, spBtnNewClick, spBtnDeleteClick, spBtnSaveClick, spBtnDiscardClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spGrdDataSourceChange, soTlDrop, soBtnNewClick, soBtnDeleteClick, soBtnExpandAllClick, soBtnCollapseAllClick, soBtnSaveClick, soBtnDiscardClick */
+/*! exports provided: tbbRemoteRefreshClick, tbbSwitchView, spGetNameIconClass, spBtnNewClick, spBtnDeleteClick, spBtnSaveClick, spBtnDiscardClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spGrdDataSourceChange, soTlDrop, soTbbNewClick, soTbbCopyClick, soTbbDeleteClick, soTbbExpandClick, soTbbCollapseClick, soBtnSaveClick, soBtnDiscardClick */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "btnOpenFileClick", function() { return btnOpenFileClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "btnNewFileClick", function() { return btnNewFileClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "btnSaveFileClick", function() { return btnSaveFileClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "switchView", function() { return switchView; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mainVM", function() { return mainVM; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tbbRemoteRefreshClick", function() { return tbbRemoteRefreshClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "tbbSwitchView", function() { return tbbSwitchView; });
 /* harmony import */ var _ids__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ids */ "./src/ids.ts");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants */ "./src/constants.ts");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
-/* harmony import */ var _sp__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./sp */ "./src/sp.ts");
-/* harmony import */ var _so__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./so */ "./src/so.ts");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spGetNameIconClass", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spGetNameIconClass"]; });
+/* harmony import */ var _sp__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./sp */ "./src/sp.ts");
+/* harmony import */ var _so__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./so */ "./src/so.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spGetNameIconClass", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spGetNameIconClass"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnNewClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnNewClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnNewClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spBtnNewClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnDeleteClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnDeleteClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnDeleteClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spBtnDeleteClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnSaveClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnSaveClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnSaveClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spBtnSaveClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnDiscardClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnDiscardClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnDiscardClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spBtnDiscardClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnMemberOfAddClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnMemberOfAddClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnMemberOfAddClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spBtnMemberOfAddClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnMembersAddClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spBtnMembersAddClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spBtnMembersAddClick", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spBtnMembersAddClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spMsMemberOfDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spMsMemberOfDataSource"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spMsMemberOfDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spMsMemberOfDataSource"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spMsMembersDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spMsMembersDataSource"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spMsMembersDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spMsMembersDataSource"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spLbMemberOfDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spLbMemberOfDataSource"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spLbMemberOfDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spLbMemberOfDataSource"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spLbMembersDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spLbMembersDataSource"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spLbMembersDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spLbMembersDataSource"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spGrdDataSourceChange", function() { return _sp__WEBPACK_IMPORTED_MODULE_3__["spGrdDataSourceChange"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spGrdDataSourceChange", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spGrdDataSourceChange"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTlDrop", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soTlDrop"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTlDrop", function() { return _so__WEBPACK_IMPORTED_MODULE_2__["soTlDrop"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnNewClick", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soBtnNewClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTbbNewClick", function() { return _so__WEBPACK_IMPORTED_MODULE_2__["soTbbNewClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnDeleteClick", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soBtnDeleteClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTbbCopyClick", function() { return _so__WEBPACK_IMPORTED_MODULE_2__["soTbbCopyClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnExpandAllClick", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soBtnExpandAllClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTbbDeleteClick", function() { return _so__WEBPACK_IMPORTED_MODULE_2__["soTbbDeleteClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnCollapseAllClick", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soBtnCollapseAllClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTbbExpandClick", function() { return _so__WEBPACK_IMPORTED_MODULE_2__["soTbbExpandClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnSaveClick", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soBtnSaveClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTbbCollapseClick", function() { return _so__WEBPACK_IMPORTED_MODULE_2__["soTbbCollapseClick"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnDiscardClick", function() { return _so__WEBPACK_IMPORTED_MODULE_4__["soBtnDiscardClick"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnSaveClick", function() { return _so__WEBPACK_IMPORTED_MODULE_2__["soBtnSaveClick"]; });
 
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soBtnDiscardClick", function() { return _so__WEBPACK_IMPORTED_MODULE_2__["soBtnDiscardClick"]; });
 
 
 
 
 
 var $tbMain = $(_ids__WEBPACK_IMPORTED_MODULE_0__["TB_MAIN"]);
-var mainVM = kendo.observable({
-    fileName: null,
-    hasChanges: false,
-    init: function () {
-        this.fileName = null;
-        this.hasChanges = false;
-    },
-    setChange: function (trueorfalse) {
-        this.hasChanges = trueorfalse;
-    },
-});
-var originalWindowTitle = document.title;
-var SelectFile = (function () {
-    function SelectFile() {
-        var _this = this;
-        this.dfd = $.Deferred();
-        this.dsFileExplorer = new kendo.data.HierarchicalDataSource({
-            transport: {
-                read: {
-                    url: Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetDirectoryContents", "Admin"),
-                    dataType: "json",
-                },
-            },
-            schema: {
-                model: {
-                    id: "Path",
-                    hasChildren: function (node) {
-                        if (node.Type == "File")
-                            node.spriteCssClass = "file";
-                        else
-                            node.spriteCssClass = "folder";
-                        return node.HasChildren;
-                    },
-                },
-            },
-        });
-        var $dlgSelectFile = $(_ids__WEBPACK_IMPORTED_MODULE_0__["DLG_SELECT_FILE"]);
-        $dlgSelectFile.kendoDialog({
-            width: "400px",
-            visible: false,
-            title: "Open File",
-            closable: true,
-            modal: true,
-            content: "<div id='tvSelectFile'></div>",
-            open: function () {
-                $("body").addClass("no-scroll");
-                if (_this.dsFileExplorer.data().length == 0)
-                    _this.dsFileExplorer.read();
-            },
-            close: function () {
-                $("body").removeClass("no-scroll");
-                if (_this.fileName == null) {
-                    _this.dfd.reject();
-                }
-                else {
-                    _this.dfd.resolve(_this.fileName);
-                }
-            },
-            actions: [
-                {
-                    text: "OK",
-                    primary: true,
-                    action: function () {
-                        var ok = false;
-                        var selected = _this.k$tvSelectFile.select();
-                        var item = _this.k$tvSelectFile.dataItem(selected);
-                        if (item) {
-                            if (item.Type != "File") {
-                                kendo.alert("Select a file");
-                            }
-                            else {
-                                ok = true;
-                                _this.fileName = item.Path;
-                            }
-                        }
-                        else {
-                            kendo.alert("Select a file");
-                        }
-                        return ok;
-                    },
-                },
-                { text: "Cancel" },
-                {
-                    text: "Refresh",
-                    action: function () {
-                        console.log("-- Refreshing file explorer");
-                        _this.dsFileExplorer.read();
-                        return false;
-                    },
-                },
-            ],
-        });
-        this.k$dlgSelectFile = $dlgSelectFile.data("kendoDialog");
-        var $tvSelectFile = $(_ids__WEBPACK_IMPORTED_MODULE_0__["TREEVIEW_SELECT_FILE"]);
-        $tvSelectFile.kendoTreeView({
-            autoBind: false,
-            dataSource: this.dsFileExplorer,
-            dataTextField: "Name",
-        });
-        this.k$tvSelectFile = $tvSelectFile.data("kendoTreeView");
-    }
-    SelectFile.prototype.OpenDialog = function () {
-        console.log("In selectFile.OpenDialog ...");
-        this.dfd = $.Deferred();
-        this.fileName = null;
-        this.k$dlgSelectFile.open();
-        return this.dfd.promise();
-    };
-    return SelectFile;
-}());
-var selectFile = new SelectFile();
-console.log("Testing class conversion");
-console.log(selectFile);
-var SelectSaveAsFileName = (function () {
-    function SelectSaveAsFileName() {
-        var _this = this;
-        this.dfd = $.Deferred();
-        this.dsFileExplorer = new kendo.data.HierarchicalDataSource({
-            transport: {
-                read: {
-                    url: Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetDirectoryContents", "Admin"),
-                    dataType: "json",
-                },
-            },
-            schema: {
-                model: {
-                    id: "Path",
-                    hasChildren: function (node) {
-                        if (node.Type == "File")
-                            node.spriteCssClass = "file";
-                        else
-                            node.spriteCssClass = "folder";
-                        return node.HasChildren;
-                    },
-                },
-            },
-        });
-        var $dlgSaveAs = $(_ids__WEBPACK_IMPORTED_MODULE_0__["DLG_SAVE_AS"]);
-        $dlgSaveAs.kendoDialog({
-            width: "400px",
-            visible: false,
-            title: "Save As",
-            closable: true,
-            modal: true,
-            content: "<div id='tvSaveAs'></div><div style='margin-top:20px'><label>File name </label>&nbsp;&nbsp;<input id='txtSaveAsName' class='k-textbox' /><label>" +
-                _constants__WEBPACK_IMPORTED_MODULE_1__["FILE_EXTENSION"] +
-                "</label></div>",
-            open: function () {
-                $("body").addClass("no-scroll");
-                if (_this.dsFileExplorer.data().length == 0)
-                    _this.dsFileExplorer.read();
-            },
-            close: function () {
-                $("body").removeClass("no-scroll");
-                if (_this.fileName == null) {
-                    _this.dfd.reject();
-                }
-                else {
-                    _this.dfd.resolve(_this.fileName);
-                }
-            },
-            actions: [
-                {
-                    text: "OK",
-                    primary: true,
-                    action: function () {
-                        var ok = false;
-                        var fn = $txtSaveAsName.val().trim();
-                        fn = fn.substr(0, fn.lastIndexOf(".")) || fn;
-                        $txtSaveAsName.val(fn);
-                        var selected = _this.k$tvSaveAs.select();
-                        if (fn.length == 0) {
-                            kendo.alert("Choose a folder and enter a file name");
-                        }
-                        else if (!Object(_utils__WEBPACK_IMPORTED_MODULE_2__["isValidFileName"])(fn)) {
-                            kendo.alert("File name is not valid");
-                        }
-                        else if (selected.length == 0) {
-                            kendo.alert("Choose a folder and enter a file name");
-                        }
-                        else {
-                            var item = _this.k$tvSaveAs.dataItem(selected);
-                            var folder = null;
-                            if (item.Type == "File") {
-                                folder = _this.k$tvSaveAs.dataItem(_this.k$tvSaveAs.parent(selected)).Path;
-                            }
-                            else {
-                                folder = item.Path;
-                            }
-                            _this.fileName = folder + fn + _constants__WEBPACK_IMPORTED_MODULE_1__["FILE_EXTENSION"];
-                            ok = true;
-                        }
-                        return ok;
-                    },
-                },
-                { text: "Cancel" },
-                {
-                    text: "Refresh",
-                    action: function () {
-                        console.log("-- Refreshing file explorer");
-                        _this.dsFileExplorer.read();
-                        return false;
-                    },
-                },
-            ],
-        });
-        this.k$dlgSaveAs = $dlgSaveAs.data("kendoDialog");
-        var $tvSaveAs = $(_ids__WEBPACK_IMPORTED_MODULE_0__["TREEVIEW_SAVE_AS"]);
-        var $txtSaveAsName = $(_ids__WEBPACK_IMPORTED_MODULE_0__["TXT_SAVE_AS_NAME"]);
-        $tvSaveAs.kendoTreeView({
-            autoBind: false,
-            dataSource: this.dsFileExplorer,
-            dataTextField: "Name",
-            change: function (e) {
-                var selected = this.select();
-                var item = this.dataItem(selected);
-                if (item)
-                    if (item.Type == "File") {
-                        var name_1 = item.Name;
-                        $txtSaveAsName.val(name_1.substr(0, name_1.lastIndexOf(".")) || name_1);
-                    }
-            },
-        });
-        this.k$tvSaveAs = $tvSaveAs.data("kendoTreeView");
-    }
-    ;
-    SelectSaveAsFileName.prototype.OpenDialog = function () {
-        console.log("In SelectSaveAsFileName.OpenDialog ...");
-        this.dfd = $.Deferred();
-        this.fileName = null;
-        this.k$dlgSaveAs.open();
-        return this.dfd.promise();
-    };
-    return SelectSaveAsFileName;
-}());
-var selectSaveAsFileName = new SelectSaveAsFileName();
+var k$tbMain = null;
+var $tbbShowSecureObjects = null;
+var $tbbShowSecurityPrincipals = null;
 function init() {
     setupWidgets();
     setupVariables();
     setupEventHandlers();
-    kendo.bind($tbMain, mainVM);
-    Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spSetup"])();
-    Object(_so__WEBPACK_IMPORTED_MODULE_4__["soSetup"])();
+    Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spSetup"])();
+    Object(_so__WEBPACK_IMPORTED_MODULE_2__["soSetup"])();
     $("input").attr("autocomplete", "off");
     $("input").attr("autocorrect", "off");
-    $(_ids__WEBPACK_IMPORTED_MODULE_0__["BTN_SHOW_SECURE_OBJECTS"]).click();
+    isConnected()
+        .then(function () {
+        k$tbMain.enable($tbbShowSecureObjects, true);
+        k$tbMain.enable($tbbShowSecurityPrincipals, true);
+        Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spLoad"])();
+        Object(_so__WEBPACK_IMPORTED_MODULE_2__["soLoad"])();
+        $(_ids__WEBPACK_IMPORTED_MODULE_0__["TBB_SHOW_SECURE_OBJECTS"]).click();
+    })
+        .fail(function () {
+        k$tbMain.enable($tbbShowSecureObjects, false);
+        k$tbMain.enable($tbbShowSecurityPrincipals, false);
+        Object(_so__WEBPACK_IMPORTED_MODULE_2__["soHide"])();
+        Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spHide"])();
+    });
 }
-function setupWidgets() { }
+function isConnected() {
+    var dfd = $.Deferred();
+    $.ajax(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("IsConnected", "Admin"))
+        .then(function (data) {
+        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
+            dfd.resolve();
+        }
+        else {
+            Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Not able to connect to the remote service");
+            dfd.reject();
+        }
+    })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Not able to connect to the remote service.<br/>" + msg);
+        dfd.reject();
+    });
+    return dfd.promise();
+}
+function setupWidgets() {
+}
 function setupVariables() {
+    k$tbMain = $tbMain.data("kendoToolBar");
+    $tbbShowSecureObjects = $(_ids__WEBPACK_IMPORTED_MODULE_0__["TBB_SHOW_SECURE_OBJECTS"]);
+    $tbbShowSecurityPrincipals = $(_ids__WEBPACK_IMPORTED_MODULE_0__["TBB_SHOW_SECURITY_PRINCIPALS"]);
 }
 function setupEventHandlers() {
     $(".accordion h2").click(function () {
@@ -6415,193 +6211,54 @@ function setupEventHandlers() {
             .toggleClass("k-i-arrow-chevron-up k-i-arrow-chevron-down");
     });
 }
-function openFile(fileName) {
-    console.log("In openFile...");
-    console.log("-- File name: " + fileName);
-    if (!fileName)
-        return;
-    $.ajax({
-        method: "GET",
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("OpenFile", "Admin"),
-        data: { fileName: fileName },
-        dataType: "json",
-    })
-        .done(function (data) {
-        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_2__["AjaxResponseStatus"].Success) {
-            mainVM.init();
-            mainVM.set("fileName", fileName);
-            setWindowTitle(fileName);
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spReset"])();
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spLoad"])();
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soReset"])();
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soLoad"])();
+function tbbRemoteRefreshClick() {
+    console.log("In tbbRemoteRefreshClick...");
+    Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spVerifySaveChanges"])()
+        .then(function (proceed) {
+        if (proceed) {
+            return Object(_so__WEBPACK_IMPORTED_MODULE_2__["soVerifySaveChanges"])();
         }
         else {
-            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])(data.Message);
+            return false;
         }
-    })
-        .fail(function (xhr, textStatus) {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There was a problem opening the file");
-    });
-}
-function newFile() {
-    console.log("In newFile...");
-    $.ajax({
-        method: "POST",
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("NewFile", "Admin"),
-        dataType: "json",
-    })
-        .done(function (data) {
-        if (data.Status != _utils__WEBPACK_IMPORTED_MODULE_2__["AjaxResponseStatus"].Success) {
-            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("Unable to initialize suplex store");
-        }
-        else {
-            mainVM.init();
-            setWindowTitle();
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spReset"])();
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soReset"])();
-        }
-    })
-        .fail(function (xhr, textStatus) {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("Unable to initialize suplex store");
-        console.log(xhr);
-    });
-}
-function btnNewFileClick() {
-    console.log("In btnNewFileClick...");
-    Object(_sp__WEBPACK_IMPORTED_MODULE_3__["verifySaveChanges"])()
-        .then(function (proceed) {
-        return proceed;
-    })
-        .then(function (proceed) {
-        return proceed ? verifySaveChangesToStore() : false;
     })
         .then(function (proceed) {
         if (proceed) {
-            newFile();
-        }
-    });
-}
-function btnOpenFileClick() {
-    console.log("In btnOpenFileClick...");
-    Object(_sp__WEBPACK_IMPORTED_MODULE_3__["verifySaveChanges"])()
-        .then(function (proceed) {
-        return proceed;
-    })
-        .then(function (proceed) {
-        return proceed ? verifySaveChangesToStore() : false;
-    })
-        .then(function (proceed) {
-        if (proceed) {
-            selectFile.OpenDialog().then(openFile);
-        }
-    });
-}
-function btnSaveFileClick(e) {
-    console.log("In btnSaveFileClick...");
-    switch ("#" + e.id) {
-        case _ids__WEBPACK_IMPORTED_MODULE_0__["BTN_SAVE_FILE"]:
-            console.log("-- save");
-            var fileName = mainVM.get("fileName");
-            if (fileName != null) {
-                Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])();
-                saveFile(fileName).always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
-                break;
-            }
-        case _ids__WEBPACK_IMPORTED_MODULE_0__["BTN_SAVE_FILE_AS"]:
-            console.log("-- save file as");
-            selectSaveAsFileName.OpenDialog()
-                .then(function (fileName) {
-                Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])();
-                return saveFile(fileName);
+            isConnected()
+                .then(function () {
+                Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spReset"])();
+                Object(_so__WEBPACK_IMPORTED_MODULE_2__["soReset"])();
+                Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spLoad"])();
+                Object(_so__WEBPACK_IMPORTED_MODULE_2__["soLoad"])();
+                if ($tbbShowSecureObjects.hasClass("k-state-disabled") && $tbbShowSecurityPrincipals.hasClass("k-state-disabled")) {
+                    k$tbMain.enable($tbbShowSecureObjects, true);
+                    k$tbMain.enable($tbbShowSecurityPrincipals, true);
+                    $(_ids__WEBPACK_IMPORTED_MODULE_0__["TBB_SHOW_SECURE_OBJECTS"]).click();
+                }
             })
-                .always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
-            break;
-    }
-}
-function verifySaveChangesToStore() {
-    console.log("In verifySaveChangesToStore...");
-    var dfd = $.Deferred();
-    console.log(mainVM.get("hasChanges"));
-    if (!mainVM.get("hasChanges")) {
-        dfd.resolve(true);
-    }
-    else {
-        var isNewFile_1 = mainVM.get("fileName") ? false : true;
-        var message = "Save changes to " + (isNewFile_1 ? "NewFile" : mainVM.get("fileName")) + "?";
-        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showYesNoCancelDialog"])("Save changes?", message)).then(function (response) {
-            console.log("-- Response is " + response);
-            switch (response) {
-                case 1:
-                    var promise = isNewFile_1 ? selectSaveAsFileName.OpenDialog() : $.Deferred().resolve();
-                    promise.then(saveFile).then(function (saveResult) {
-                        dfd.resolve(saveResult);
-                    });
-                    break;
-                case 2:
-                    dfd.resolve(true);
-                    break;
-                case 3:
-                    dfd.resolve(false);
-                    break;
-            }
-        });
-    }
-    return dfd.promise();
-}
-function saveFile(fileName) {
-    console.log("In saveFile...");
-    console.log("-- File name: " + fileName);
-    var data = fileName ? { fileName: fileName } : null;
-    var dfd = $.Deferred();
-    $.ajax({
-        method: "POST",
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("SaveFile", "Admin"),
-        data: data,
-        dataType: "json",
-    })
-        .then(function (data) {
-        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_2__["AjaxResponseStatus"].Success) {
-            if (fileName) {
-                mainVM.init();
-                mainVM.set("fileName", fileName);
-                setWindowTitle(fileName);
-            }
-            else {
-                mainVM.setChange(false);
-            }
-            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifySuccess"])("File " + mainVM.get("fileName") + " saved successfully");
-            dfd.resolve(true);
+                .fail(function () {
+                k$tbMain.enable($tbbShowSecureObjects, false);
+                k$tbMain.enable($tbbShowSecurityPrincipals, false);
+                Object(_so__WEBPACK_IMPORTED_MODULE_2__["soHide"])();
+                Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spHide"])();
+            });
         }
-        else {
-            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])(data.Message);
-            dfd.resolve(false);
-        }
-    }, function (jqXHR, textStatus) {
-        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("An error has occurred while saving file " + (fileName ? fileName : mainVM.get("fileName")) + ".<br/>" + "Error: " + msg);
-        dfd.resolve(false);
     });
-    return dfd.promise();
 }
-function switchView(e) {
-    console.log("In switchView...");
-    switch (e.id) {
-        case "btnShowSecurityPrincipals":
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soHide"])();
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spShow"])();
+function tbbSwitchView(e) {
+    switch ("#" + e.id) {
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["TBB_SHOW_SECURITY_PRINCIPALS"]:
+            Object(_so__WEBPACK_IMPORTED_MODULE_2__["soHide"])();
+            Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spShow"])();
             break;
-        case "btnShowSecureObjects":
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spHide"])();
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soShow"])();
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["TBB_SHOW_SECURE_OBJECTS"]:
+            Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spHide"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_2__["soShow"])();
             break;
         default:
-            Object(_sp__WEBPACK_IMPORTED_MODULE_3__["spHide"])();
-            Object(_so__WEBPACK_IMPORTED_MODULE_4__["soHide"])();
+            Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spHide"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_2__["soHide"])();
     }
-}
-function setWindowTitle(fileName) {
-    document.title = originalWindowTitle + " " + fileName;
 }
 $(document).ready(function () {
     init();
@@ -6618,7 +6275,7 @@ $(document).ready(function () {
 /*!*******************!*\
   !*** ./src/so.ts ***!
   \*******************/
-/*! exports provided: trusteesDataSource, soSetup, soShow, soHide, soReset, soLoad, soBtnExpandAllClick, soBtnCollapseAllClick, soBtnNewClick, soBtnSaveClick, soBtnDeleteClick, soBtnDiscardClick, verifySaveChanges, soTlDrop */
+/*! exports provided: trusteesDataSource, soSetup, soShow, soHide, soReset, soLoad, soTbbExpandClick, soTbbCollapseClick, soTbbNewClick, soTbbCopyClick, soBtnSaveClick, soTbbDeleteClick, soBtnDiscardClick, soVerifySaveChanges, soTlDrop */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6629,18 +6286,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soHide", function() { return soHide; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soReset", function() { return soReset; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soLoad", function() { return soLoad; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnExpandAllClick", function() { return soBtnExpandAllClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnCollapseAllClick", function() { return soBtnCollapseAllClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnNewClick", function() { return soBtnNewClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTbbExpandClick", function() { return soTbbExpandClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTbbCollapseClick", function() { return soTbbCollapseClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTbbNewClick", function() { return soTbbNewClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTbbCopyClick", function() { return soTbbCopyClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnSaveClick", function() { return soBtnSaveClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnDeleteClick", function() { return soBtnDeleteClick; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTbbDeleteClick", function() { return soTbbDeleteClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soBtnDiscardClick", function() { return soBtnDiscardClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "verifySaveChanges", function() { return verifySaveChanges; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soVerifySaveChanges", function() { return soVerifySaveChanges; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTlDrop", function() { return soTlDrop; });
 /* harmony import */ var _ids__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ids */ "./src/ids.ts");
 /* harmony import */ var lodash_es_debounce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash-es/debounce */ "./node_modules/lodash-es/debounce.js");
-/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./main */ "./src/main.ts");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
 var __assign = (undefined && undefined.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -6655,7 +6312,6 @@ var __assign = (undefined && undefined.__assign) || function () {
 
 
 
-
 var $soView = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_VIEW"]);
 var $soTl = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST"]);
 var $soSpltr = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_SPLITTER"]);
@@ -6663,10 +6319,14 @@ var $soEditor = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_EDITOR"]);
 var $soEditorError = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_EDITOR_ERROR"]);
 var $soGrdDacl = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_DACL"]);
 var $soGrdSacl = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_SACL"]);
+var $soTb = null;
+var k$soTb = null;
 var validator = null;
 var k$soTl = null;
 var k$soGrdDacl = null;
 var k$soGrdSacl = null;
+var $soCtxMnu = null;
+var k$soCtxMnu = null;
 var auditTypes = [];
 var rightTypes = [];
 var rights = {};
@@ -6676,27 +6336,27 @@ var sacl = [];
 var daclLocalId;
 var saclLocalId;
 var dfdSecureObjectDefaults = $
-    .get(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetSecureObjectDefaults", "Admin"))
+    .get(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetSecureObjectDefaults", "Admin"))
     .done(function (data) {
     secureObjectDefaults = data;
     soVM.editor.set("secureObjectDefaults", secureObjectDefaults);
 })
     .fail(function (jqXHR, textStatus, errorThrown) {
-    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
-    Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
+    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
+    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
 });
 var dfdAuditTypes = $
-    .get(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetAuditTypes", "Admin"))
+    .get(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetAuditTypes", "Admin"))
     .done(function (data) {
     auditTypes = data;
     soVM.editor.set("auditTypes", auditTypes);
 })
     .fail(function (jqXHR, textStatus, errorThrown) {
-    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
-    Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
+    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
+    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
 });
 var dfdRights = $
-    .get(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetRights", "Admin"))
+    .get(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetRights", "Admin"))
     .done(function (data) {
     rightTypes = [];
     rights = {};
@@ -6709,11 +6369,11 @@ var dfdRights = $
     });
 })
     .fail(function (jqXHR, textStatus, errorThrown) {
-    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
-    Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
+    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
+    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
 });
-Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])();
-$.when(dfdAuditTypes, dfdRights, dfdSecureObjectDefaults).always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
+Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])();
+$.when(dfdAuditTypes, dfdRights, dfdSecureObjectDefaults).always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
 var trusteesDataSource = new kendo.data.DataSource({
     data: [],
     schema: {
@@ -7005,6 +6665,7 @@ function soSetup() {
     setupWidgets();
     setupVariables();
     setupEventHandlers();
+    enableDisableToolBarButtons(false);
 }
 function setupWidgets() {
     $soGrdDacl.kendoGrid({
@@ -7056,9 +6717,9 @@ function setupWidgets() {
                             e.preventDefault();
                             var tr = $(e.target).closest("tr");
                             var data = this.dataItem(tr);
-                            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete this permission record?"))
+                            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete this permission record?"))
                                 .then(function (response) {
-                                if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
+                                if (response == _utils__WEBPACK_IMPORTED_MODULE_2__["DialogResponse"].Yes) {
                                     k$soGrdDacl.dataSource.remove(data);
                                     setVMEditorHasChangesFlag(true);
                                 }
@@ -7144,9 +6805,9 @@ function setupWidgets() {
                             e.preventDefault();
                             var tr = $(e.target).closest("tr");
                             var data = this.dataItem(tr);
-                            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete this audit record?"))
+                            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete this audit record?"))
                                 .then(function (response) {
-                                if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
+                                if (response == _utils__WEBPACK_IMPORTED_MODULE_2__["DialogResponse"].Yes) {
                                     k$soGrdSacl.dataSource.remove(data);
                                     setVMEditorHasChangesFlag(true);
                                 }
@@ -7179,9 +6840,12 @@ function setupWidgets() {
     var daclAllowInheritTemplate = "<input id='2#=UniqueName#' type='checkbox' class='k-checkbox' #: DaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UniqueName#' />";
     var saclAllowInheritTemplate = "<input id='3#=UniqueName#' type='checkbox' class='k-checkbox' #: SaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for=3#=UniqueName#' />";
     $soTl.kendoTreeList({
+        autoBind: false,
         editable: { move: true },
         filterable: true,
         selectable: true,
+        resizable: true,
+        scrollable: true,
         columns: [
             { field: "UniqueName", width: 200, template: uniqueNameTemplate },
             { field: "IsEnabled", title: "Enabled", template: isEnabledTemplate },
@@ -7192,7 +6856,7 @@ function setupWidgets() {
             type: "aspnetmvc-ajax",
             transport: {
                 read: {
-                    url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetSecureObjectTree", "Admin")
+                    url: Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetSecureObjectTree", "Admin")
                 }
             },
             schema: {
@@ -7215,7 +6879,7 @@ function setupWidgets() {
                 }
             },
             sort: { field: "UniqueName", dir: "asc" },
-            error: _utils__WEBPACK_IMPORTED_MODULE_3__["dataSourceError"]
+            error: _utils__WEBPACK_IMPORTED_MODULE_2__["dataSourceError"]
         },
         drop: soTlDrop,
         messages: {
@@ -7223,27 +6887,30 @@ function setupWidgets() {
         }
     });
     $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU"]).kendoContextMenu({
-        target: $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_SPLITTER"]).find(".k-pane:first"),
-        filter: "tbody > tr, .wrapper",
+        target: "#soTl",
+        filter: "tbody > tr, thead > tr",
         open: function (e) {
             var ele = $(e.target);
-            var ctxMnu = $(e.item);
-            if (ele.hasClass("wrapper")) {
-                ctxMnu.find(".node-only").hide();
-            }
-            else {
-                ctxMnu.find(".node-only").show();
-            }
+            var ctxMnuEle = $(e.item);
+            var headerSelected = (ele.closest('thead').length > 0);
+            ctxMnuEle.find(".tree-node-selected").each(function (idx, ele) {
+                k$soCtxMnu.enable(ele, !headerSelected);
+            });
+            $("body").addClass("no-scroll");
+        },
+        close: function (e) {
+            $("body").removeClass("no-scroll");
         },
         select: function (e) {
             var target = $(e.target);
             switch ("#" + e.item.id) {
-                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_NEW"]:
-                    verifySaveChanges()
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_NEW_ROOT"]:
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_NEW_CHILD"]:
+                    soVerifySaveChanges()
                         .then(function (proceed) {
                         if (proceed) {
                             resetEditor(true);
-                            if (target.hasClass("wrapper")) {
+                            if (("#" + e.item.id) == _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_NEW_ROOT"]) {
                                 soVM.editor.model.set("UniqueName", "New Root");
                                 clearTreeSelection();
                             }
@@ -7256,29 +6923,49 @@ function setupWidgets() {
                         }
                     });
                     break;
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_COPY_AS_ROOT"]:
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_COPY_AS_CHILD"]:
+                    soVerifySaveChanges()
+                        .then(function () {
+                        var dataItem = k$soTl.dataItem(target);
+                        selectTreeItem(dataItem.UId);
+                        if (("#" + e.item.id) == _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_COPY_AS_ROOT"]) {
+                            $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COPY_AS_ROOT"]).click();
+                        }
+                        else {
+                            $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COPY_AS_CHILD"]).click();
+                        }
+                    });
+                    break;
                 case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_DELETE"]:
                     var itemToDelete_1 = k$soTl.dataItem(target);
                     if (itemToDelete_1) {
-                        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete Secure Object <b>" + itemToDelete_1.UniqueName + "</b> and all its child items?")
+                        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete Secure Object <b>" + itemToDelete_1.UniqueName + "</b> and all its child items?")
                             .then(function (response) {
-                            if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
-                                Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])();
+                            if (response == _utils__WEBPACK_IMPORTED_MODULE_2__["DialogResponse"].Yes) {
+                                Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])();
                                 deleteSecureObject(itemToDelete_1)
                                     .then(function (data) {
                                     return processDeleteActionResponse(data, itemToDelete_1);
                                 })
-                                    .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
+                                    .always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
                             }
                         });
                     }
                     break;
-                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_EXPAND"]:
-                    var item1 = target.hasClass("wrapper") ? $() : target.closest("tr");
-                    expandCollapseAll(true, item1);
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_EXPAND_TREE"]:
+                    expandCollapse(true);
                     break;
-                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_COLLAPSE"]:
-                    var item2 = target.hasClass("wrapper") ? $() : target.closest("tr");
-                    expandCollapseAll(false, item2);
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_EXPAND_NODE"]:
+                    var item1 = target.closest("tr");
+                    expandCollapse(true, item1);
+                    break;
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_COLLAPSE_TREE"]:
+                    expandCollapse(false);
+                    break;
+                case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU_COLLAPSE_NODE"]:
+                    var item2 = target.closest("tr");
+                    expandCollapse(false, item2);
                     break;
                 default:
                     break;
@@ -7298,15 +6985,31 @@ function setupWidgets() {
         .data("kendoValidator");
 }
 function setupVariables() {
+    $soTb = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TB"]);
+    k$soTb = $soTb.data('kendoToolBar');
     k$soTl = $soTl.data("kendoTreeList");
     k$soGrdDacl = $soGrdDacl.data("kendoGrid");
     k$soGrdSacl = $soGrdSacl.data("kendoGrid");
+    $soCtxMnu = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU"]);
+    k$soCtxMnu = $soCtxMnu.data("kendoContextMenu");
 }
 function setupEventHandlers() {
     $(window)
         .resize(Object(lodash_es_debounce__WEBPACK_IMPORTED_MODULE_1__["default"])(resizeSplitter, 500))
         .trigger("resize");
     $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST"]).on("click", "tbody tr", soTlClick);
+    soVM.bind('change', function (e) {
+        if (e.field == "selectedUId") {
+            enableDisableToolBarButtons(this.secureObjectSelected());
+        }
+        ;
+    });
+}
+function enableDisableToolBarButtons(enable) {
+    k$soTb.enable($(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COPY"]), enable);
+    k$soTb.enable($(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_NEW_CHILD"]), enable);
+    k$soTb.enable($(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_EXPAND_NODE"]), enable);
+    k$soTb.enable($(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COLLAPSE_NODE"]), enable);
 }
 function soShow() {
     if (!soVM.get("visible"))
@@ -7326,36 +7029,66 @@ function soLoad() {
     k$soTl.dataSource.read();
 }
 function resizeSplitter() {
-    var top = 125;
+    var top = 85;
     var bottom = 25;
     var height = $(window).height() - (top + bottom) - 1;
     height = height <= 0 ? 100 : height;
     $soSpltr.data("kendoSplitter").wrapper.height(height);
-    $soSpltr.data("kendoSplitter").resize();
+    $soSpltr.data("kendoSplitter").resize(true);
 }
-function soBtnExpandAllClick(e) {
+function soTbbExpandClick(e) {
     switch ("#" + e.id) {
-        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_EXPAND_ALL"]:
-            var node = k$soTl.select();
-            expandCollapseAll(true, node);
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_EXPAND"]:
+            console.log("-- expand");
+            var $btn = $("#" + e.id).closest('.k-split-button');
+            var popup = $btn.data("kendoPopup");
+            if (popup) {
+                if (popup.visible()) {
+                    $("body").removeClass("no-scroll");
+                    popup.close();
+                }
+                else {
+                    $("body").addClass("no-scroll");
+                    popup.open();
+                }
+            }
             break;
-        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_EXPAND_TREE"]:
-            expandCollapseAll(true);
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_EXPAND_NODE"]:
+            var node = k$soTl.select();
+            expandCollapse(true, node);
+            break;
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_EXPAND_TREE"]:
+            expandCollapse(true);
             break;
     }
 }
-function soBtnCollapseAllClick(e) {
+function soTbbCollapseClick(e) {
     switch ("#" + e.id) {
-        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_COLLAPSE_ALL"]:
-            var node = k$soTl.select();
-            expandCollapseAll(false, node);
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COLLAPSE"]:
+            console.log("-- collapse");
+            var $btn = $("#" + e.id).closest('.k-split-button');
+            var popup = $btn.data("kendoPopup");
+            if (popup) {
+                if (popup.visible()) {
+                    $("body").removeClass("no-scroll");
+                    popup.close();
+                }
+                else {
+                    $("body").addClass("no-scroll");
+                    popup.open();
+                }
+            }
             break;
-        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_COLLAPSE_TREE"]:
-            expandCollapseAll(false);
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COLLAPSE_NODE"]:
+            var node = k$soTl.select();
+            expandCollapse(false, node);
+            break;
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COLLAPSE_TREE"]:
+            expandCollapse(false);
             break;
     }
 }
-function expandCollapseAll(expand, node) {
+function expandCollapse(expand, node) {
     if (!node || node.length == 0) {
         if (expand) {
             k$soTl.tbody.find(".k-i-expand").closest("tr").map(function (idx, row) {
@@ -7386,25 +7119,90 @@ function expandCollapseChildNodes(expand, ds, nodes) {
         expandCollapseChildNodes(expand, ds, ds.childNodes(nodes[i]));
     }
 }
-function soBtnNewClick(e) {
-    console.log("In soBtnNewClick...");
+function soTbbNewClick(e) {
+    console.log("In soTbbNewClick...");
     switch ("#" + e.id) {
-        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_NEW"]:
-        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_NEW_ROOT"]:
-            verifySaveChanges().then(function (proceed) {
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_NEW"]:
+            console.log("-- new");
+            var $btn = $("#" + e.id).closest('.k-split-button');
+            var popup = $btn.data("kendoPopup");
+            if (popup) {
+                if (popup.visible()) {
+                    $("body").removeClass("no-scroll");
+                    popup.close();
+                }
+                else {
+                    $("body").addClass("no-scroll");
+                    popup.open();
+                }
+            }
+            break;
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_NEW_ROOT"]:
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_NEW_CHILD"]:
+            soVerifySaveChanges().then(function (proceed) {
                 if (proceed) {
                     resetEditor(true);
-                    if ("#" + e.id == _ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_NEW"] && soVM.get("selectedUId") != null) {
+                    if ("#" + e.id == _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_NEW_CHILD"] && soVM.get("selectedUId") != null) {
                         soVM.editor.model.set("ParentUId", soVM.get("selectedUId"));
                         soVM.editor.model.set("UniqueName", "New Child");
                     }
                     else {
                         clearTreeSelection();
-                        k$soTl.clearSelection();
                         soVM.editor.model.set("UniqueName", "New Root");
                     }
                 }
             });
+            break;
+    }
+}
+function soTbbCopyClick(e) {
+    console.log("In spTbbCopyClick...");
+    var asRoot = false;
+    switch ("#" + e.id) {
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COPY"]:
+            var $btn = $("#" + e.id).closest('.k-split-button');
+            var popup = $btn.data("kendoPopup");
+            if (popup) {
+                if (popup.visible()) {
+                    $("body").removeClass("no-scroll");
+                    popup.close();
+                }
+                else {
+                    $("body").addClass("no-scroll");
+                    popup.open();
+                }
+            }
+            break;
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COPY_AS_ROOT"]:
+            asRoot = true;
+        case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COPY_AS_CHILD"]:
+            var selectedItem_1 = k$soTl.dataItem(k$soTl.select());
+            if (selectedItem_1) {
+                var parentUId_1 = asRoot ? null : selectedItem_1.UId;
+                soVerifySaveChanges().then(function (proceed) {
+                    console.log("-- " + proceed);
+                    if (proceed) {
+                        resetEditor(true);
+                        getSecureObject(selectedItem_1.UId)
+                            .done(function (data) {
+                            if (parentUId_1) {
+                                selectTreeItem(parentUId_1);
+                            }
+                            else {
+                                clearTreeSelection();
+                            }
+                            data.Data.UId = null;
+                            data.Data.ParentUId = parentUId_1;
+                            data.Data.UniqueName = "New " + (parentUId_1 ? "Child" : "Root") + " (copy of " + data.Data.UniqueName + ")";
+                            populateEditor(data);
+                        })
+                            .fail(function () { });
+                    }
+                    else {
+                        selectTreeItem();
+                    }
+                });
+            }
             break;
     }
 }
@@ -7416,17 +7214,17 @@ function soBtnSaveClick() {
     console.log("In soBtnSaveClick...");
     clearEditorErrors();
     if (validateEditor()) {
-        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
+        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])())
             .then(saveSecureObject)
             .then(processSaveActionResponse)
-            .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
+            .always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
     }
 }
 function validateEditor() {
     console.log("In validateEditor...");
     var ok;
     if (k$soGrdDacl.table.find("tr.k-grid-edit-row").length > 0 || k$soGrdSacl.table.find("tr.k-grid-edit-row").length > 0) {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showAlert"])("Alert", "<p style='text-align:center;width:400px;'>Complete the 'Permission' and 'Audit' sections first before you save.</p>");
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showAlert"])("Alert", "<p style='text-align:center;width:400px;'>Complete the 'Permission' and 'Audit' sections first before you save.</p>");
         ok = false;
     }
     else {
@@ -7469,13 +7267,13 @@ function saveSecureObject() {
     var dfd = $.Deferred();
     $.ajax({
         method: "POST",
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("SaveSecureObject", "Admin"),
+        url: Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("SaveSecureObject", "Admin"),
         contentType: "application/json",
         data: JSON.stringify(model),
         dataType: "json",
     })
         .then(function (data) {
-        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
+        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_2__["AjaxResponseStatus"].Success) {
             transformData(data);
             dfd.resolve(data);
         }
@@ -7484,8 +7282,8 @@ function saveSecureObject() {
         }
     })
         .fail(function (jqXHR, textStatus) {
-        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem saving Secure Object.<br/>" + msg);
+        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem saving Secure Object.<br/>" + msg);
         dfd.reject();
     });
     return dfd.promise();
@@ -7503,8 +7301,7 @@ function transformData(data) {
 function processSaveActionResponse(data) {
     console.log("In processSaveActionResponse...");
     var dfd = $.Deferred();
-    if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
-        _main__WEBPACK_IMPORTED_MODULE_2__["mainVM"].setChange(true);
+    if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_2__["AjaxResponseStatus"].Success) {
         if (data.Data) {
             setVMEditorHasChangesFlag(false);
             populateEditor(data);
@@ -7534,7 +7331,7 @@ function processSaveActionResponse(data) {
                 dataItem.set("SaclAllowInherit", updatedItem.SaclAllowInherit);
             }
             selectTreeItem(updatedItem.UId);
-            Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifySuccess"])("Secure Object <b>" + updatedItem.UniqueName + "</b> saved successfully.");
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifySuccess"])("Secure Object <b>" + updatedItem.UniqueName + "</b> saved.");
             dfd.resolve();
         }
     }
@@ -7551,45 +7348,44 @@ function processSaveActionResponse(data) {
             }
             setVMEditorHasErrorFlag(true);
         }
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Unable to save Secure Object. Correct the error(s) on the form and try again.");
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("Unable to save Secure Object. Correct the error(s) on the form and try again.");
         dfd.reject();
     }
     return dfd.promise();
 }
-function soBtnDeleteClick() {
+function soTbbDeleteClick() {
     var itemToDelete = k$soTl.dataItem(k$soTl.select());
     if (!itemToDelete)
         return;
-    $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete the Secure Object <b>" + itemToDelete.UniqueName + "</b> and all its child items?"))
+    $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showYesNoDialog"])("Confirm Delete", "Are you sure you want to delete the Secure Object <b>" + itemToDelete.UniqueName + "</b> and all its child items?"))
         .then(function (response) {
-        if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
-            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
+        if (response == _utils__WEBPACK_IMPORTED_MODULE_2__["DialogResponse"].Yes) {
+            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])())
                 .then(function () {
                 return deleteSecureObject(itemToDelete);
             })
                 .then(function (data) {
                 return processDeleteActionResponse(data, itemToDelete);
             })
-                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
+                .always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
         }
     });
 }
 function deleteSecureObject(itemToDelete) {
     var dfd = $.Deferred();
-    $.post(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("DeleteSecureObject", "Admin"), { uId: itemToDelete.UId })
+    $.post(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("DeleteSecureObject", "Admin"), { uId: itemToDelete.UId })
         .then(function (data) {
         return dfd.resolve(data);
     })
         .fail(function (jqXHR, textStatus) {
-        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem deleting Secure Object <b>" + itemToDelete.UniqueName + "</b>.<br/>" + msg);
+        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem deleting Secure Object <b>" + itemToDelete.UniqueName + "</b>.<br/>" + msg);
         dfd.reject();
     });
     return dfd.promise();
 }
 function processDeleteActionResponse(data, itemToDelete) {
-    if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
-        _main__WEBPACK_IMPORTED_MODULE_2__["mainVM"].setChange(true);
+    if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_2__["AjaxResponseStatus"].Success) {
         var ds_1 = k$soTl.dataSource;
         var dataItem = k$soTl.dataSource.get(itemToDelete.UId);
         var descendents = [];
@@ -7604,14 +7400,14 @@ function processDeleteActionResponse(data, itemToDelete) {
                 clearTreeSelection();
             }
         }
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifySuccess"])("Secure Object <b>" + itemToDelete.UniqueName + "</b> deleted successfully.");
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifySuccess"])("Secure Object <b>" + itemToDelete.UniqueName + "</b> deleted successfully.");
         return $
             .Deferred()
             .resolve()
             .promise();
     }
     else {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])(data.Message);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])(data.Message);
         return $
             .Deferred()
             .reject()
@@ -7628,9 +7424,9 @@ function getDescendents(parent, descendents) {
 function soBtnDiscardClick() {
     console.log("In soBtnDiscardClick...");
     if (soVM.editor.get("hasChanges")) {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm discard changes", "Are you sure you want to discard changes? ")
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showYesNoDialog"])("Confirm discard changes", "Are you sure you want to discard changes? ")
             .then(function (response) {
-            if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
+            if (response == _utils__WEBPACK_IMPORTED_MODULE_2__["DialogResponse"].Yes) {
                 resetEditor(false);
             }
         });
@@ -7641,19 +7437,19 @@ function soBtnDiscardClick() {
 }
 function getSecureObject(uId) {
     var dfd = $.Deferred();
-    $.get(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetSecureObjectByUId", "Admin"), { uId: uId })
+    $.get(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetSecureObjectByUId", "Admin"), { uId: uId })
         .then(function (data) {
-        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
+        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_2__["AjaxResponseStatus"].Success) {
             transformData(data);
             dfd.resolve(data);
         }
         else {
-            Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem retrieving Secure Object");
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem retrieving Secure Object");
             dfd.reject(data);
         }
     }, function (jqXHR, textStatus) {
-        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem retrieving Secure Object.<br/>" + msg);
+        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem retrieving Secure Object.<br/>" + msg);
         dfd.reject();
     });
     return dfd.promise();
@@ -7764,7 +7560,7 @@ function createRightCheckBoxList(container, model) {
     container.find(".k-checkbox").bind("click", function (e) {
         var cb = $(e.target);
         var bitFlag1 = parseInt(cb.val());
-        var isCompositeValue = !Object(_utils__WEBPACK_IMPORTED_MODULE_3__["isPowerOfTwo"])(bitFlag1);
+        var isCompositeValue = !Object(_utils__WEBPACK_IMPORTED_MODULE_2__["isPowerOfTwo"])(bitFlag1);
         if (cb.prop("checked")) {
             if (isCompositeValue) {
                 container.find("input:checkbox:not(:checked)").each(function () {
@@ -7842,33 +7638,40 @@ function validateRightType(input) {
     else
         return true;
 }
-function verifySaveChanges() {
-    console.log("In verifySaveChanges...");
+function soVerifySaveChanges() {
+    console.log("In soVerifySaveChanges...");
     var dfd = $.Deferred();
     if (!soVM.editor.get("hasChanges")) {
         dfd.resolve(true);
     }
     else {
-        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoCancelDialog"])("Save changes", "Save changes to Secure Object <b>" + soVM.editor.model.get("UniqueName") + "</b> ?"))
+        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showYesNoCancelDialog"])("Save changes", "Save changes to Secure Object <b>" + soVM.editor.model.get("UniqueName") + "</b> ?"))
             .then(function (response) {
             switch (response) {
-                case _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes:
+                case _utils__WEBPACK_IMPORTED_MODULE_2__["DialogResponse"].Yes:
                     clearEditorErrors();
                     if (validateEditor()) {
-                        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
+                        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])())
                             .then(saveSecureObject)
                             .then(processSaveActionResponse)
-                            .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
+                            .then(function () {
+                            dfd.resolve(true);
+                        })
+                            .fail(function () {
+                            dfd.resolve(false);
+                        })
+                            .always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
                     }
                     else {
-                        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Please correct the error(s) on the form first.");
-                        dfd.resolve(true);
+                        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("Please correct the error(s) on the form first.");
+                        dfd.resolve(false);
                     }
                     break;
-                case _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].No:
+                case _utils__WEBPACK_IMPORTED_MODULE_2__["DialogResponse"].No:
+                    resetEditor(false);
                     dfd.resolve(true);
                     break;
-                case _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Cancel:
+                case _utils__WEBPACK_IMPORTED_MODULE_2__["DialogResponse"].Cancel:
                     dfd.resolve(false);
                     break;
                 default:
@@ -7892,8 +7695,6 @@ var soTlModel = kendo.data.TreeListModel.define({
         SaclAllowInherit: { type: "boolean" }
     },
 });
-var dummy = new soTlModel();
-console.log(dummy.id);
 function soTlClick() {
     console.log("In soTlClick...");
     var selectedItem = k$soTl.dataItem(k$soTl.select());
@@ -7904,16 +7705,16 @@ function soTlClick() {
     if (soVM.editor.model.get("UId") == selectedItem.UId) {
         return;
     }
-    verifySaveChanges().then(function (proceed) {
+    soVerifySaveChanges().then(function (proceed) {
         console.log("-- " + proceed);
         if (proceed) {
             selectTreeItem(selectedItem.UId);
             resetEditor(true);
-            Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])();
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])();
             getSecureObject(selectedItem.UId)
                 .done(populateEditor)
                 .fail(function () { })
-                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
+                .always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
         }
         else {
             selectTreeItem();
@@ -7938,14 +7739,14 @@ function soTlDrop(e) {
     if (!e.valid)
         return;
     var parentUId = e.destination ? e.destination.UId : null;
-    if ((!e.source.parentId && !parentUId) || (e.source.parentId == parentUId)) {
+    if ((!e.source.ParentUId && !parentUId) || (e.source.ParentUId == parentUId)) {
         console.log('-- moving to same parent, cancel move');
         e.setValid(false);
         return;
     }
     e.preventDefault();
     $.ajax({
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("UpdateSecureObjectParent", "Admin"),
+        url: Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("UpdateSecureObjectParent", "Admin"),
         type: "POST",
         data: {
             uId: e.source.UId,
@@ -7954,12 +7755,17 @@ function soTlDrop(e) {
     })
         .then(function (data) {
         var dfd = $.Deferred();
-        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
-            e.source.set("parentId", parentUId);
+        if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_2__["AjaxResponseStatus"].Success) {
+            e.source.set("ParentUId", parentUId);
+            if (parentUId) {
+                var parentItem = k$soTl.dataSource.get(parentUId);
+                parentItem.hasChildren = true;
+                parentItem.expanded = true;
+            }
+            k$soTl.refresh();
             if (soVM.editor.model.get("UId") == e.source.UId) {
                 soVM.editor.model.set("ParentUId", parentUId);
             }
-            _main__WEBPACK_IMPORTED_MODULE_2__["mainVM"].setChange(true);
             dfd.resolve();
         }
         else {
@@ -7968,8 +7774,7 @@ function soTlDrop(e) {
         return dfd.promise();
     })
         .fail(function () {
-        e.setValid(false);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("An error has occurred while updating parent of Secure Object");
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("An error has occurred while updating the parent of Secure Object");
     });
 }
 
@@ -7980,7 +7785,7 @@ function soTlDrop(e) {
 /*!*******************!*\
   !*** ./src/sp.ts ***!
   \*******************/
-/*! exports provided: trustees, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spSetup, spReset, spShow, spHide, spLoad, verifySaveChanges, spGetNameIconClass, spBtnSaveClick, spBtnDiscardClick, spBtnNewClick, spBtnDeleteClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spGrdDataSourceChange */
+/*! exports provided: trustees, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spSetup, spReset, spShow, spHide, spLoad, spVerifySaveChanges, spGetNameIconClass, spBtnSaveClick, spBtnDiscardClick, spBtnNewClick, spBtnDeleteClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spGrdDataSourceChange */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7995,7 +7800,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spShow", function() { return spShow; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spHide", function() { return spHide; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spLoad", function() { return spLoad; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "verifySaveChanges", function() { return verifySaveChanges; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spVerifySaveChanges", function() { return spVerifySaveChanges; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spGetNameIconClass", function() { return spGetNameIconClass; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnSaveClick", function() { return spBtnSaveClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnDiscardClick", function() { return spBtnDiscardClick; });
@@ -8007,10 +7812,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash-es/differenceBy */ "./node_modules/lodash-es/differenceBy.js");
 /* harmony import */ var lodash_es_debounce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash-es/debounce */ "./node_modules/lodash-es/debounce.js");
 /* harmony import */ var _ids__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ids */ "./src/ids.ts");
-/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./main */ "./src/main.ts");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
-/* harmony import */ var _so__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./so */ "./src/so.ts");
-
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
+/* harmony import */ var _so__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./so */ "./src/so.ts");
 
 
 
@@ -8192,15 +7995,20 @@ function setupWidgets() {
             data: [],
             schema: {
                 model: {
-                    id: "MemberUId",
-                    parentId: "GroupUId",
+                    id: "Id",
+                    parentId: "ParentId",
                     expanded: true,
                     fields: {
-                        MemberUId: { type: "string", nullable: false },
-                        GroupUId: { type: "string", nullable: true },
+                        Id: { type: "number", nullable: false },
+                        ParentId: { type: "number", nullable: true },
                     },
                 },
             },
+            sort: [
+                { field: "IsUser", dir: "desc" },
+                { field: "IsLocal", dir: "desc" },
+                { field: "Name", dir: "asc" }
+            ],
         },
         columns: [
             { field: "Name", template: $("#spNameTemplate").html() },
@@ -8257,7 +8065,7 @@ function setupVariables() {
     k$spTlGroupHierarchy = $spTlGroupHierarchy.data("kendoTreeList");
 }
 function resizeSplitter() {
-    var top = 125;
+    var top = 85;
     var bottom = 25;
     var height = $(window).height() - (top + bottom) - 1;
     height = height <= 0 ? 100 : height;
@@ -8290,13 +8098,13 @@ function spGrdClick() {
     if (spVM.get("selectedUId") == selectedItem.UId && selectedItem.UId == spVM.editor.model.get("UId")) {
         return;
     }
-    verifySaveChanges().then(function (proceed) {
+    spVerifySaveChanges().then(function (proceed) {
         console.log("-- " + proceed);
         if (proceed) {
             selectGridItem(selectedItem.UId);
             resetEditor(true);
             spVM.editor.model.set("IsUser", selectedItem.IsUser);
-            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
+            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
                 .then(function () {
                 if (selectedItem.IsUser) {
                     return getUser(selectedItem.UId);
@@ -8306,25 +8114,25 @@ function spGrdClick() {
                 }
             })
                 .done(function (data) {
-                if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_4__["AjaxResponseStatus"].Success) {
+                if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
                     populateEditor(data);
                 }
                 else {
-                    Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem retrieving " + (selectedItem.IsUser ? "User" : "Group") + " information.");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem retrieving " + (selectedItem.IsUser ? "User" : "Group") + " information.");
                 }
             })
                 .fail(function () {
-                Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem retrieving " + (selectedItem.IsUser ? 'User' : 'Group') + " information.");
+                Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem retrieving " + (selectedItem.IsUser ? 'User' : 'Group') + " information.");
             })
-                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
+                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
         }
         else {
             selectGridItem(spVM.get("selectedUId"));
         }
     });
 }
-function verifySaveChanges() {
-    console.log("In verifySaveChanges...");
+function spVerifySaveChanges() {
+    console.log("In spVerifySaveChanges...");
     var dfd = $.Deferred();
     if (!spVM.editor.get("hasChanges")) {
         dfd.resolve(true);
@@ -8332,35 +8140,48 @@ function verifySaveChanges() {
     else {
         var isEditingUser_1 = spVM.editor.model.get("IsUser");
         var message = "Save changes to " + (isEditingUser_1 ? "User" : "Group") + " <b>" + spVM.editor.model.get("Name") + "</b> ?";
-        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showYesNoCancelDialog"])("Save changes", message))
+        $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoCancelDialog"])("Save changes", message))
             .then(function (response) {
             console.log("-- Response is " + response);
             switch (response) {
-                case _utils__WEBPACK_IMPORTED_MODULE_4__["DialogResponse"].Yes:
+                case _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes:
                     clearEditorErrors();
                     if (validateEditor()) {
                         if (isEditingUser_1) {
-                            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
+                            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
                                 .then(saveUser)
                                 .then(processSaveActionResponse)
-                                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
+                                .then(function () {
+                                dfd.resolve(true);
+                            })
+                                .fail(function () {
+                                dfd.resolve(false);
+                            })
+                                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
                         }
                         else {
-                            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
+                            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
                                 .then(saveGroup)
                                 .then(processSaveActionResponse)
-                                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
+                                .then(function () {
+                                dfd.resolve(true);
+                            })
+                                .fail(function () {
+                                dfd.resolve(false);
+                            })
+                                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
                         }
                     }
                     else {
-                        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("Please correct the error(s) on the form first.");
+                        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Please correct the error(s) on the form first.");
                         dfd.resolve(false);
                     }
                     break;
-                case _utils__WEBPACK_IMPORTED_MODULE_4__["DialogResponse"].No:
+                case _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].No:
+                    resetEditor(false);
                     dfd.resolve(true);
                     break;
-                case _utils__WEBPACK_IMPORTED_MODULE_4__["DialogResponse"].Cancel:
+                case _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Cancel:
                     dfd.resolve(false);
                     break;
                 default:
@@ -8418,27 +8239,26 @@ function spBtnSaveClick() {
     clearEditorErrors();
     if (validateEditor()) {
         if (spVM.editor.model.get("IsUser")) {
-            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
+            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
                 .then(saveUser)
                 .then(processSaveActionResponse)
-                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
+                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
         }
         else {
-            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
+            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
                 .then(saveGroup)
                 .then(processSaveActionResponse)
-                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
+                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
         }
     }
     else {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("Please correct the error(s) on the form first.");
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Please correct the error(s) on the form first.");
     }
 }
 function processSaveActionResponse(data) {
     console.log("In processSaveActionResponse...");
     var dfd = $.Deferred();
-    if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_4__["AjaxResponseStatus"].Success) {
-        _main__WEBPACK_IMPORTED_MODULE_3__["mainVM"].setChange(true);
+    if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
         var model = null;
         if (data.Data.User) {
             model = data.Data.User;
@@ -8459,7 +8279,7 @@ function processSaveActionResponse(data) {
                 Source: model.IsUser ? "User" : model.IsLocal ? "Local (Suplex)" : "External",
             }));
             selectGridItem(model.UId);
-            Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifySuccess"])((model.IsUser ? 'User' : 'Group') + " <b>" + model.Name + "</b> saved successfully.");
+            Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifySuccess"])((model.IsUser ? 'User' : 'Group') + " <b>" + model.Name + "</b> saved.");
             dfd.resolve();
         }
     }
@@ -8476,7 +8296,7 @@ function processSaveActionResponse(data) {
             }
             setVMEditorHasErrorFlag(true);
         }
-        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("Unable to save. Correct the error(s) on the form and try again.");
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Please correct the error(s) on the form first and try again.");
         dfd.reject();
     }
     return dfd.promise();
@@ -8488,7 +8308,7 @@ function saveUser() {
     var memberOfToRemove = Object(lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__["default"])(memberOfOriginal, memberOf, "UId");
     return $.ajax({
         method: "POST",
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_4__["getActionUrl"])("SaveUser", "Admin"),
+        url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("SaveUser", "Admin"),
         contentType: "application/json",
         data: JSON.stringify({
             User: spVM.editor.get("model"),
@@ -8499,8 +8319,8 @@ function saveUser() {
     })
         .then(function (data) { return $.Deferred().resolve(data); })
         .fail(function (jqXHR, textStatus) {
-        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_4__["decipherJqXhrError"])(jqXHR, textStatus);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem saving User.<br/>" + msg);
+        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem saving User.<br/>" + msg);
         return $.Deferred().reject();
     });
 }
@@ -8520,7 +8340,7 @@ function saveGroup() {
     }
     return $.ajax({
         method: "POST",
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_4__["getActionUrl"])("SaveGroup", "Admin"),
+        url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("SaveGroup", "Admin"),
         contentType: "application/json",
         data: JSON.stringify({
             Group: spVM.editor.get("model"),
@@ -8533,8 +8353,8 @@ function saveGroup() {
     })
         .then(function (data) { return $.Deferred().resolve(data); })
         .fail(function (jqXHR, textStatus) {
-        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_4__["decipherJqXhrError"])(jqXHR, textStatus);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem saving Group.<br/>" + msg);
+        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem saving Group.<br/>" + msg);
         return $.Deferred().reject();
     });
 }
@@ -8602,9 +8422,9 @@ function clearEditorErrors() {
 function spBtnDiscardClick() {
     console.log("In spBtnDiscardClick...");
     if (spVM.editor.get("hasChanges")) {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showYesNoDialog"])("Confirm discard changes", "Are you sure you want to discard changes? ")
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm discard changes", "Are you sure you want to discard changes? ")
             .then(function (response) {
-            if (response == _utils__WEBPACK_IMPORTED_MODULE_4__["DialogResponse"].Yes) {
+            if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
                 resetEditor(false);
             }
         });
@@ -8618,7 +8438,7 @@ function spBtnNewClick(e) {
     switch ("#" + e.id) {
         case _ids__WEBPACK_IMPORTED_MODULE_2__["SP_BTN_NEW"]:
             console.log("-- new");
-            var $btn = $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_BTN_NEW"]).closest('.k-split-button');
+            var $btn = $("#" + e.id).closest('.k-split-button');
             var popup = $btn.data("kendoPopup");
             console.log(popup);
             if (popup) {
@@ -8641,47 +8461,47 @@ function spBtnNewClick(e) {
     }
 }
 function newUser() {
-    verifySaveChanges().then(function (proceed) {
+    spVerifySaveChanges().then(function (proceed) {
         if (proceed) {
             resetEditor(true);
             spVM.editor.model.set("IsUser", true);
             getNewUser()
                 .done(function (data) {
-                if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_4__["AjaxResponseStatus"].Success) {
+                if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
                     data.Data.User.Name = "New User";
                     populateEditor(data);
                     clearGridSelection();
                 }
                 else {
-                    Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("Error retrieving information for new user");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Error retrieving information for new user");
                 }
             })
                 .fail(function (jqXHR, textStatus) {
-                var errorMsg = Object(_utils__WEBPACK_IMPORTED_MODULE_4__["decipherJqXhrError"])(jqXHR, textStatus);
-                Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])(errorMsg);
+                var errorMsg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
+                Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])(errorMsg);
             });
         }
     });
 }
 function newGroup() {
-    verifySaveChanges().then(function (proceed) {
+    spVerifySaveChanges().then(function (proceed) {
         if (proceed) {
             resetEditor(true);
             spVM.editor.model.set("IsUser", false);
             getNewGroup()
                 .done(function (data) {
-                if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_4__["AjaxResponseStatus"].Success) {
+                if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
                     data.Data.Group.Name = "New Group";
                     populateEditor(data);
                     clearGridSelection();
                 }
                 else {
-                    Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("Error retrieving information for new group");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Error retrieving information for new group");
                 }
             })
                 .fail(function (jqXHR, textStatus) {
-                var errorMsg = Object(_utils__WEBPACK_IMPORTED_MODULE_4__["decipherJqXhrError"])(jqXHR, textStatus);
-                Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])(errorMsg);
+                var errorMsg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
+                Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])(errorMsg);
             });
         }
     });
@@ -8693,43 +8513,42 @@ function spBtnDeleteClick() {
         return;
     var message = "Are you sure you want to delete " + (itemToDelete.IsUser ? "User " : "Group ") + " <b>" + itemToDelete.Name + "</b> ?";
     var action = itemToDelete.IsUser ? "DeleteUser" : "DeleteGroup";
-    $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showYesNoDialog"])("Confirm Delete", message))
+    $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showYesNoDialog"])("Confirm Delete", message))
         .then(function (response) {
-        if (response == _utils__WEBPACK_IMPORTED_MODULE_4__["DialogResponse"].Yes) {
-            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["showProgress"])())
+        if (response == _utils__WEBPACK_IMPORTED_MODULE_3__["DialogResponse"].Yes) {
+            $.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
                 .then(function () {
-                return $.post(Object(_utils__WEBPACK_IMPORTED_MODULE_4__["getActionUrl"])(action, "Admin"), { uId: itemToDelete.UId })
+                return $.post(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])(action, "Admin"), { uId: itemToDelete.UId })
                     .then(function (data) {
                     return $.Deferred().resolve(data);
                 })
                     .fail(function (jqXHR, textStatus) {
-                    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_4__["decipherJqXhrError"])(jqXHR, textStatus);
-                    Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])("There is a problem deleting " + (itemToDelete.IsUser ? "User" : "Group") + " <b>" + itemToDelete.Name + ".</b><br/>" + msg);
+                    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_3__["decipherJqXhrError"])(jqXHR, textStatus);
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("There is a problem deleting " + (itemToDelete.IsUser ? "User" : "Group") + " <b>" + itemToDelete.Name + ".</b><br/>" + msg);
                     $.Deferred().reject();
                 });
             })
                 .then(function (data) {
                 return processDeleteActionResponse(data, itemToDelete);
             })
-                .always(_utils__WEBPACK_IMPORTED_MODULE_4__["hideProgress"]);
+                .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
         }
     });
 }
 function processDeleteActionResponse(data, gridDataItemToDelete) {
-    if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_4__["AjaxResponseStatus"].Success) {
+    if (data.Status == _utils__WEBPACK_IMPORTED_MODULE_3__["AjaxResponseStatus"].Success) {
         var ds = k$spGrd.dataSource;
         ds.remove(gridDataItemToDelete);
         setVMSelectedUId(null);
         resetEditor(true);
-        _main__WEBPACK_IMPORTED_MODULE_3__["mainVM"].setChange(true);
-        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifySuccess"])((gridDataItemToDelete.IsUser ? 'User' : 'Group') + " <b>" + gridDataItemToDelete.Name + "</b> deleted successfully.");
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifySuccess"])((gridDataItemToDelete.IsUser ? 'User' : 'Group') + " <b>" + gridDataItemToDelete.Name + "</b> deleted successfully.");
         return $
             .Deferred()
             .resolve()
             .promise();
     }
     else {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_4__["notifyError"])(data.Message);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])(data.Message);
         return $
             .Deferred()
             .reject()
@@ -8739,7 +8558,7 @@ function processDeleteActionResponse(data, gridDataItemToDelete) {
 function getUser(uId) {
     return $.ajax({
         method: "GET",
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_4__["getActionUrl"])("GetUserByUId", "Admin"),
+        url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetUserByUId", "Admin"),
         data: { uId: uId },
         dataType: "json",
     });
@@ -8747,7 +8566,7 @@ function getUser(uId) {
 function getNewUser() {
     return $.ajax({
         method: "GET",
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_4__["getActionUrl"])("GetNewUser", "Admin"),
+        url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetNewUser", "Admin"),
         dataType: "json",
     });
 }
@@ -8755,7 +8574,7 @@ function getGroup(uId) {
     console.log("In getGroup...");
     return $.ajax({
         method: "GET",
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_4__["getActionUrl"])("GetGroupByUId", "Admin"),
+        url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetGroupByUId", "Admin"),
         data: { uId: uId },
         dataType: "json",
     });
@@ -8763,7 +8582,7 @@ function getGroup(uId) {
 function getNewGroup() {
     return $.ajax({
         method: "GET",
-        url: Object(_utils__WEBPACK_IMPORTED_MODULE_4__["getActionUrl"])("GetNewGroup", "Admin"),
+        url: Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getActionUrl"])("GetNewGroup", "Admin"),
         dataType: "json",
     });
 }
@@ -8784,11 +8603,10 @@ function spBtnMembersAddClick(e) {
     spMsMembersDataSource.pushDestroy(selectedItems);
 }
 function spGrdDataSourceChange(e) {
-    console.log(e);
     var data = this.data().toJSON();
     var trustees = data.filter(function (item) { return !item.IsUser; })
         .map(function (item) { return { "UId": item.UId, "Name": item.Name }; });
-    _so__WEBPACK_IMPORTED_MODULE_5__["trusteesDataSource"].data(trustees);
+    _so__WEBPACK_IMPORTED_MODULE_4__["trusteesDataSource"].data(trustees);
 }
 
 
@@ -8798,7 +8616,7 @@ function spGrdDataSourceChange(e) {
 /*!**********************!*\
   !*** ./src/utils.ts ***!
   \**********************/
-/*! exports provided: notifyError, notifyInfo, notifySuccess, notifyWarning, showNotification, getActionUrl, dataSourceError, decipherJqXhrError, DialogResponse, showYesNoCancelDialog, showYesNoDialog, showAlert, showProgress, hideProgress, isValidFileName, isPowerOfTwo, AjaxResponseStatus */
+/*! exports provided: notifyError, notifyInfo, notifySuccess, notifyWarning, showNotification, getActionUrl, dataSourceError, decipherJqXhrError, DialogResponse, showYesNoCancelDialog, showYesNoDialog, showAlert, showProgress, hideProgress, isPowerOfTwo, AjaxResponseStatus */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8817,7 +8635,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showAlert", function() { return showAlert; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showProgress", function() { return showProgress; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hideProgress", function() { return hideProgress; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isValidFileName", function() { return isValidFileName; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPowerOfTwo", function() { return isPowerOfTwo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AjaxResponseStatus", function() { return AjaxResponseStatus; });
 function notifyError(msg, allowHideAfter, autoHideAfter) {
@@ -9004,9 +8821,6 @@ function showProgress() {
 }
 function hideProgress() {
     kendo.ui.progress($(document.body), false);
-}
-function isValidFileName(fileName) {
-    return !fileName ? false : true;
 }
 function isPowerOfTwo(x) {
     return (x & (x - 1)) == 0 ? true : false;

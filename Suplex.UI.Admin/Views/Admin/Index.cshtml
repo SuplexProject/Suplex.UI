@@ -9,38 +9,19 @@
 
 <kendo-toolbar id="tbMain">
     <toolbar-items>
-        <item type="CommandType.Button" id="btnNewFile" icon="file-add" title="New Suplex File Store" click="SUPLEXUI.btnNewFileClick" />
-        <item type="CommandType.Button" id="btnOpenFile" icon="folder-open" title="Open Suplex File Store" click="SUPLEXUI.btnOpenFileClick" />
-        <item type="CommandType.SplitButton" id="btnSaveFile" icon="save" title="Save Suplex File Store" click="SUPLEXUI.btnSaveFileClick">
-            <menu-buttons>
-                <toolbar-button id="btnSaveFileAs" text="Save As" />
-                <toolbar-button text="Save Signed File" />
-            </menu-buttons>
-        </item>
+        <item type="CommandType.Button" id="tbbRemoteRefresh" icon="refresh" title="Refresh" click="SUPLEXUI.tbbRemoteRefreshClick" />
         <item type="CommandType.Separator" />
         <item type="CommandType.ButtonGroup">
             <buttons>
-                <toolbar-button id="btnShowSecureObjects" text="Secure Objects" togglable="true" group="selectView" toggle="SUPLEXUI.switchView" />
-                <toolbar-button id="btnShowSecurityPrincipals" text="Security Principals" togglable="true" group="selectView" toggle="SUPLEXUI.switchView" />
+                <toolbar-button id="tbbShowSecureObjects" text="Secure Objects" togglable="true" group="switchView" toggle="SUPLEXUI.tbbSwitchView" />
+                <toolbar-button id="tbbShowSecurityPrincipals" text="Security Principals" togglable="true" group="switchView" toggle="SUPLEXUI.tbbSwitchView" />
             </buttons>
         </item>
-        <item template="<label data-bind='text: fileName'></label>" />
     </toolbar-items>
 </kendo-toolbar>
 
 <div id="spView" data-bind="visible: visible">
-    <kendo-toolbar id="spTb">
-        <toolbar-items>
-            <item template="<input class='k-textbox' id='spTxtGrdFilter' placeholder='Filter' />" overflow="ShowInOverflowPopup.Never" />
-            <item type="CommandType.SplitButton" id="spBtnNew" text="New" click="SUPLEXUI.spBtnNewClick">
-                <menu-buttons>
-                    <toolbar-button id="spBtnNewUser" text="New User" sprite-css-class="icon-user" />
-                    <toolbar-button id="spBtnNewGroup" text="New Group" sprite-css-class="icon-group" />
-                </menu-buttons>
-            </item>
-            <item type="CommandType.Button" id="spBtnDelete" text="Delete" click="SUPLEXUI.spBtnDeleteClick" data-bind="enabled:securityPrincipalSelected" />
-        </toolbar-items>
-    </kendo-toolbar>
+   
     @*<div id="spTb" class="k-block" style="padding: 4px 0;">
             <input class="k-textbox" id="spTxtGrdFilter1" placeholder="Filter" />
             @(Html.Kendo().Button().Name("spBtnNewUser").HtmlAttributes(new { type = "button" }).SpriteCssClass("icon-user").Content("New User").Events(e => e.Click("SUPLEXUI.spBtnNewUserClick")))
@@ -51,36 +32,48 @@
 
     <kendo-splitter name="spSpltr" orientation="SplitterOrientation.Horizontal">
         <pane size="40%" scrollable="true" collapsible="true">
-            <div style="margin:5px;">
+            <kendo-toolbar id="spTb">
+                <toolbar-items>
+                    <item template="<input class='k-textbox' id='spTxtGrdFilter' placeholder='Filter' />" overflow="ShowInOverflowPopup.Never" />
+                    <item type="CommandType.SplitButton" id="spBtnNew" text="New" title="New User or Group" click="SUPLEXUI.spBtnNewClick" overflow="ShowInOverflowPopup.Never">
+                        <menu-buttons>
+                            <toolbar-button id="spBtnNewUser" text="New User" sprite-css-class="icon-user" />
+                            <toolbar-button id="spBtnNewGroup" text="New Group" sprite-css-class="icon-group" />
+                        </menu-buttons>
+                    </item>
+                    <item type="CommandType.Button" id="spBtnDelete" text="Delete" title="Delete selected security principal" click="SUPLEXUI.spBtnDeleteClick" data-bind="enabled:securityPrincipalSelected"  overflow="ShowInOverflowPopup.Never" />
+                </toolbar-items>
+            </kendo-toolbar>
+            <div>
 
                 @(Html.Kendo().Grid<SecurityPrincipalGridVM>()
-                            .Name("spGrd")
-                            .AutoBind(false)
-                            .Selectable(s => s.Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
-                            .Filterable(f => f.Enabled(true))
-                            .Columns(columns =>
-                            {
-                                columns.Bound(u => u.Name).Width(120).ClientTemplate("#=spNameTemplate(data)#"); 
-                                columns.Bound(u => u.Description);
-                                columns.Bound(u => u.IsEnabled).Title("Enabled").ClientTemplate("<input id='1#=Name#' type='checkbox' class='k-checkbox' #: IsEnabled ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=Name#' />");
-                                columns.Bound(u => u.Source).ClientGroupHeaderTemplate("#= value #: #= count #").Hidden();
-                            })
-                            .DataSource(ds => ds
-                                .Ajax()
-                                .ServerOperation(false)     //Paging, sorting, filtering, and grouping will be done client-side
-                                .Read(read => read.Action("GetSecurityPrincipals", "Admin").Type(HttpVerbs.Get))
-                                .Group(groups =>
-                                {
-                                    groups.AddDescending(u => u.Source);
-                                })
-                                .Aggregates(ag =>
-                                {
-                                    ag.Add(p => p.Source).Count();
-                                })
-                                .Sort(s => s.Add("Name").Ascending())
-                                .Events(e => e.Error("SUPLEXUI.dataSourceError").Change("SUPLEXUI.spGrdDataSourceChange"))
-                                .Model(m => m.Id(r => r.UId))
-                            )
+                                            .Name("spGrd")
+                                            .AutoBind(false)
+                                            .Selectable(s => s.Mode(GridSelectionMode.Single).Type(GridSelectionType.Row))
+                                            .Filterable(f => f.Enabled(true))
+                                            .Columns(columns =>
+                                            {
+                                                columns.Bound(u => u.Name).Width(120).ClientTemplate("#=spNameTemplate(data)#");
+                                                columns.Bound(u => u.Description);
+                                                columns.Bound(u => u.IsEnabled).Title("Enabled").ClientTemplate("<input id='1#=Name#' type='checkbox' class='k-checkbox' #: IsEnabled ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=Name#' />");
+                                                columns.Bound(u => u.Source).ClientGroupHeaderTemplate("#= value #: #= count #").Hidden();
+                                            })
+                                            .DataSource(ds => ds
+                                                .Ajax()
+                                                .ServerOperation(false)     //Paging, sorting, filtering, and grouping will be done client-side
+                                                .Read(read => read.Action("GetSecurityPrincipals", "Admin").Type(HttpVerbs.Get))
+                                                .Group(groups =>
+                                                {
+                                                    groups.AddDescending(u => u.Source);
+                                                })
+                                                .Aggregates(ag =>
+                                                {
+                                                    ag.Add(p => p.Source).Count();
+                                                })
+                                                .Sort(s => s.Add("Name").Ascending())
+                                                .Events(e => e.Error("SUPLEXUI.dataSourceError").Change("SUPLEXUI.spGrdDataSourceChange"))
+                                                .Model(m => m.Id(r => r.UId))
+                                            )
                 )
             </div>
         </pane>
@@ -112,8 +105,8 @@
                         <div class="formElement">
                             <div class="formLabel">Name</div>
                             <div class="formInput">
-                                <input id="name" name="name" type="text" class="k-textbox" data-bind="value: editor.model.Name, events: {  keyup: editor.raiseChange }" data-value-update="keyup" required data-required-msg="Name field is required" />
-                                <span class="k-invalid-msg" data-for="name"></span>
+                                <input id="spName" name="spName" type="text" class="k-textbox" data-bind="value: editor.model.Name, events: {  keyup: editor.raiseChange }" data-value-update="keyup" required data-required-msg="Name field is required" />
+                                <span class="k-invalid-msg" data-for="spName"></span>
                             </div>
                         </div>
                         <div class="formElement">
@@ -131,19 +124,19 @@
                         <div class="formElement">
                             <div class="formLabel">Status</div>
                             <div class="formInput">
-                                <input type="radio" name="isEnabled" id="statusIsEnabled" style="width:0;" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
-                                <label class="k-radio-label" for="statusIsEnabled">Enabled</label>
-                                <input type="radio" name="isEnabled" id="statusIsDisabled" style="width:0;" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
-                                <label class="k-radio-label" for="statusIsDisabled">Disabled</label>
+                                <input type="radio" name="spIsEnabled" id="spStatusIsEnabled" style="width:0;" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
+                                <label class="k-radio-label" for="spStatusIsEnabled">Enabled</label>
+                                <input type="radio" name="spIsEnabled" id="spStatusIsDisabled" style="width:0;" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
+                                <label class="k-radio-label" for="spStatusIsDisabled">Disabled</label>
                             </div>
                         </div>
                         <div class="formElement" data-bind="invisible: editor.model.IsUser">
                             <div class="formLabel">Type</div>
                             <div class="formInput">
-                                <input type="radio" name="isLocal" id="typeIsLocal" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsLocal, events: {change: editor.raiseChange}" />
-                                <label class="k-radio-label" for="typeIsLocal"><span class="k-sprite icon-group"></span>Local (Suplex)</label>
-                                <input type="radio" name="isLocal" id="typeIsExternal" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsLocal, events: {change: editor.raiseChange}" />
-                                <label class="k-radio-label" for="typeIsExternal"><span class="k-sprite icon-group-ext"></span>External (AD, LDAP, etc)</label>
+                                <input type="radio" name="spIsLocal" id="spTypeIsLocal" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsLocal, events: {change: editor.raiseChange}" />
+                                <label class="k-radio-label" for="spTypeIsLocal"><span class="k-sprite icon-group"></span>Local (Suplex)</label>
+                                <input type="radio" name="spIsLocal" id="spTypeIsExternal" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsLocal, events: {change: editor.raiseChange}" />
+                                <label class="k-radio-label" for="spTypeIsExternal"><span class="k-sprite icon-group-ext"></span>External (AD, LDAP, etc)</label>
                             </div>
                         </div>
                         <div class="formElement">
@@ -206,31 +199,7 @@
 </div>
 
 <div id="soView" data-bind="visible: visible">
-    <kendo-toolbar id="soTb">
-        <toolbar-items>
-            <item type="CommandType.SplitButton" id="soBtnNew" text="New" title="New Root/Child" click="SUPLEXUI.soBtnNewClick">
-                <menu-buttons>
-                    <toolbar-button id="soBtnNewRoot" text="New Root" />
-                </menu-buttons>
-            </item>
-            <item type="CommandType.SplitButton" id="soBtnCopy" text="Copy" title="Shallow Copy As Root/Sibling/Child" click="SUPLEXUI.soBtnCopyClick">
-                <menu-buttons>
-                    <toolbar-button id="soBtnCopyAsRoot" text="Copy As Root" />
-                </menu-buttons>
-            </item>
-            <item type="CommandType.Button" id="soBtnDelete" text="Delete" click="SUPLEXUI.soBtnDeleteClick" data-bind="enabled:secureObjectSelected" />
-            <item type="CommandType.SplitButton" id="soBtnExpandAll" text="Expand All" title="Expand from Node or the whole tree" click="SUPLEXUI.soBtnExpandAllClick">
-                <menu-buttons>
-                    <toolbar-button id="soBtnExpandTree" text="Expand Tree" />
-                </menu-buttons>
-            </item>
-            <item type="CommandType.SplitButton" id="soBtnCollapseAll" text="Collapse All" title="Collapse from Node or the whole tree" click="SUPLEXUI.soBtnCollapseAllClick">
-                <menu-buttons>
-                    <toolbar-button id="soBtnCollapseTree" text="Collapse Tree" />
-                </menu-buttons>
-            </item>
-        </toolbar-items>
-    </kendo-toolbar>
+    
     @*<div id="soTb" class="k-block" style="padding: 4px 0;">
             @(Html.Kendo().Button().Name("soBtnNew").HtmlAttributes(new { type = "button" }).Content("New Secure Object").Events(e => e.Click("SUPLEXUI.soBtnNewClick")))
             @(Html.Kendo().Button().Name("soBtnDelete").HtmlAttributes(new { type = "button", data_bind = "enabled: secureObjectSelected" }).Content("Delete Secure Object").Events(e => e.Click("SUPLEXUI.soBtnDeleteClick")))
@@ -239,50 +208,78 @@
         </div>*@
     <kendo-splitter name="soSpltr" orientation="SplitterOrientation.Horizontal">
         <pane size="40%" scrollable="true" collapsible="true">
-            <div class="wrapper" style="padding:5px;box-sizing:border-box;height:100%">
-                <div id="soTl"></div>
+            <kendo-toolbar id="soTb">
+                <toolbar-items>
+                    <item type="CommandType.SplitButton" id="soTbbNew" text="New" title="New Root or Child" click="SUPLEXUI.soTbbNewClick" overflow="ShowInOverflowPopup.Never">
+                        <menu-buttons>
+                            <toolbar-button id="soTbbNewRoot" text="New Root" />
+                            <toolbar-button id="soTbbNewChild" text="New Child" />
+                        </menu-buttons>
+                    </item>
+                    <item type="CommandType.SplitButton" id="soTbbCopy" text="Copy" title="Copy (shallow) as Root or Child" click="SUPLEXUI.soTbbCopyClick" overflow="ShowInOverflowPopup.Never">
+                        <menu-buttons>
+                            <toolbar-button id="soTbbCopyAsRoot" text="Copy As Root" />
+                            <toolbar-button id="soTbbCopyAsChild" text="Copy As Child" />
+                        </menu-buttons>
+                    </item>
+                    <item type="CommandType.Button" id="soTbbDelete" text="Delete" title="Delete selected secure object" click="SUPLEXUI.soTbbDeleteClick" data-bind="enabled:secureObjectSelected" overflow="ShowInOverflowPopup.Never" />
+                    <item type="CommandType.SplitButton" id="soTbbExpand" text="Expand" title="Expand selected node or the whole tree" click="SUPLEXUI.soTbbExpandClick" overflow="ShowInOverflowPopup.Never">
+                        <menu-buttons>
+                            <toolbar-button id="soTbbExpandTree" text="Expand Tree" />
+                            <toolbar-button id="soTbbExpandNode" text="Expand Selected Node" />
+                        </menu-buttons>
+                    </item>
+                    <item type="CommandType.SplitButton" id="soTbbCollapse" text="Collapse" title="Collapse selected node or the whole tree" click="SUPLEXUI.soTbbCollapseClick" overflow="ShowInOverflowPopup.Never">
+                        <menu-buttons>
+                            <toolbar-button id="soTbbCollapseTree" text="Collapse Tree" />
+                            <toolbar-button id="soTbbCollapseNode" text="Collapse Selected Node" />
+                        </menu-buttons>
+                    </item>
+                </toolbar-items>
+            </kendo-toolbar>
+            
+            <div id="soTl"></div>
 
                 <!-- there is a bug with the server wrapper where the parentId column is not serialized -->
                 @*@(Html.Kendo().TreeList<SecureObjectTreeVM>()
-                                                    .Name("soTl").AutoBind(false)
-                                                    .Editable(e => e.Move(true))
-                                                    .Filterable(true)
-                                                    .Selectable(s => s.Mode(TreeListSelectionMode.Single))
-                                                    .Columns(c =>
-                                                    {
-                                                        c.Add().Field(f => f.UniqueName).Width(200).Template("<span class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='k-sprite #: IsSecure ? \"icon-secure\" : \"icon-non-secure\" #'></span><span>#: UniqueName #</span></span>");
-                                                        c.Add().Field(f => f.IsEnabled).Title("Enabled").Template("<input id='1#=UniqueName#' type='checkbox' class='k-checkbox' #: IsEnabled ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UniqueName#' />");
-                                                        c.Add().Field(f => f.DaclAllowInherit).Title("Inherit Permissions").Template("<input id='2#=UniqueName#' type='checkbox' class='k-checkbox' #: DaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UniqueName#' />");
-                                                        c.Add().Field(f => f.SaclAllowInherit).Title("Inherit Audit").Template("<input id='3#=UniqueName#' type='checkbox' class='k-checkbox' #: SaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for=3#=UniqueName#' />");
-                                                        c.Add().Field(f => f.ParentUId);
+                                                .Name("soTl").AutoBind(false)
+                                                .Editable(e => e.Move(true))
+                                                .Filterable(true)
+                                                .Selectable(s => s.Mode(TreeListSelectionMode.Single))
+                                                .Columns(c =>
+                                                {
+                                                    c.Add().Field(f => f.UniqueName).Width(200).Template("<span class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='k-sprite #: IsSecure ? \"icon-secure\" : \"icon-non-secure\" #'></span><span>#: UniqueName #</span></span>");
+                                                    c.Add().Field(f => f.IsEnabled).Title("Enabled").Template("<input id='1#=UniqueName#' type='checkbox' class='k-checkbox' #: IsEnabled ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UniqueName#' />");
+                                                    c.Add().Field(f => f.DaclAllowInherit).Title("Inherit Permissions").Template("<input id='2#=UniqueName#' type='checkbox' class='k-checkbox' #: DaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UniqueName#' />");
+                                                    c.Add().Field(f => f.SaclAllowInherit).Title("Inherit Audit").Template("<input id='3#=UniqueName#' type='checkbox' class='k-checkbox' #: SaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for=3#=UniqueName#' />");
+                                                    c.Add().Field(f => f.ParentUId);
 
-                                                    })
-                                                    .DataSource(ds => ds
-                                                        .Read(r => r.Action("GetSecureObjectTree", "Admin"))
-                                                        .ServerOperation(false)
-                                                        .Model(m =>
-                                                        {
-                                                            m.Id(f => f.UId);
-                                                            m.ParentId(f => f.ParentUId);
-                                                            m.Expanded(true);
-                                                            m.Field(f => f.UId);
-                                                            m.Field(f => f.ParentUId).Nullable();
-                                                            m.Field(f => f.UniqueName);
-                                                            m.Field(f => f.IsEnabled);
-                                                            m.Field(f => f.IsSecure);
-                                                            m.Field(f => f.DaclAllowInherit);
-                                                            m.Field(f => f.SaclAllowInherit);
-                                                        })
-                                                        .Sort(s => s.Add("UniqueName").Ascending())
-                                                        .Events(e => e.Error("SUPLEXUI.dataSourceError"))
-                                                    )
-                                                    .Events(e =>
+                                                })
+                                                .DataSource(ds => ds
+                                                    .Read(r => r.Action("GetSecureObjectTree", "Admin"))
+                                                    .ServerOperation(false)
+                                                    .Model(m =>
                                                     {
-                                                        e.Drop("SUPLEXUI.soTlDrop");
+                                                        m.Id(f => f.UId);
+                                                        m.ParentId(f => f.ParentUId);
+                                                        m.Expanded(true);
+                                                        m.Field(f => f.UId);
+                                                        m.Field(f => f.ParentUId).Nullable();
+                                                        m.Field(f => f.UniqueName);
+                                                        m.Field(f => f.IsEnabled);
+                                                        m.Field(f => f.IsSecure);
+                                                        m.Field(f => f.DaclAllowInherit);
+                                                        m.Field(f => f.SaclAllowInherit);
                                                     })
-                )*@
-               
-            </div>
+                                                    .Sort(s => s.Add("UniqueName").Ascending())
+                                                    .Events(e => e.Error("SUPLEXUI.dataSourceError"))
+                                                )
+                                                .Events(e =>
+                                                {
+                                                    e.Drop("SUPLEXUI.soTlDrop");
+                                                })
+            )*@
+
         </pane>
         <pane>
             <div></div><!-- do not remove this dummy div. splitter doesnt resize when there is nothing in the pane ie when the below div display is none -->
@@ -313,16 +310,16 @@
                         <div class="formElement">
                             <div class="formLabel">Unique Name</div>
                             <div class="formInput">
-                                <input id="soUniqueName" name="soUniqueName" class="k-textbox" data-bind="value: editor.model.UniqueName, events: {  keyup: editor.raiseChange }" data-value-update="keyup" required data-required-msg="Unique Name field is required" />
+                                <input id="soUniqueName" name="soUniqueName" type="text" class="k-textbox" data-bind="value: editor.model.UniqueName, events: {  keyup: editor.raiseChange }" data-value-update="keyup" required data-required-msg="Unique Name field is required" />
                                 <span class="k-invalid-msg" data-for="soUniqueName"></span>
                             </div>
                         </div>
                         <div class="formElement">
                             <div class="formLabel">Status</div>
                             <div class="formInput">
-                                <input type="radio" name="isEnabled" id="soStatusIsEnabled" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
+                                <input type="radio" name="soIsEnabled" id="soStatusIsEnabled" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
                                 <label class="k-radio-label" for="soStatusIsEnabled">Enabled</label>
-                                <input type="radio" name="isEnabled" id="soStatusIsDisabled" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
+                                <input type="radio" name="soIsEnabled" id="soStatusIsDisabled" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
                                 <label class="k-radio-label" for="soStatusIsDisabled">Disabled</label>
                             </div>
                         </div>
@@ -393,15 +390,23 @@
     </kendo-splitter>
 </div>
 
-<div id="dlgSelectFile"></div>
+<div id="dlgRemoteService"></div>
 <div id="dlgSaveAs"></div>
 <div id="noti"></div>
 <ul id="soTlMnu">
-    <li id="soTlMnuNew">New </li>
-    <li id="soTlMnuDelete" class="node-only">Delete</li>
+    <li id="soTlMnuNewRoot">New Root</li>
+    <li id="soTlMnuNewChild" class="tree-node-selected">New Child</li>
     <li class="k-separator"></li>
-    <li id="soTlMnuExpand">Expand All</li>
-    <li id="soTlMnuCollapse">Collapse All</li>
+    <li id="soTlMnuCopyAsRoot" class="tree-node-selected">Copy As Root</li>
+    <li id="soTlMnuCopyAsChild" class="tree-node-selected">Copy As Child</li>
+    <li class="k-separator"></li>
+    <li id="soTlMnuDelete" class="tree-node-selected">Delete</li>
+    <li class="k-separator"></li>
+    <li id="soTlMnuExpandTree">Expand Tree</li>
+    <li id="soTlMnuExpandNode" class="tree-node-selected">Expand Selected Node</li>
+    <li class="k-separator"></li>
+    <li id="soTlMnuCollapseTree">Collapse Tree</li>
+    <li id="soTlMnuCollapseNode" class="tree-node-selected">Collapse Selected Node</li>
 </ul>
 <script id="soAuditTypeFilterTemplate" type="text/x-kendo-template">
     <li>

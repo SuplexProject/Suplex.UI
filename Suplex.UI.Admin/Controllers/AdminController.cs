@@ -12,12 +12,12 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Suplex.UI.Modules.Admin.ViewModels;
 using Suplex.Security.Principal;
-using Suplex.Security.AclModel.DataAccess;
 using AutoMapper;
 using System.Collections;
 using Suplex.UI.Modules.Admin.Helpers;
 using Microsoft.Extensions.Configuration;
 using Suplex.Security.AclModel;
+using Suplex.Security.WebApi;
 
 namespace Suplex.UI.Modules.Admin.Controllers
 {
@@ -28,8 +28,9 @@ namespace Suplex.UI.Modules.Admin.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IMapper _mapper;
         private int _maskSize;
-        private static FileStore _fileStore;
-        private static MemoryDal _dal;
+        private readonly string _apiUrl;
+        private SuplexSecurityHttpApiClient _svc;
+
         private static List<RightVM> _rights = null;
         private static List<EnumVM> _auditTypes = null;
         private static Dictionary<string, Object> _secureObjectDefaults = null;
@@ -51,6 +52,9 @@ namespace Suplex.UI.Modules.Admin.Controllers
 
             _secureObjectDefaults = _secureObjectDefaults ?? SetupSecureObjectDefaults();
 
+            _apiUrl = _configuration["SuplexWebApiURL"];
+            _svc = new SuplexSecurityHttpApiClient(_apiUrl);
+
         }
 
         public IActionResult Index()
@@ -58,14 +62,11 @@ namespace Suplex.UI.Modules.Admin.Controllers
             _logger.LogInformation("index");
             Console.WriteLine(_hostingEnvironment.ContentRootPath);
 
-            // reset file store and memory dal 
-            _fileStore = new FileStore();
-            _dal = _fileStore.Dal;
-
             return View();
 
         }
-        #region initial setup
+
+        #region master data
         public Dictionary<string, Object> SetupSecureObjectDefaults()
         {
             Dictionary<string, Object> defaultValues = new Dictionary<string, Object>();
@@ -112,158 +113,75 @@ namespace Suplex.UI.Modules.Admin.Controllers
         }
         #endregion
 
-        public IActionResult GetDirectoryContents(string path)
+        public async Task<IActionResult> IsConnected()
         {
-            // need to deal with unauthorised access?
-            string dir = path;
-            List<FileSystemObjectVM> entries;
-            if (dir == null)
-                entries = DriveInfo.GetDrives()
-                        .Where(d => d.IsReady)
-                        .Select(e => new FileSystemObjectVM()
-                        {
-                            Path = e.Name,
-                            Name = e.Name,
-                            Type = FileSystemObjectType.Drive,
-                            HasChildren = true
-                        }).ToList();
-            else
-                entries = new DirectoryInfo(dir)
-                        .EnumerateFileSystemInfos()
-                        //.Where(d => ((d.Attributes & FileAttributes.Hidden) == 0) && ((d.Attributes & FileAttributes.System) == 0) && (d.Extension == ".splx"))
-                        .Where(d => (d.Attributes & FileAttributes.Hidden) == 0)
-                        .Where(d => (d.Attributes & FileAttributes.System) == 0)
-                        .Where(d => ((d.Attributes & FileAttributes.Directory) == FileAttributes.Directory) || (d.Extension == ".splx"))
-                        .Select(entry => new FileSystemObjectVM()
-                        {
-                            Path = Path.Combine(dir, (entry is DirectoryInfo ? entry.Name + Path.DirectorySeparatorChar : entry.Name)), // if is directory append directory separator at the end
-                            Name = entry.Name,
-                            Type = (entry is DirectoryInfo ? FileSystemObjectType.Folder : FileSystemObjectType.File),
-                            HasChildren = entry is DirectoryInfo
-                        }).ToList();
-
-            return Json(entries);
-        }
-
-        public IActionResult NewFile()
-        {
-            ResponseVM r = new ResponseVM();
-
-            _fileStore = new FileStore();
-            _dal = _fileStore.Dal;
-            r.Status = SUCCESS;
-            return Json(r);
-        }
-        public IActionResult OpenFile(string fileName)
-        {
-            _logger.LogInformation($"In OpenFile({nameof(fileName)}:{fileName})");
-
-            bool ok = false;
-
-            ResponseVM r = null;
-
-            if (!string.IsNullOrWhiteSpace(fileName) && System.IO.File.Exists(fileName))
-            {
-                _fileStore = null;
-                _dal = null;
-                try
-                {
-                    _fileStore = FileStore.FromYamlFile(fileName);
-                    _dal = _fileStore.Dal;
-                    ok = true;                    
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Error opening file {fileName}");                    
-                }
-            }
-            else
-            {
-                _logger.LogError($"Error opening file {fileName}. File not found.");
-            }
-            r = new ResponseVM()
-            {
-                Status = ok ? SUCCESS : ERROR,
-                Message = ok ? null : $"There is a problem opening file {fileName}"
-            };
-            return Json(r);
-        }
-        [HttpPost]
-        public IActionResult SaveFile(string fileName = null)
-        {
-            bool ok = false;
-            _logger.LogInformation($"In SaveFile({nameof(fileName)}:{fileName})");
-            ResponseVM r = null;
-            
+            bool isConnected = false;
             try
             {
-                if (string.IsNullOrWhiteSpace(fileName) && string.IsNullOrWhiteSpace(_fileStore.CurrentPath))
-                    throw new ArgumentException("File name not provided");
-
-                // sort the secure objects
-                //RecursiveSortSecureObjects(_dal.Store.SecureObjects);
-                //IList<SecureObject> sorted = RecursiveSortSecureObjects(_dal.Store.SecureObjects);
-                _dal.Store.SecureObjects = SortSecureObjects(_dal.Store.SecureObjects);
-                
-                if (!string.IsNullOrWhiteSpace(fileName))
-                    _fileStore.ToYamlFile(fileName);
-                else
-                    _fileStore.ToYamlFile();
-                ok = true;
+                List<User> users = await _svc.GetUserByNameAsync( null, false );
+                isConnected = true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error saving file {fileName}");
+                _logger.LogError( ex, "Not able to connect to remote service" );
             }
-            r = new ResponseVM()
-            {
-                Status = ok ? SUCCESS : ERROR,
-                Message = ok ? null : $"There is a problem saving to file {fileName}"
-            };
-            return Json(r);
-        }
-        private List<SecureObject> SortSecureObjects(IList<SecureObject> secureObjects)
-        {
-            List<SecureObject> sortedList = secureObjects.ToList();
-            sortedList.Sort((x, y) => x.UniqueName.CompareTo(y.UniqueName));
+            return Json( new ResponseVM { Status = isConnected ? SUCCESS : ERROR } );
 
-            foreach (SecureObject item in sortedList)
-            {
-                SortSecureObjects(item.Children);
-            }
-            return sortedList;
         }
+        //private List<SecureObject> SortSecureObjects(IList<SecureObject> secureObjects)
+        //{
+        //    List<SecureObject> sortedList = secureObjects.ToList();
+        //    sortedList.Sort((x, y) => x.UniqueName.CompareTo(y.UniqueName));
+
+        //    foreach (SecureObject item in sortedList)
+        //    {
+        //        SortSecureObjects(item.Children);
+        //    }
+        //    return sortedList;
+        //}
 
         #region Security Principals
-        public IActionResult GetSecurityPrincipals([DataSourceRequest] DataSourceRequest request)
+        public async Task<IActionResult> GetSecurityPrincipals([DataSourceRequest] DataSourceRequest request)
         {
-            IList<Group> groups = _dal.Store.Groups;
-            IList<User> users = _dal.Store.Users;
+            List<SecurityPrincipalGridVM> sp = null;
+            try
+            {
+                Task<List<User>> taskGetUsers = _svc.GetUserByNameAsync(null, false);
+                Task<List<Group>> taskGetGroups = _svc.GetGroupByNameAsync(null, false);
 
-            List<SecurityPrincipalGridVM> sp = _mapper.Map<IList<User>, List<SecurityPrincipalGridVM>>(users);
-            sp.AddRange(_mapper.Map<IList<Group>, List<SecurityPrincipalGridVM>>(groups));
+                List<User> users = await taskGetUsers;
+                List<Group> groups = await taskGetGroups;
 
+                sp = _mapper.Map<IList<User>, List<SecurityPrincipalGridVM>>(users);
+                sp.AddRange(_mapper.Map<IList<Group>, List<SecurityPrincipalGridVM>>(groups));
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting security principals");               
+            }
+
+            if (sp == null)
+            {
+                sp = new List<SecurityPrincipalGridVM>();
+            }
             return Json(sp.ToDataSourceResult(request));
         }
         
-        public IActionResult GetUserByUId(Guid uId)
+        public async Task<IActionResult> GetUserByUId(Guid uId)
         {
             _logger.LogInformation($"In GetUserByUId({nameof(uId)}:{uId})");
 
-            SecurityPrincipalEditorVM sp = null;
             ResponseVM r = null;
             try
             {
-                // get user
-                User u = _dal.GetUserByUId(uId);
-                sp = _mapper.Map<User, SecurityPrincipalEditorVM>(u);
-
-                //IEnumerable<GroupMembershipItem> memberOfSrc = _dal.GetGroupMemberOf(u, true);
-                //memberOfSrc.Resolve(_dal.Store.Groups, _dal.Store.Users, true);
-                //List<MemberVM> memberOfDest = _mapper.Map<IEnumerable<Group>, List<MemberVM>>(memberOfSrc.Select(item => item.Group));
-
-                // member of list
-                MembershipList<Group> memberOfList = _dal.GetGroupMembershipListOf(u, true);
+                // Get user and get member of
+                Task<User> taskGetUser = _svc.GetUserByUIdAsync(uId);
+                Task<MembershipList<Group>> taskGetMemberOf = _svc.GetGroupMemberOfListAsync(uId, false, true);
+                await Task.WhenAll(taskGetUser, taskGetMemberOf);
+                User u = taskGetUser.Result;
+                SecurityPrincipalEditorVM sp = _mapper.Map<User, SecurityPrincipalEditorVM>(u);
+                MembershipList<Group> memberOfList = taskGetMemberOf.Result;
                 List<MemberVM> memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.MemberList);
                 List<MemberVM> notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.NonMemberList);
 
@@ -286,20 +204,21 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
 
-        public IActionResult GetNewUser()
+        public async Task<IActionResult> GetNewUser()
         {
             _logger.LogInformation($"In GetNewUser()");
 
             SecurityPrincipalEditorVM sp = null;
             ResponseVM r = null;
-            //List<Group> g = null;
+            
             try
             {
                 User u = new User();
                 sp = _mapper.Map<User, SecurityPrincipalEditorVM>(u);
                 sp.UId = null;
 
-                List<MemberVM> notMemberOf = _mapper.Map<IEnumerable<Group>, List<MemberVM>>(_dal.Store.Groups.Where(g => g.IsLocal));
+                List<Group> groups = await _svc.GetGroupByNameAsync(null, false);
+                List<MemberVM> notMemberOf = _mapper.Map<IEnumerable<Group>, List<MemberVM>>(groups.Where(g => g.IsLocal));
 
                 r = new ResponseVM()
                 {
@@ -319,7 +238,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
         [HttpPost]
-        public IActionResult SaveUser([FromBody] UserSaveVM userSave)
+        public async Task<IActionResult> SaveUser([FromBody] UserSaveVM userSave)
         {
             bool ok = false;
             _logger.LogInformation($"In SaveUser({nameof(userSave)}:{userSave})");
@@ -334,18 +253,25 @@ namespace Suplex.UI.Modules.Admin.Controllers
             try
             {
                 // validate name: must be unique
+                Task<List<User>> getUsers = _svc.GetUserByNameAsync(sp.Name, true);
+                Task<List<Group>> getGroups = _svc.GetGroupByNameAsync(sp.Name, true);
+
+                List<User> users = await getUsers;
+                List<Group> groups = await getGroups;
+
                 // if new user
                 if (sp.UId == null)
                 {
-                    if (_dal.GetUserByName(sp.Name).Count != 0 || _dal.GetGroupByName(sp.Name).Count != 0)
+                    
+                    if (users.Count != 0 || groups.Count != 0)
                     {
                         ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
                     }
                 }
                 else
                 {
-                    if (_dal.GetUserByName(sp.Name).Where(u => u.UId != sp.UId).Count() != 0 ||
-                        _dal.GetGroupByName(sp.Name).Count != 0)
+                    if (users.Where(x => x.UId != sp.UId).Count() != 0 ||
+                        groups.Count != 0)
                     {
                         ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
                     }
@@ -357,49 +283,36 @@ namespace Suplex.UI.Modules.Admin.Controllers
                     // if new user
                     if (sp.UId == null)
                     {
-                        //sp.UId = Guid.NewGuid();
+                        
                         u = new User();
                         sp.UId = u.UId;
                     }
                     else
                     {
-                        u = _dal.GetUserByUId(sp.UId.Value);
+                        u = await _svc.GetUserByUIdAsync(sp.UId.Value);
                     }
 
                     _mapper.Map<SecurityPrincipalEditorVM, User>(sp, u);    // map to existing object so we dont override fields that are not used in the UI
-                    _dal.UpsertUser(u);
+                    await _svc.UpsertUserAsync(u);
 
-                    //List<GroupMembershipItem> groupMembershipToAdd = new List<GroupMembershipItem>();
-                    //foreach (MemberVM g in toAdd)
-                    //{
-                    //    groupMembershipToAdd.Add(new GroupMembershipItem { GroupUId = g.UId, MemberUId = u.UId, IsMemberUser = u.IsUser });
-                    //}
-
-                    //List<GroupMembershipItem> groupMembershipToRemove = new List<GroupMembershipItem>();
-                    //foreach (MemberVM g in toRemove)
-                    //{
-                    //    groupMembershipToRemove.Add(new GroupMembershipItem { GroupUId = g.UId, MemberUId = u.UId, IsMemberUser = u.IsUser });
-                    //}
-
-                    //foreach (GroupMembershipItem i in groupMembershipToAdd)
-                    //{
-                    //    _dal.UpsertGroupMembership(i);
-                    //}
-                    //foreach (GroupMembershipItem i in groupMembershipToRemove)
-                    //{
-                    //    _dal.DeleteGroupMembership(i);
-                    //}
+                    List<GroupMembershipItem> gmiToRemove = new List<GroupMembershipItem>();
                     foreach (MemberVM i in memberOfToRemove)
                     {
-                        _dal.DeleteGroupMembership(new GroupMembershipItem { GroupUId = i.UId, MemberUId = u.UId, IsMemberUser = u.IsUser });
+                        //await _svc.DeleteGroupMembershipAsync(new GroupMembershipItem { GroupUId = i.UId, MemberUId = u.UId, IsMemberUser = u.IsUser });
+                        //deleteGroupMembership.Add(_svc.DeleteGroupMembershipAsync(new GroupMembershipItem { GroupUId = i.UId, MemberUId = u.UId, IsMemberUser = u.IsUser }));
+                        gmiToRemove.Add( new GroupMembershipItem { GroupUId = i.UId, MemberUId = u.UId, IsMemberUser = u.IsUser } );
                     }
+                    await _svc.DeleteGroupMembershipAsync( gmiToRemove );
+                    List<GroupMembershipItem> gmiToAdd = new List<GroupMembershipItem>();
                     foreach (MemberVM i in memberOfToAdd)
                     {
-                        _dal.UpsertGroupMembership(new GroupMembershipItem { GroupUId = i.UId, MemberUId = u.UId, IsMemberUser = u.IsUser });
+                        gmiToAdd.Add(new GroupMembershipItem { GroupUId = i.UId, MemberUId = u.UId, IsMemberUser = u.IsUser });
                     }
+                    await _svc.UpsertGroupMembershipAsync( gmiToAdd );
+
                     sp = _mapper.Map<User, SecurityPrincipalEditorVM>(u);   // get a fresh record to return to the client
 
-                    memberOfList = _dal.GetGroupMembershipListOf(u, true);
+                    memberOfList = await _svc.GetGroupMemberOfListAsync(u, true);
                     memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.MemberList);
                     notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.NonMemberList);
 
@@ -430,8 +343,8 @@ namespace Suplex.UI.Modules.Admin.Controllers
             //https://www.jerriepelser.com/blog/validation-response-aspnet-core-webapi/
             return Json(r);
         }
-        [HttpPost]
-        public IActionResult DeleteUser(Guid uId)
+        //[HttpPost]
+        public async Task<IActionResult> DeleteUser(Guid uId)
         {
             string error = null;
             User u = null;
@@ -440,14 +353,14 @@ namespace Suplex.UI.Modules.Admin.Controllers
             ResponseVM r = null;
             try
             {
-                u = _dal.GetUserByUId(uId);
+                u = await _svc.GetUserByUIdAsync(uId);
                 if (u.IsBuiltIn)
                 {
                     error = $"User {u.Name} cannot be deleted as it is a built-in user.";
                 }
                 else
                 {
-                    _dal.DeleteUser(uId);
+                    await _svc.DeleteUserAsync(uId);
                 }
             }
             catch (Exception ex)
@@ -462,7 +375,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
             };
             return Json(r);
         }
-        public IActionResult GetGroupByUId(Guid uId)
+        public async Task<IActionResult> GetGroupByUId(Guid uId)
         {
 
             _logger.LogInformation($"In GetGroupByUId({nameof(uId)}:{uId})");
@@ -471,39 +384,54 @@ namespace Suplex.UI.Modules.Admin.Controllers
             ResponseVM r = null;
             try
             {
-                Group g = _dal.GetGroupByUId(uId);
+                Task<Group> getGroup = _svc.GetGroupByUIdAsync(uId);
+                Task<MembershipList<SecurityPrincipalBase>> getMembersList = _svc.GetGroupMembersListAsync(uId, true);
+                Task<MembershipList<Group>> getMemberOfList = _svc.GetGroupMemberOfListAsync(uId, true);
+                Task<IEnumerable<GroupMembershipItem>> getGroupMemberhipHierarchy = _svc.GetGroupMembershipHierarchyAsync(uId, true);
+
+                Group g = await getGroup;
+                MembershipList<SecurityPrincipalBase> membersList = await getMembersList;
+                MembershipList<Group> memberOfList = await getMemberOfList;
+                List<GroupMembershipItem> groupMembershipHierarchy = (List<GroupMembershipItem>) await getGroupMemberhipHierarchy;
+
                 sp = _mapper.Map<Group, SecurityPrincipalEditorVM>(g);
-
-                //IEnumerable<GroupMembershipItem> memberOfSrc = _dal.GetGroupMemberOf(g, true);
-                //IEnumerable<GroupMembershipItem> membersSrc = _dal.GetGroupMembers(g, true);
-
-                //memberOfSrc.Resolve(_dal.Store.Groups, _dal.Store.Users, true);
-                //membersSrc.Resolve(_dal.Store.Groups, _dal.Store.Users, true);
-
-                //List<MemberVM> memberOfDest = _mapper.Map<IEnumerable<SecurityPrincipalBase>, List<MemberVM>>(memberOfSrc.Select(item => item.Group ));
-                //List<MemberVM> membersDest = _mapper.Map<IEnumerable<SecurityPrincipalBase>, List<MemberVM>>(membersSrc.Select(item => item.Member ));
-
-                // members list
-                MembershipList<SecurityPrincipalBase> membersList = _dal.GetGroupMembershipList(g, true);
                 List<MemberVM> membersDest = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>(membersList.MemberList);
                 List<MemberVM> notMembersDest = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>(membersList.NonMemberList);
 
-                // member of list
-                MembershipList<Group> memberOfList = _dal.GetGroupMembershipListOf(g, true);
                 List<MemberVM> memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.MemberList);
                 List<MemberVM> notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.NonMemberList);
 
-                // Group hierarchy
-                IEnumerable<GroupMembershipItem> gm = _dal.GetGroupMembershipHierarchy(uId);
+                // Build the group hierarchy data for the treelist
+                // 1. get root nodes
+                //List<GroupMembershipItem> rootnodes = groupMembershipHierarchy.Where( i => (groupMembershipHierarchy.Count( x => x.MemberUId == i.GroupUId ) == 0) )
+                //    .Select( i => new GroupMembershipItem { GroupUId = i.GroupUId, MemberUId = i.GroupUId, Group = i.Group, Member = i.Group } )
+                //    .Distinct( new Suplex.UI.Modules.Admin.Helpers.GroupMembershipEqualityComparerTest() )
+                //    .ToList();
+                List<GroupMembershipItem> rootnodes = new List<GroupMembershipItem>();
+                foreach (GroupMembershipItem gmi in groupMembershipHierarchy)
+                {
+                    if( rootnodes.Find( x => x.GroupUId == gmi.GroupUId ) == null )
+                    {
+                        if ( groupMembershipHierarchy.Find( h => h.MemberUId == gmi.GroupUId ) == null )
+                            rootnodes.Add( new GroupMembershipItem { GroupUId = gmi.GroupUId, MemberUId = gmi.GroupUId, Group = gmi.Group, Member = gmi.Member } );
+                    }
+                }
 
-                List<GroupHierarchyVM> rootnodes = gm.Where(i => (gm.Count(x => x.MemberUId == i.GroupUId) == 0))
-                    .Select(i => new GroupHierarchyVM { GroupUId = null, MemberUId = i.GroupUId, Name = i.Group.Name, Description = i.Group.Description, IsEnabled = i.Group.IsEnabled, IsLocal = i.Group.IsLocal, IsUser = i.Group.IsUser })
-                    .Distinct(new GroupHierarchyVMEqualityComparer())
-                    .ToList();
+                List<GroupHierarchyVM> gh = new List<GroupHierarchyVM>();
 
-                List<GroupHierarchyVM> gh = _mapper.Map<IEnumerable<GroupMembershipItem>, List<GroupHierarchyVM>>(gm);
-
-                gh.AddRange(rootnodes);
+                // 2. recursively get children
+                int id = 0;
+                foreach (GroupMembershipItem node in rootnodes)
+                {
+                    gh.Add( new GroupHierarchyVM { Id = ++id, ParentId = null, MemberUId = node.GroupUId, GroupUId = null, Name = node.Group.Name, Description = node.Group.Description, IsEnabled = node.Group.IsEnabled, IsLocal = node.Group.IsLocal, IsUser = node.Group.IsUser } );
+                    gh.AddRange( recurseGetGroupHierarchyChildren( node, groupMembershipHierarchy, ref id, id ) );
+                }
+                //List<GroupHierarchyVM> gh = _mapper.Map<IEnumerable<GroupMembershipItem>, List<GroupHierarchyVM>>(groupMembershipHierarchy);
+                //List<GroupHierarchyVM> ghRootNodes = groupMembershipHierarchy.Where(i => (groupMembershipHierarchy.Count(x => x.MemberUId == i.GroupUId) == 0))
+                //    .Select(i => new GroupHierarchyVM { GroupUId = null, MemberUId = i.GroupUId, Name = i.Group.Name, Description = i.Group.Description, IsEnabled = i.Group.IsEnabled, IsLocal = i.Group.IsLocal, IsUser = i.Group.IsUser })
+                //    .Distinct(new GroupHierarchyVMEqualityComparer())
+                //    .ToList();
+                //gh.AddRange(ghRootNodes);
 
                 r = new ResponseVM()
                 {
@@ -524,7 +452,18 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
 
-        public IActionResult GetNewGroup()
+        private IEnumerable<GroupHierarchyVM> recurseGetGroupHierarchyChildren(GroupMembershipItem parent, IEnumerable<GroupMembershipItem> groupMembershipHierarchy, ref int id, int parentId)
+        {
+            List<GroupHierarchyVM> hierarchy = new List<GroupHierarchyVM>();
+            IEnumerable<GroupMembershipItem> children = groupMembershipHierarchy.Where( x => x.GroupUId == parent.MemberUId );
+            foreach( GroupMembershipItem child in children )
+            {
+                hierarchy.Add( new GroupHierarchyVM { Id = ++id, ParentId = parentId, GroupUId = child.GroupUId, MemberUId = child.MemberUId, Name = child.Member.Name, Description = child.Member.Description, IsEnabled = child.Member.IsEnabled, IsLocal = child.Member.IsLocal, IsUser = child.Member.IsUser } );
+                hierarchy.AddRange( recurseGetGroupHierarchyChildren( child, groupMembershipHierarchy, ref id, id));
+            }
+            return hierarchy;
+        }
+        public async Task<IActionResult> GetNewGroup()
         {
             _logger.LogInformation($"In GetNewGroup()");
 
@@ -536,12 +475,18 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 sp = _mapper.Map<Group, SecurityPrincipalEditorVM>(g);
                 sp.UId = null;
 
-                // not member of = all local group
-                List<MemberVM> notMemberOf = _mapper.Map<IEnumerable<Group>, List<MemberVM>>(_dal.Store.Groups.Where(x => x.IsLocal));
+                
+                Task<List<Group>> getGroups = _svc.GetGroupByNameAsync(null, false);
+                Task<List<User>> getUsers = _svc.GetUserByNameAsync(null, false);
 
+                List<Group> groups = await getGroups;
+                List<User> users = await getUsers;
+
+                // not member of = all local group
+                List<MemberVM> notMemberOf = _mapper.Map<IEnumerable<Group>, List<MemberVM>>(groups.Where(x => x.IsLocal));
                 // not members = all security principals
-                List<MemberVM> notMembers = _mapper.Map<IEnumerable<Group>, List<MemberVM>>(_dal.Store.Groups);
-                notMembers.AddRange(_mapper.Map<IEnumerable<User>, List<MemberVM>>(_dal.Store.Users));
+                List<MemberVM> notMembers = _mapper.Map<IEnumerable<Group>, List<MemberVM>>(groups);
+                notMembers.AddRange(_mapper.Map<IEnumerable<User>, List<MemberVM>>(users));
 
                 r = new ResponseVM()
                 {
@@ -561,10 +506,10 @@ namespace Suplex.UI.Modules.Admin.Controllers
             return Json(r);
         }
         [HttpPost]
-        public IActionResult SaveGroup([FromBody] GroupSaveVM groupSave)
+        public async Task<IActionResult> SaveGroup([FromBody] GroupSaveVM groupSave)
         {
             bool ok = false;
-            _logger.LogInformation($"In SaveGroup({nameof(groupSave)}:{groupSave})");
+            _logger.LogInformation( $"In SaveGroup({nameof( groupSave )}:{groupSave})" );
             SecurityPrincipalEditorVM sp = groupSave.Group;
             List<MemberVM> membersToAdd = groupSave.MembersToAdd;
             List<MemberVM> membersToRemove = groupSave.MembersToRemove;
@@ -581,144 +526,141 @@ namespace Suplex.UI.Modules.Admin.Controllers
             try
             {
                 // validate name: must be unique
+                Task<List<Group>> getGroups = _svc.GetGroupByNameAsync( sp.Name, true );
+                Task<List<User>> getUsers = _svc.GetUserByNameAsync( sp.Name, true );
+                List<Group> groups = await getGroups;
+                List<User> users = await getUsers;
                 // if new user
-                if (sp.UId == null)
+                if( sp.UId == null )
                 {
-                    if (_dal.GetGroupByName(sp.Name).Count != 0 || _dal.GetUserByName(sp.Name).Count != 0)
+                    if( groups.Count != 0 || users.Count != 0 )
                     {
-                        ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
+                        ModelState.AddModelError( "Name", "Name has already been used. Please choose another one." );
                     }
                 }
                 else
                 {
-                    if (_dal.GetGroupByName(sp.Name).Where(u => u.UId != sp.UId).Count() != 0 ||
-                        _dal.GetUserByName(sp.Name).Count != 0)
+                    if( groups.Where( x => x.UId != sp.UId ).Count() != 0 ||
+                        users.Count != 0 )
                     {
-                        ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
+                        ModelState.AddModelError( "Name", "Name has already been used. Please choose another one." );
                     }
                 }
 
-                if (ModelState.IsValid)
+                if( ModelState.IsValid )
                 {
                     Group g;
 
                     // if new user
-                    if (sp.UId == null)
+                    if( sp.UId == null )
                     {
-                        //sp.UId = Guid.NewGuid();
+                        
                         g = new Group();
-                        //sp.UId = g.UId; // we need to send back the UId
-                        if (_maskSize == 0)
+                        sp.UId = g.UId; 
+                        if( _maskSize == 0 )
                         {
                             sp.Mask = "0";
                         }
                         else
                         {
-                            BitArray maskBitArray = _dal.Store.Groups.GetNextMask(_maskSize);
-                            sp.Mask = MaskConverter.BitArrayToString(maskBitArray);
+                            //BitArray maskBitArray = _svc.Store.Groups.GetNextMask( _maskSize );
+                            //sp.Mask = MaskConverter.BitArrayToString( maskBitArray );
+                            sp.Mask = "0";
                         }
                     }
                     else
                     {
-                        g = _dal.GetGroupByUId(sp.UId.Value);
+                        g = await _svc.GetGroupByUIdAsync( sp.UId.Value );
                     }
 
-                    //Group g = _mapper.Map<SecurityPrincipalEditorVM, Group>(sp);
-                    _mapper.Map<SecurityPrincipalEditorVM, Group>(sp, g);   // map to existing object so we dont override fields that are not used in the UI
-                    _dal.UpsertGroup(g);
+                    _mapper.Map<SecurityPrincipalEditorVM, Group>( sp, g );   // map to existing object so we dont override fields that are not used in the UI
+                    await _svc.UpsertGroupAsync( g );
 
                     // work on group membership
-                    foreach (MemberVM i in memberOfToRemove)
+                    List<GroupMembershipItem> gmiToRemove = new List<GroupMembershipItem>();
+                    foreach( MemberVM i in memberOfToRemove )
                     {
-                        _dal.DeleteGroupMembership(new GroupMembershipItem { GroupUId = i.UId, MemberUId = g.UId, IsMemberUser = g.IsUser });
+                        gmiToRemove.Add( new GroupMembershipItem { GroupUId = i.UId, MemberUId = g.UId, IsMemberUser = g.IsUser } );
                     }
-                    foreach (MemberVM i in memberOfToAdd)
+                    foreach( MemberVM i in membersToRemove )
                     {
-                        _dal.UpsertGroupMembership(new GroupMembershipItem { GroupUId = i.UId, MemberUId = g.UId, IsMemberUser = g.IsUser });
+                        gmiToRemove.Add( new GroupMembershipItem { GroupUId = g.UId, MemberUId = i.UId, IsMemberUser = i.IsUser } );
                     }
-                    if (g.IsLocal)
+                    await _svc.DeleteGroupMembershipAsync( gmiToRemove );
+                    List<GroupMembershipItem> gmiToAdd = new List<GroupMembershipItem>();
+                    foreach( MemberVM i in memberOfToAdd )
                     {
-                        //List<GroupMembershipItem> groupMembershipToAdd = new List<GroupMembershipItem>();
-                        //foreach (MemberVM m in membersToAdd)
-                        //{
-                        //    groupMembershipToAdd.Add(new GroupMembershipItem { GroupUId = g.UId, MemberUId = m.UId, IsMemberUser = m.IsUser });
-                        //}
+                        gmiToAdd.Add( new GroupMembershipItem { GroupUId = i.UId, MemberUId = g.UId, IsMemberUser = g.IsUser } );
+                    }
+                    foreach( MemberVM i in membersToAdd )
+                    {
+                        gmiToAdd.Add( new GroupMembershipItem { GroupUId = g.UId, MemberUId = i.UId, IsMemberUser = i.IsUser } );
+                    }
+                    await _svc.UpsertGroupMembershipAsync( gmiToAdd );
 
-                        //List<GroupMembershipItem> groupMembershipToRemove = new List<GroupMembershipItem>();
-                        //foreach (MemberVM m in membersToRemove)
-                        //{
-                        //    groupMembershipToRemove.Add(new GroupMembershipItem { GroupUId = g.UId, MemberUId = m.UId, IsMemberUser = m.IsUser });
-                        //}
-
-                        //foreach (GroupMembershipItem i in groupMembershipToAdd)
-                        //{
-                        //    // need to resolve member and group fields before upsert? 
-                        //    _dal.UpsertGroupMembership(i);
-                        //}
-                        //foreach (GroupMembershipItem i in groupMembershipToRemove)
-                        //{
-                        //    _dal.DeleteGroupMembership(i);
-                        //}
-                        foreach (MemberVM i in membersToRemove)
-                        {
-                            _dal.DeleteGroupMembership(new GroupMembershipItem { GroupUId = g.UId, MemberUId = i.UId, IsMemberUser = i.IsUser });
-                        }
-                        foreach (MemberVM i in membersToAdd)
-                        {
-                            _dal.UpsertGroupMembership(new GroupMembershipItem { GroupUId = g.UId, MemberUId = i.UId, IsMemberUser = i.IsUser });
-                        }
-                    }
-                    else
-                    {
-                        // if external group, delete all members, including disabled members
-                        foreach (GroupMembershipItem i in _dal.GetGroupMembers(g, true))
-                        {
-                            _dal.DeleteGroupMembership(i);
-                        }
-                    }
                     // get a fresh data to send to the browser (same code as GetGroupByUId()
-                    sp = _mapper.Map<Group, SecurityPrincipalEditorVM>(g);   // get a fresh record to return to the client
-                                                                             // members list
-                    membersList = _dal.GetGroupMembershipList(g, true);
-                    membersDest = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>(membersList.MemberList);
-                    notMembersDest = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>(membersList.NonMemberList);
+                    sp = _mapper.Map<Group, SecurityPrincipalEditorVM>( g );   // get a fresh record to return to the client
+                                                                               
+                    Task<MembershipList<SecurityPrincipalBase>> getMembersList = _svc.GetGroupMembersListAsync( g, true );
+                    Task<MembershipList<Group>> getMemberOfList = _svc.GetGroupMemberOfListAsync( g, true );
+                    Task<IEnumerable<GroupMembershipItem>> getGroupMembershipHierarchy = _svc.GetGroupMembershipHierarchyAsync( g.UId, true );
 
-                    // member of list
-                    memberOfList = _dal.GetGroupMembershipListOf(g, true);
-                    memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.MemberList);
-                    notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.NonMemberList);
+                    membersList = await getMembersList;
+                    membersDest = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>( membersList.MemberList );
+                    notMembersDest = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>( membersList.NonMemberList );
 
-                    // Group hierarchy
-                    IEnumerable<GroupMembershipItem> gm = _dal.GetGroupMembershipHierarchy(g.UId);
+                    memberOfList = await getMemberOfList;
+                    memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>( memberOfList.MemberList );
+                    notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>( memberOfList.NonMemberList );
 
-                    List<GroupHierarchyVM> rootnodes = gm.Where(i => (gm.Count(x => x.MemberUId == i.GroupUId) == 0))
-                        .Select(i => new GroupHierarchyVM { GroupUId = null, MemberUId = i.GroupUId, Name = i.Group.Name, Description = i.Group.Description, IsEnabled = i.Group.IsEnabled, IsLocal = i.Group.IsLocal, IsUser = i.Group.IsUser })
-                        .Distinct(new GroupHierarchyVMEqualityComparer())
-                        .ToList();
+                    List<GroupMembershipItem> groupMembershipHierarchy = (List<GroupMembershipItem>) await getGroupMembershipHierarchy;
+                    // Build the group hierarchy data for the treelist
+                    // 1. get root nodes
+                    List<GroupMembershipItem> rootnodes = new List<GroupMembershipItem>();
+                    foreach( GroupMembershipItem gmi in groupMembershipHierarchy )
+                    {
+                        if( rootnodes.Find( x => x.GroupUId == gmi.GroupUId ) == null )
+                        {
+                            if( groupMembershipHierarchy.Find( h => h.MemberUId == gmi.GroupUId ) == null )
+                                rootnodes.Add( new GroupMembershipItem { GroupUId = gmi.GroupUId, MemberUId = gmi.GroupUId, Group = gmi.Group, Member = gmi.Member } );
+                        }
+                    }
+                    //List<GroupHierarchyVM> rootnodes = gm.Where( i => (gm.Count( x => x.MemberUId == i.GroupUId ) == 0) )
+                    //    .Select( i => new GroupHierarchyVM { GroupUId = null, MemberUId = i.GroupUId, Name = i.Group.Name, Description = i.Group.Description, IsEnabled = i.Group.IsEnabled, IsLocal = i.Group.IsLocal, IsUser = i.Group.IsUser } )
+                    //    .Distinct( new GroupHierarchyVMEqualityComparer() )
+                    //    .ToList();
+                    // gh = _mapper.Map<IEnumerable<GroupMembershipItem>, List<GroupHierarchyVM>>( gm );
+                    // gh.AddRange( rootnodes );
+                    gh = new List<GroupHierarchyVM>();
 
-                    gh = _mapper.Map<IEnumerable<GroupMembershipItem>, List<GroupHierarchyVM>>(gm);
+                    // 2. recursively get children
+                    int id = 0;
+                    foreach( GroupMembershipItem node in rootnodes )
+                    {
+                        gh.Add( new GroupHierarchyVM { Id = ++id, ParentId = null, MemberUId = node.GroupUId, GroupUId = null, Name = node.Group.Name, Description = node.Group.Description, IsEnabled = node.Group.IsEnabled, IsLocal = node.Group.IsLocal, IsUser = node.Group.IsUser } );
+                        gh.AddRange( recurseGetGroupHierarchyChildren( node, groupMembershipHierarchy, ref id, id ) );
+                    }
 
-                    gh.AddRange(rootnodes);
                     ok = true;
 
                 }
                 else
                 {
-                    _logger.LogError($"Error updating group {sp.UId} | {sp.Name}");
+                    _logger.LogError( $"Error updating group {sp.UId} | {sp.Name}" );
                 }
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                _logger.LogError(ex, $"Error saving group {sp.UId} | {sp.Name}");
+                ModelState.AddModelError( string.Empty, ex.Message );
+                _logger.LogError( ex, $"Error saving group {sp.UId} | {sp.Name}" );
             }
 
             ResponseVM r = new ResponseVM()
             {
                 Status = ok ? SUCCESS : ERROR,
                 Message = ok ? null : $"Unable to save Group {sp.Name}. Clear the error(s) and try again.",
-                ValidationErrors = ok ? null : ModelState.Keys.SelectMany(k => ModelState[k].Errors)
-                      .Select(m => m.ErrorMessage).ToList(),
+                ValidationErrors = ok ? null : ModelState.Keys.SelectMany( k => ModelState[k].Errors )
+                      .Select( m => m.ErrorMessage ).ToList(),
                 // Data = new { Group = (ok ? sp : null) }
                 Data = ok ? new GroupVM { Group = sp, MemberOf = memberOfDest, Members = membersDest, GroupHierarchy = gh, NotMemberOf = notMemberOfDest, NotMembers = notMembersDest } : null
             };
@@ -726,201 +668,78 @@ namespace Suplex.UI.Modules.Admin.Controllers
             //https://www.telerik.com/blogs/handling-server-side-validation-errors-in-your-kendo-ui-grid
             //https://techbrij.com/modelstate-errors-angularjs-asp-net-mvc
             //https://www.jerriepelser.com/blog/validation-response-aspnet-core-webapi/
-            return Json(r);
+            return Json( r );
         }
         [HttpPost]
-        public IActionResult DeleteGroup(Guid uId)
+        public async Task<IActionResult> DeleteGroup(Guid uId)
         {
             string error = null;
             Group g = null;
-            _logger.LogInformation($"In DeleteGroup({nameof(uId)}:{uId})");
+            _logger.LogInformation( $"In DeleteGroup({nameof( uId )}:{uId})" );
 
             ResponseVM r = null;
             try
             {
-                g = _dal.GetGroupByUId(uId);
-                if (g.IsBuiltIn)
+                g = await _svc.GetGroupByUIdAsync( uId );
+                if( g.IsBuiltIn )
                 {
                     error = $"Group {g.Name} cannot be deleted as it is a built-in group.";
                 }
                 else
                 {
-                    _dal.DeleteGroup(uId);
+                    await _svc.DeleteGroupAsync( uId );
                 }
-                
+
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, $"Error deleting Group {uId}");
+                _logger.LogError( ex, $"Error deleting Group {uId}" );
                 error = $"An error has occurred while deleting Group {g.Name}.";
             }
             r = new ResponseVM()
             {
-                Status = string.IsNullOrEmpty(error) ? SUCCESS : ERROR,
+                Status = string.IsNullOrEmpty( error ) ? SUCCESS : ERROR,
                 Message = error
             };
-            return Json(r);
-        }
-        public IActionResult GetSecurityPrincipalList([DataSourceRequest] DataSourceRequest request)
-        {
-            _logger.LogInformation($"In GetSecurityPrincipalList()");
-
-            List<MemberVM>  securityPrincipals = _mapper.Map<IList<User>, List<MemberVM>>(_dal.Store.Users);
-            securityPrincipals.AddRange(_mapper.Map<IList<Group>, List<MemberVM>>(_dal.Store.Groups));
-            
-            return Json(securityPrincipals.ToDataSourceResult(request));
+            return Json( r );
         }
 
-        //public IActionResult GetAllTrustees()
-        //{
-        //    _logger.LogInformation($"In GetAllTrustees()");
-
-        //    List<TrusteeVM> trustees = _mapper.Map<IList<Group>, List<TrusteeVM>>(_dal.Store.Groups);
-
-        //    return Json(trustees);
-        //}
         #endregion
 
         #region Secure Objects
-        public IActionResult GetSecureObjectTree([DataSourceRequest] DataSourceRequest request)
+        public async Task<IActionResult> GetSecureObjectTree([DataSourceRequest] DataSourceRequest request)
         {
             _logger.LogInformation($"In GetSecureObjectTree()");
-            List<SecureObjectTreeVM> treeList = new List<SecureObjectTreeVM>();
+
+            List<SecureObjectTreeVM> treeList = null;
             try
             {
-                List<SecureObject> allSecureObjects = _dal.Store.SecureObjects.ToList();
+                IEnumerable<SecureObject> secureObjects = await _svc.GetSecureObjectsAsync();
 
-
-                //foreach (var rootObject in _dal.Store.SecureObjects)
-                //    treeList.AddRange(IterateChildObjects(rootObject));
-
-                //treeList = _mapper.Map<List<SecureObject>, List<SecureObjectTreeVM>>(allSecureObjects);
-                //List<SecureObject> tet = allSecureObjects.SelectRecursive(i => i.Children).ToList();
-                treeList.AddRange(_mapper.Map<List<SecureObject>, List<SecureObjectTreeVM>>(allSecureObjects.SelectRecursive(i => i.Children).ToList()));
+                //treeList.AddRange(_mapper.Map<IEnumerable<SecureObject>, List<SecureObjectTreeVM>>(secureObjects.SelectRecursive(i => i.Children).ToList()));
+                treeList = _mapper.Map<IEnumerable<SecureObject>, List<SecureObjectTreeVM>>(secureObjects.SelectRecursive(i => i.Children).ToList());
                 //treeList.Sort((x, y) => x.UniqueName.CompareTo(y.UniqueName));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error reading secure objects");
+                _logger.LogError(ex, $"Error getting secure objects");
+                
+            }
+            if (treeList == null)
+            {
                 treeList = new List<SecureObjectTreeVM>();
             }
-            //return Json(treeList.ToTreeDataSourceResult(request, 
-            //    so => so.UId,
-            //    so => so.ParentUId,
-            //    so => so
-            //));
             return Json(treeList.ToTreeDataSourceResult(request));
         }
-        //private static IEnumerable<SecureObjectTreeVM> IterateChildObjects(SecureObject parent)
-        //{
-        //    if (parent.Children == null) yield break;
 
-        //    foreach (var g in parent.Children)
-        //    {
-        //        yield return new SecureObjectTreeVM
-        //        {
-        //            UId = g.UId,
-        //            ParentUId = g.ParentUId,
-        //            IsEnabled = g.IsEnabled,
-        //            UniqueName = g.UniqueName,
-        //            IsSecure = g.IsSecure.HasValue ? true : false,
-        //            DaclAllowInherit = g.Security.DaclAllowInherit,
-        //            SaclAllowInherit = g.Security.SaclAllowInherit
-        //        };
-
-        //        foreach (var sub in IterateChildObjects(g))
-        //            yield return new SecureObjectTreeVM
-        //            {
-        //                UId = sub.UId,
-        //                ParentUId = sub.ParentUId,
-        //                IsEnabled = sub.IsEnabled,
-        //                UniqueName = sub.UniqueName,
-        //                IsSecure = sub.IsSecure.HasValue ? true : false,
-        //                DaclAllowInherit = sub.Security.DaclAllowInherit,
-        //                SaclAllowInherit = sub.Security.SaclAllowInherit
-        //            }; ;
-        //    }
-        //}
-
-        // TO BE DELETED
-        //[ResponseCache(Duration = 10, VaryByQueryKeys = new[] { "*" })]
-        //public IActionResult GetSecureObjectTreeChildren(Guid? uId)
-        //{
-        //    _logger.LogInformation($"In GetSecureObjectChildren({nameof(uId)}:{uId})");
-        //    List<SecureObjectTreeItemVM> secureObjectTreeItems = null;
-        //    List<SecureObject> children = null;
-        //    try
-        //    {
-        //        if (uId == null)
-        //        {
-        //            children = _dal.Store.SecureObjects.Where(s => s.ParentUId == null).ToList();
-        //        }
-        //        else
-        //        {
-        //            children = (List<SecureObject>)_dal.GetSecureObjectByUId(uId.Value, includeChildren:true, includeDisabled:true).Children.OfType<SecureObject>().ToList();
-        //        }
-        //        secureObjectTreeItems = _mapper.Map<List<SecureObject>, List<SecureObjectTreeItemVM>>(children); 
-        //        secureObjectTreeItems.Sort((x, y) => x.UniqueName.CompareTo(y.UniqueName));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error getting secure object {uId}");
-        //        secureObjectTreeItems = new List<SecureObjectTreeItemVM>();
-        //    }
-        //    return Json(secureObjectTreeItems);
-        //}
-        //// TO DELETE
-        //public IActionResult GetSecureObjectTreeItem(Guid uId)
-        //{
-        //    _logger.LogInformation($"In GetSecureObjectTreeNode({nameof(uId)}:{uId})");
-        //    SecureObjectTreeItemVM secureObjectTreeNode = null;
-        //    try
-        //    {
-
-        //        ISecureObject so = _dal.GetSecureObjectByUId(uId, includeChildren: true, includeDisabled: true);
-        //        secureObjectTreeNode = _mapper.Map<ISecureObject, SecureObjectTreeItemVM>(so);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Error getting secure object {uId}");                
-        //    }
-        //    return Json(secureObjectTreeNode);
-        //}
-        public IActionResult GetSecureObjectTreeItemNew(Guid uId)
-        {
-            _logger.LogInformation($"In GetSecureObjectTreeItem({nameof(uId)}:{uId})");
-            SecureObjectTreeVM secureObjectTreeItem = null;
-            ResponseVM r = null;
-            try
-            {
-
-                ISecureObject so = _dal.GetSecureObjectByUId(uId, includeChildren: true, includeDisabled: true);
-                secureObjectTreeItem = _mapper.Map<ISecureObject, SecureObjectTreeVM>(so);
-                r = new ResponseVM()
-                {
-                    Status = SUCCESS,
-                    Data = secureObjectTreeItem
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error getting secure object {uId}");
-                r = new ResponseVM()
-                {
-                    Status = ERROR,
-                    Message = $"An error has occurred while retrieving secure object {uId}."
-                };
-            }
-            return Json(secureObjectTreeItem);
-        }
-        public IActionResult GetSecureObjectByUId(Guid uId)
+        public async Task<IActionResult> GetSecureObjectByUId(Guid uId)
         {
             _logger.LogInformation($"In GetSecureObjectByUId({nameof(uId)}:{uId})");
             ResponseVM r = null;
 
             try
             {
-                SecureObject so = (SecureObject)_dal.GetSecureObjectByUId(uId, includeChildren:false, includeDisabled: true);
+                SecureObject so = await _svc.GetSecureObjectByUIdAsync(uId, includeChildren: false, includeDisabled: true);
                 SecureObjectEditorVM editorVM = _mapper.Map<SecureObject, SecureObjectEditorVM>(so);
                 // use this if using automapper gets too difficult
                 //editorVM.Security.Dacl = so.Security.Dacl.Select(x => new DaclVM() { UId = x.UId, TrusteeUId = x.TrusteeUId, Allowed = x.Allowed, Inheritable = x.Inheritable, RightType = x.RightData.FriendlyTypeName, Right = x.RightData.Name.Split(new string[] { ", " }, StringSplitOptions.None) }).ToList();
@@ -950,9 +769,9 @@ namespace Suplex.UI.Modules.Admin.Controllers
             //});
         }
         [HttpPost]
-        public IActionResult SaveSecureObject([FromBody] SecureObjectEditorVM model)
+        public async Task<IActionResult> SaveSecureObject([FromBody] SecureObjectEditorVM model)
         {
-            _logger.LogInformation($"In SaveSecureObject({nameof(model)}:{Newtonsoft.Json.JsonConvert.SerializeObject(model)})");
+            _logger.LogInformation( $"In SaveSecureObject({nameof( model )}:{Newtonsoft.Json.JsonConvert.SerializeObject( model )})" );
             bool ok = false;
             SecureObject so = null;
             ResponseVM r = null;
@@ -962,101 +781,101 @@ namespace Suplex.UI.Modules.Admin.Controllers
             try
             {
                 // validate
-                ISecureObject check = _dal.GetSecureObjectByUniqueName(model.UniqueName, includeChildren: false, includeDisabled: true);
-                
-                if (model.UId == null)
+                SecureObject found = await _svc.GetSecureObjectByUniqueNameAsync( model.UniqueName, includeChildren: false, includeDisabled: true );
+
+                if( model.UId == null )
                 {
-                    if (check != null)
+                    if( found != null )
                     {
-                        ModelState.AddModelError("Unique Name", "Unique Name has already been used. Please choose another one.");
+                        ModelState.AddModelError( "Unique Name", "Unique Name has already been used. Please choose another one." );
                     }
                 }
                 else
                 {
-                    if (check != null && check.UId != model.UId)
+                    if( found != null && found.UId != model.UId )
                     {
-                        ModelState.AddModelError("Unique Name", "Unique Name has already been used. Please choose another one.");
+                        ModelState.AddModelError( "Unique Name", "Unique Name has already been used. Please choose another one." );
                     }
                 }
 
-                if (ModelState.IsValid)
+                if( ModelState.IsValid )
                 {
-                    
-                    if (model.UId == null)  // new
+
+                    if( model.UId == null )  // new
                     {
                         //model.UId = Guid.NewGuid();
                         so = new SecureObject();
                     }
                     else
                     {
-                        so = (SecureObject) _dal.GetSecureObjectByUId(model.UId.Value, includeChildren: false, includeDisabled: true);
+                        so = (SecureObject) await _svc.GetSecureObjectByUIdAsync( model.UId.Value, includeChildren: false, includeDisabled: true );
                     }
-                    
-                    // existing collection will be totally wiped out
-                    // if really want to handle mapping to existing collection refer to https://cpratt.co/using-automapper-mapping-instances/
-                    model.Dacl.ForEach(ace => ace.UId = ace.UId ?? Guid.NewGuid());
-                    model.Sacl.ForEach(ace => ace.UId = ace.UId ?? Guid.NewGuid());
 
-                    _mapper.Map<SecureObjectEditorVM, SecureObject>(model, so);
+                    // existing collection will be totally replaced
+                    // if really want to handle mapping to existing collection refer to https://cpratt.co/using-automapper-mapping-instances/
+                    model.Dacl.ForEach( ace => ace.UId = ace.UId ?? Guid.NewGuid() );
+                    model.Sacl.ForEach( ace => ace.UId = ace.UId ?? Guid.NewGuid() );
+
+                    _mapper.Map<SecureObjectEditorVM, SecureObject>( model, so );
 
                     DiscretionaryAcl dacl = new DiscretionaryAcl();
-                    foreach (var item in model.Dacl)
+                    foreach( var item in model.Dacl )
                     {
-                        switch (item.RightType)
+                        switch( item.RightType )
                         {
                             case "FileSystem":
-                                dacl.Add(_mapper.Map<DaclVM, AccessControlEntry<FileSystemRight>>(item));
+                                dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<FileSystemRight>>( item ) );
                                 break;
                             case "Record":
-                                dacl.Add(_mapper.Map<DaclVM, AccessControlEntry<RecordRight>>(item));
+                                dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<RecordRight>>( item ) );
                                 break;
                             case "UI":
-                                dacl.Add(_mapper.Map<DaclVM, AccessControlEntry<UIRight>>(item));
+                                dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<UIRight>>( item ) );
                                 break;
                             case "Synchronization":
-                                dacl.Add(_mapper.Map<DaclVM, AccessControlEntry<SynchronizationRight>>(item));
+                                dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<SynchronizationRight>>( item ) );
                                 break;
                         }
 
                     }
                     SystemAcl sacl = new SystemAcl();
-                    foreach (var item in model.Sacl)
+                    foreach( var item in model.Sacl )
                     {
-                        switch (item.RightType)
+                        switch( item.RightType )
                         {
                             case "FileSystem":
-                                sacl.Add(_mapper.Map<SaclVM, AccessControlEntryAudit<FileSystemRight>>(item));
+                                sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<FileSystemRight>>( item ) );
                                 break;
                             case "Record":
-                                sacl.Add(_mapper.Map<SaclVM, AccessControlEntryAudit<RecordRight>>(item));
+                                sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<RecordRight>>( item ) );
                                 break;
                             case "UI":
-                                sacl.Add(_mapper.Map<SaclVM, AccessControlEntryAudit<UIRight>>(item));
+                                sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<UIRight>>( item ) );
                                 break;
                             case "Synchronization":
-                                sacl.Add(_mapper.Map<SaclVM, AccessControlEntryAudit<SynchronizationRight>>(item));
+                                sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<SynchronizationRight>>( item ) );
                                 break;
                         }
 
                     }
                     so.Security.Dacl = dacl;
                     so.Security.Sacl = sacl;
-                    _dal.UpsertSecureObject(so);
-                    model = _mapper.Map<SecureObject, SecureObjectEditorVM>(so);    // refresh the model
+                    await _svc.UpsertSecureObjectAsync( so );
+                    model = _mapper.Map<SecureObject, SecureObjectEditorVM>( so );    // refresh the model
 
                     ok = true;
                 }
                 else
                 {
-                    _logger.LogError($"Error saving Secure Object {model.UId} | {model.UniqueName}");
+                    _logger.LogError( $"Error saving Secure Object {model.UId} | {model.UniqueName}" );
                 }
 
-                
+
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                _logger.LogError(ex, $"Error saving Secure Object");
+                ModelState.AddModelError( string.Empty, ex.Message );
+                _logger.LogError( ex, $"Error saving Secure Object" );
             }
 
             r = new ResponseVM()
@@ -1064,59 +883,58 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 Status = ok ? SUCCESS : ERROR,
                 Data = ok ? model : null,
                 Message = ok ? null : "Unable to save Secure Object due to errors.",
-                ValidationErrors = ok ? null : ModelState.Keys.SelectMany(k => ModelState[k].Errors)
-                          .Select(m => m.ErrorMessage).ToList(),
+                ValidationErrors = ok ? null : ModelState.Keys.SelectMany( k => ModelState[k].Errors )
+                          .Select( m => m.ErrorMessage ).ToList(),
             };
 
-            return Json(r);
+            return Json( r );
         }
         [HttpPost]
-        public IActionResult DeleteSecureObject(Guid uId)
+        public async Task<IActionResult> DeleteSecureObject(Guid uId)
         {
             string error = null;
-            _logger.LogInformation($"In DeleteSecureObject({nameof(uId)}:{uId})");
+            _logger.LogInformation( $"In DeleteSecureObject({nameof( uId )}:{uId})" );
 
             ResponseVM r = null;
             try
             {
-                _dal.DeleteSecureObject(uId);
+                await _svc.DeleteSecureObjectAsync( uId );
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, $"Error deleting Secure Object {uId}");
+                _logger.LogError( ex, $"Error deleting Secure Object {uId}" );
                 error = $"An error has occurred while deleting Secure Object.";
             }
             r = new ResponseVM()
             {
-                Status = string.IsNullOrEmpty(error) ? SUCCESS : ERROR,
+                Status = string.IsNullOrEmpty( error ) ? SUCCESS : ERROR,
                 Message = error
             };
-            return Json(r);
+            return Json( r );
         }
         [HttpPost]
-        public IActionResult UpdateSecureObjectParent(Guid uId, Guid? parentUId)
+        public async Task<IActionResult> UpdateSecureObjectParent(Guid uId, Guid? parentUId)
         {
             string error = null;
-            _logger.LogInformation($"In MoveSecureObject({nameof(uId)}:{uId}), {nameof(parentUId)}:{parentUId}");
+            _logger.LogInformation( $"In UpdateSecureObjectParent({nameof( uId )}:{uId}), {nameof( parentUId )}:{parentUId}" );
             ResponseVM r = null;
 
             try
             {
-                SecureObject item = (SecureObject)_dal.GetSecureObjectByUId(uId, includeChildren: true, includeDisabled: true);
-                _dal.UpdateSecureObjectParentUId(item, parentUId);
+                await _svc.UpdateSecureObjectParentUIdAsync( uId, parentUId );
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, $"Error updating parent of Secure Object {uId}");
+                _logger.LogError( ex, $"Error updating parent of Secure Object {uId}" );
                 error = $"An error has occurred while attempting to update parent of Secure Object.";
             }
-            
+
             r = new ResponseVM()
             {
-                Status = string.IsNullOrEmpty(error) ? SUCCESS : ERROR,
+                Status = string.IsNullOrEmpty( error ) ? SUCCESS : ERROR,
                 Message = error
             };
-            return Json(r);
+            return Json( r );
         }
 
         #endregion

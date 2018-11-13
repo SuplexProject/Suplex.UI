@@ -58,7 +58,7 @@ pre {
     font-size: 1.1em;
 }
 #s-content {
-    padding: 5px 8px;
+    padding: 5px 5px;
     position: relative;
     /*height: calc(100% - 60px);*/ /* header 40px, footer 20px */
 }

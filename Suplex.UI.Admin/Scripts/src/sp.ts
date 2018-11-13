@@ -1,7 +1,6 @@
 ﻿import differenceBy from "lodash-es/differenceBy"; // gives you a smaller size than doing import difference from 'lodash'. It seems you can do the same thing with ES6 using Array.filter
 import debounce from "lodash-es/debounce";
 import * as ID from "./ids";
-import { mainVM } from "./main";
 import {
     getActionUrl,
     decipherJqXhrError,
@@ -205,15 +204,22 @@ function setupWidgets(): void {
             data: [],
             schema: {
                 model: {
-                    id: "MemberUId",
-                    parentId: "GroupUId",
+                    id: "Id",  //"MemberUId",
+                    parentId: "ParentId", //"GroupUId",
                     expanded: true,
                     fields: {
-                        MemberUId: { type: "string", nullable: false },
-                        GroupUId: { type: "string", nullable: true },
+                        //MemberUId: { type: "string", nullable: false },
+                        //GroupUId: { type: "string", nullable: true },
+                        Id: { type: "number", nullable: false },
+                        ParentId: { type: "number", nullable: true },
                     },
                 },
             },
+            sort: [
+                { field: "IsUser", dir: "desc" },
+                { field: "IsLocal", dir: "desc" },
+                { field: "Name", dir: "asc" }
+            ],
         },
         columns: [
             { field: "Name", template: $("#spNameTemplate").html() },
@@ -282,7 +288,7 @@ function setupVariables() {
 
 function resizeSplitter() {
     //console.log("In resizeSplitter...");
-    let top = 125; // height occupied above splitter
+    let top = 85; //125; // height occupied above splitter
     let bottom = 25; // height occupied below splitter
     let height = $(window).height() - (top + bottom) - 1;
     height = height <= 0 ? 100 : height;
@@ -325,7 +331,7 @@ function spGrdClick() : void {
         return;
     }
     
-    verifySaveChanges().then(function(proceed) {
+    spVerifySaveChanges().then(function(proceed) {
         console.log("-- " + proceed);
         if ( proceed ) {
             selectGridItem( selectedItem.UId ); // verifySaveChanges() could have cleared/changed the selection
@@ -359,8 +365,8 @@ function spGrdClick() : void {
     });
 }
 
-export function verifySaveChanges() : JQueryPromise<boolean> {
-    console.log("In verifySaveChanges...");
+export function spVerifySaveChanges() : JQueryPromise<boolean> {
+    console.log("In spVerifySaveChanges...");
     let dfd = $.Deferred<boolean>();
 
     if (!(spVM as any).editor.get("hasChanges")) {
@@ -380,13 +386,25 @@ export function verifySaveChanges() : JQueryPromise<boolean> {
                                 $.when( showProgress() )
                                     .then( saveUser )
                                     .then( processSaveActionResponse )
-                                    .always( hideProgress );
+                                    .then( () => {
+                                        dfd.resolve( true );
+                                    } )
+                                    .fail( () => {
+                                        dfd.resolve( false );
+                                    })
+                                    .always( hideProgress )
 
                             } else {
                                 $.when( showProgress() )
                                     .then( saveGroup )
                                     .then( processSaveActionResponse )
-                                    .always( hideProgress );
+                                    .then( () => {
+                                        dfd.resolve( true );
+                                    } )
+                                    .fail( () => {
+                                        dfd.resolve( false );
+                                    } )
+                                    .always( hideProgress )
                             }
                         } else {
                             // failed client validation
@@ -396,6 +414,7 @@ export function verifySaveChanges() : JQueryPromise<boolean> {
                         break;
 
                     case DialogResponse.No: // discard changes and continue
+                        resetEditor( false ); 
                         dfd.resolve(true);
 
                         break;
@@ -488,7 +507,6 @@ function processSaveActionResponse( data: AjaxResponse ) : JQueryPromise<void> {
 
     
     if ( data.Status == AjaxResponseStatus.Success ) {
-        ( mainVM as any ).setChange( true );
 
         let model = null;
         if ( data.Data.User ) {
@@ -515,7 +533,7 @@ function processSaveActionResponse( data: AjaxResponse ) : JQueryPromise<void> {
             // above action will cause grid selection to clear, so we need to select the row again
             selectGridItem( model.UId );
 
-            notifySuccess( `${ model.IsUser ? 'User' : 'Group' } <b>${model.Name}</b> saved successfully.` );
+            notifySuccess( `${ model.IsUser ? 'User' : 'Group' } <b>${model.Name}</b> saved.` );
             dfd.resolve(); 
         }
     }
@@ -532,7 +550,7 @@ function processSaveActionResponse( data: AjaxResponse ) : JQueryPromise<void> {
             }
             setVMEditorHasErrorFlag( true );
         }
-        notifyError( `Unable to save. Correct the error(s) on the form and try again.` );
+        notifyError( `Please correct the error(s) on the form first and try again.` );
         dfd.reject(); 
     }
     return dfd.promise();
@@ -695,7 +713,7 @@ export function spBtnNewClick(e: any): void {
         case ID.SP_BTN_NEW:
             console.log( "-- new" );
             //https://www.telerik.com/forums/open-split-button-with-js
-            let $btn = $( ID.SP_BTN_NEW ).closest( '.k-split-button' );
+            let $btn = $( "#" + e.id ).closest( '.k-split-button' );
             let popup = $btn.data( "kendoPopup" );
             console.log( popup );
             if ( popup ) {
@@ -724,7 +742,7 @@ function newUser(): void {
     // TODO: Put explicit type
     
 
-    verifySaveChanges().then( function ( proceed ) {
+    spVerifySaveChanges().then( function ( proceed ) {
 
         if ( proceed ) {
             // go ahead and prepare the editor
@@ -750,7 +768,7 @@ function newUser(): void {
 function newGroup() : void {
     // TODO: Put explicit type
     
-    verifySaveChanges().then(function(proceed) {
+    spVerifySaveChanges().then(function(proceed) {
 
         if (proceed) {
             // go on and prepare the editor
@@ -817,8 +835,6 @@ function processDeleteActionResponse( data: AjaxResponse, gridDataItemToDelete: 
 
         // reset editor 
         resetEditor(true);
-
-        ( mainVM as any ).setChange( true );
 
         notifySuccess( `${gridDataItemToDelete.IsUser ? 'User' : 'Group' } <b>${gridDataItemToDelete.Name}</b> deleted successfully.` );
         return $
@@ -903,7 +919,6 @@ export function spBtnMembersAddClick( e: MouseEvent ) {
 }
 
 export function spGrdDataSourceChange( e: kendo.data.DataSourceChangeEvent ) {
-    console.log( e );
     // update the trustee datasource
     var data = this.data().toJSON();
     // take only groups and only UId and Name

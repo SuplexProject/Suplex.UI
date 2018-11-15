@@ -1,4 +1,4 @@
-var SUPLEXUI =
+var SuplexAdmin =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -5976,7 +5976,7 @@ module.exports = function(originalModule) {
 /*!********************!*\
   !*** ./src/ids.ts ***!
   \********************/
-/*! exports provided: TB_MAIN, TBB_SHOW_SECURITY_PRINCIPALS, TBB_SHOW_SECURE_OBJECTS, DLG_REMOTE_SERVICE, TXT_WEBAPI_URL, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SO_VIEW, SO_SPLITTER, SO_TB, SO_TBB_NEW, SO_TBB_NEW_ROOT, SO_TBB_NEW_CHILD, SO_TBB_COPY, SO_TBB_COPY_AS_ROOT, SO_TBB_COPY_AS_CHILD, SO_TBB_DELETE, SO_TBB_EXPAND, SO_TBB_EXPAND_NODE, SO_TBB_EXPAND_TREE, SO_TBB_COLLAPSE, SO_TBB_COLLAPSE_TREE, SO_TBB_COLLAPSE_NODE, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW_ROOT, SO_TREELIST_CTX_MENU_NEW_CHILD, SO_TREELIST_CTX_MENU_COPY_AS_ROOT, SO_TREELIST_CTX_MENU_COPY_AS_CHILD, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND_TREE, SO_TREELIST_CTX_MENU_EXPAND_NODE, SO_TREELIST_CTX_MENU_COLLAPSE_TREE, SO_TREELIST_CTX_MENU_COLLAPSE_NODE */
+/*! exports provided: TB_MAIN, TBB_SHOW_SECURITY_PRINCIPALS, TBB_SHOW_SECURE_OBJECTS, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SO_VIEW, SO_SPLITTER, SO_TB, SO_TBB_NEW, SO_TBB_NEW_ROOT, SO_TBB_NEW_CHILD, SO_TBB_COPY, SO_TBB_COPY_AS_ROOT, SO_TBB_COPY_AS_CHILD, SO_TBB_DELETE, SO_TBB_EXPAND, SO_TBB_EXPAND_NODE, SO_TBB_EXPAND_TREE, SO_TBB_COLLAPSE, SO_TBB_COLLAPSE_TREE, SO_TBB_COLLAPSE_NODE, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW_ROOT, SO_TREELIST_CTX_MENU_NEW_CHILD, SO_TREELIST_CTX_MENU_COPY_AS_ROOT, SO_TREELIST_CTX_MENU_COPY_AS_CHILD, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND_TREE, SO_TREELIST_CTX_MENU_EXPAND_NODE, SO_TREELIST_CTX_MENU_COLLAPSE_TREE, SO_TREELIST_CTX_MENU_COLLAPSE_NODE */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5984,8 +5984,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TB_MAIN", function() { return TB_MAIN; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TBB_SHOW_SECURITY_PRINCIPALS", function() { return TBB_SHOW_SECURITY_PRINCIPALS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TBB_SHOW_SECURE_OBJECTS", function() { return TBB_SHOW_SECURE_OBJECTS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DLG_REMOTE_SERVICE", function() { return DLG_REMOTE_SERVICE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TXT_WEBAPI_URL", function() { return TXT_WEBAPI_URL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_VIEW", function() { return SP_VIEW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_SPLITTER", function() { return SP_SPLITTER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_GRID", function() { return SP_GRID; });
@@ -6036,8 +6034,6 @@ __webpack_require__.r(__webpack_exports__);
 var TB_MAIN = "#tbMain";
 var TBB_SHOW_SECURITY_PRINCIPALS = "#tbbShowSecurityPrincipals";
 var TBB_SHOW_SECURE_OBJECTS = "#tbbShowSecureObjects";
-var DLG_REMOTE_SERVICE = "#dlgRemoteService";
-var TXT_WEBAPI_URL = "#txtWebApiUrl";
 var SP_VIEW = "#spView";
 var SP_SPLITTER = "#spSpltr";
 var SP_GRID = "#spGrd";
@@ -6204,6 +6200,7 @@ function setupVariables() {
 function setupEventHandlers() {
     $(".accordion h2").click(function () {
         $(this)
+            .closest('.accordion')
             .next()
             .toggle();
         $(this)
@@ -6325,6 +6322,7 @@ var validator = null;
 var k$soTl = null;
 var k$soGrdDacl = null;
 var k$soGrdSacl = null;
+var k$soSpltr = null;
 var $soCtxMnu = null;
 var k$soCtxMnu = null;
 var auditTypes = [];
@@ -6601,6 +6599,8 @@ var soVM = kendo.observable({
             }
             if (showEditor != this.get("visible")) {
                 this.set("visible", showEditor);
+                if (showEditor)
+                    k$soSpltr.resize(true);
             }
             this.set("hasChanges", false);
             this.set("hasError", false);
@@ -6661,8 +6661,8 @@ function setVMSelectedUId(uId) {
     }
 }
 function soSetup() {
-    kendo.bind($soView, soVM);
     setupWidgets();
+    kendo.bind($soView, soVM);
     setupVariables();
     setupEventHandlers();
     enableDisableToolBarButtons(false);
@@ -6683,7 +6683,7 @@ function setupWidgets() {
             {
                 field: "RightType",
                 title: "Right Type",
-                width: "150px",
+                width: "120px",
                 editor: rightTypeDropDownListEditor,
             },
             {
@@ -6764,7 +6764,7 @@ function setupWidgets() {
             {
                 field: "RightType",
                 title: "Right Type",
-                width: "150px",
+                width: "120px",
                 editor: rightTypeDropDownListEditor,
             },
             {
@@ -6817,7 +6817,9 @@ function setupWidgets() {
                 ],
             },
         ],
-        toolbar: [{ name: "create", text: "New Audit" }],
+        toolbar: [
+            { template: kendo.template($("#soGrdSaclToolBarTemplate").html()) }
+        ],
         editable: "inline",
         edit: function (e) {
             var model = e.model;
@@ -6992,6 +6994,7 @@ function setupVariables() {
     k$soGrdSacl = $soGrdSacl.data("kendoGrid");
     $soCtxMnu = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU"]);
     k$soCtxMnu = $soCtxMnu.data("kendoContextMenu");
+    k$soSpltr = $soSpltr.data("kendoSplitter");
 }
 function setupEventHandlers() {
     $(window)
@@ -7004,6 +7007,9 @@ function setupEventHandlers() {
         }
         ;
     });
+    $("#dacladd").on('click', function (e) {
+        k$soGrdDacl.addRow();
+    });
 }
 function enableDisableToolBarButtons(enable) {
     k$soTb.enable($(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COPY"]), enable);
@@ -7014,7 +7020,7 @@ function enableDisableToolBarButtons(enable) {
 function soShow() {
     if (!soVM.get("visible"))
         soVM.set("visible", true);
-    resizeSplitter();
+    k$soSpltr.resize(true);
 }
 function soHide() {
     if (soVM.get("visible"))
@@ -7029,12 +7035,13 @@ function soLoad() {
     k$soTl.dataSource.read();
 }
 function resizeSplitter() {
+    console.log("In resizeSplitter...");
     var top = 85;
     var bottom = 25;
     var height = $(window).height() - (top + bottom) - 1;
     height = height <= 0 ? 100 : height;
-    $soSpltr.data("kendoSplitter").wrapper.height(height);
-    $soSpltr.data("kendoSplitter").resize(true);
+    k$soSpltr.wrapper.height(height);
+    k$soSpltr.resize(true);
 }
 function soTbbExpandClick(e) {
     switch ("#" + e.id) {
@@ -7837,6 +7844,7 @@ var k$spMsMembers;
 var k$spLbMemberOf = null;
 var k$spLbMembers = null;
 var k$spTlGroupHierarchy = null;
+var k$spSpltr = null;
 var trustees = [];
 var spMsMemberOfDataSource = new kendo.data.DataSource({
     data: [],
@@ -7939,6 +7947,8 @@ var spVM = kendo.observable({
             }
             if (showEditor != this.get("visible")) {
                 this.set("visible", showEditor);
+                if (showEditor)
+                    k$spSpltr.resize(true);
             }
             this.set("hasChanges", false);
             this.set("hasError", false);
@@ -8063,14 +8073,15 @@ function setupVariables() {
     k$spLbMemberOf = $spLbMemberOf.data("kendoListBox");
     k$spLbMembers = $spLbMembers.data("kendoListBox");
     k$spTlGroupHierarchy = $spTlGroupHierarchy.data("kendoTreeList");
+    k$spSpltr = $spSpltr.data("kendoSplitter");
 }
 function resizeSplitter() {
     var top = 85;
     var bottom = 25;
     var height = $(window).height() - (top + bottom) - 1;
     height = height <= 0 ? 100 : height;
-    $spSpltr.data("kendoSplitter").wrapper.height(height);
-    $spSpltr.data("kendoSplitter").resize(true);
+    k$spSpltr.wrapper.height(height);
+    k$spSpltr.resize(true);
 }
 function spReset() {
     spVM.reset();
@@ -8080,7 +8091,7 @@ function spReset() {
 function spShow() {
     if (!spVM.get("visible"))
         spVM.set("visible", true);
-    resizeSplitter();
+    k$spSpltr.resize();
 }
 function spHide() {
     if (spVM.get("visible"))

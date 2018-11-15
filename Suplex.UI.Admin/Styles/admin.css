@@ -64,9 +64,6 @@ input:-ms-input-placeholder {
 .k-grid tr td {
     vertical-align: top;
 }
-.k-splitter .k-ghost-splitbar-horizontal, .k-splitter .k-splitbar-horizontal {
-    width: 3px;
-}
 /* tool bars */
 #tbMain { /*, #spTb, #soTb { */
     margin-bottom: -1px;
@@ -78,6 +75,14 @@ input:-ms-input-placeholder {
 .k-split-container .k-button {
     border-width: 0;
     color: inherit;
+}
+#spTb .k-state-disabled,
+#soTb .k-state-disabled {
+    opacity: 1
+}
+#spTb .k-split-button:focus,
+#soTb .k-split-button:focus {
+    background-color: #fff ;
 }
 /* security principal icons */
 .icon-user {
@@ -188,19 +193,7 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     text-indent: .571em;
     border-color: transparent;
 }
-.accordion {
-    margin-bottom: 5px;
-    border: 1px solid #eee;
-}
-.accordion h2 {
-    padding:5px;
-    background-color:#7ea700;   /* kendo theme */
-    color:#fff;
-    /*margin-bottom:5px;*/
-}
-.accordion .k-content {
-    padding: 5px;
-}
+
 .no-fouc #spView,
 .no-fouc #soView {
     visibility: hidden;
@@ -213,14 +206,24 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 }
 
 /* splitter bar */
+.k-splitter .k-ghost-splitbar-horizontal {   /*, .k-splitter .k-splitbar-horizontal { NOT SURE WHAT THIS IS FOR */
+    width: 3px;
+}
 .k-splitter .k-splitbar-horizontal {
     width: 1px;
 }
 .k-splitbar-draggable-horizontal .k-resize-handle {
-    margin-left: -1px;  
+    margin-left: -1px;
 }
 .k-splitbar-horizontal .k-arrow-60-left {
     margin-left: -5px;
+}
+.k-splitter .k-splitbar-vertical {
+    height: 1px;
+}
+.k-splitter.no-splitbar .k-splitbar-vertical {
+    height:0;
+    border-width:0;
 }
 /* styles for secure object editor */
 /* =============================== */
@@ -272,11 +275,7 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 
 /*#spTb .k-button,*/
 #spTb .k-textbox {
-    margin: 0px 0.2em; /* follow kendo tool bar, couldnt use kendo toolbar bcos mvvm binding is only at toolbar widget level not individual items on the toolbar */
-}
-
-#spTb .k-textbox {
-    margin-top: -1px; /* to make the box align properly to the buttons */
+    margin-right: 0.2em;
 }
 
 /* security principals grid */
@@ -302,7 +301,7 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 }
 
 #spTlGroupHierarchy {
-    width: 640px;
+    width: 645px;
 }
 
 .clickable {
@@ -319,4 +318,53 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 #soTl .k-grid-content
 {
     overflow-y: visible;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.mainHdr {
+    background-color: #a9a9a9;
+    color: #000;
+    /*padding: 3px;*/
+    box-sizing: border-box;
+    height: 40px;
+    
+    padding: 3px;
+}
+.mainHdr>div {
+    
+    background-color: inherit;
+    
+}
+.mainHdr h2 {
+    color: #555;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 34px;
+}
+.saveDiscardButtons {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    line-height: 34px;
+}
+.accordion {
+    /*margin-bottom: 5px;*/
+    /*border: 1px solid #eee;*/
+    background-color: #a9a9a9;
+    height: 40px;
+    box-sizing: border-box;
+}
+.accordion h2 {
+    /*background-color: #a9a9a9;*/
+    color: #fff;
+    height: 40px;
+    box-sizing: border-box;
+    line-height: 40px;
+    display: inline-block;
+}
+.vspace3 {
+    height: 3px;
 }

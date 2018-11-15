@@ -2,8 +2,6 @@
 export const TB_MAIN = "#tbMain";
 export const TBB_SHOW_SECURITY_PRINCIPALS = "#tbbShowSecurityPrincipals";
 export const TBB_SHOW_SECURE_OBJECTS = "#tbbShowSecureObjects";
-export const DLG_REMOTE_SERVICE = "#dlgRemoteService";
-export const TXT_WEBAPI_URL = "#txtWebApiUrl";
 
 // security principals
 export const SP_VIEW = "#spView";

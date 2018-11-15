@@ -33,6 +33,7 @@ let validator: kendo.ui.Validator = null;
 let k$soTl: kendo.ui.TreeList = null;
 let k$soGrdDacl: kendo.ui.Grid = null;
 let k$soGrdSacl: kendo.ui.Grid = null;
+let k$soSpltr: kendo.ui.Splitter = null;
 
 let $soCtxMnu: JQuery = null;
 let k$soCtxMnu: kendo.ui.ContextMenu = null;
@@ -332,7 +333,9 @@ let soVM = kendo.observable({
                 showEditor = false;
             }
             if (showEditor != this.get("visible")) {
-                this.set("visible", showEditor);
+                this.set( "visible", showEditor );
+                if ( showEditor )
+                    k$soSpltr.resize(true);     // somehow hidden elements don't automatically resize. this command forces it
             }
             // this.set( "visible", false )
             this.set("hasChanges", false);
@@ -411,13 +414,15 @@ function setVMSelectedUId(uId: string) {
 }
 
 export function soSetup() {
-    kendo.bind($soView, soVM);   
 
     setupWidgets();
+
+    kendo.bind( $soView, soVM );   
 
     setupVariables();
 
     setupEventHandlers();
+
 
     enableDisableToolBarButtons( false );   // disable the buttons initially as nothing was selected
 
@@ -444,7 +449,7 @@ function setupWidgets() {
             {
                 field: "RightType",
                 title: "Right Type",
-                width: "150px",
+                width: "120px",
                 editor: rightTypeDropDownListEditor,
             },
             {
@@ -538,7 +543,7 @@ function setupWidgets() {
             {
                 field: "RightType",
                 title: "Right Type",
-                width: "150px",
+                width: "120px",
                 editor: rightTypeDropDownListEditor,
             },
             {
@@ -592,7 +597,10 @@ function setupWidgets() {
                 ],
             },
         ],
-        toolbar: [ { name:"create", text: "New Audit" } ],
+        //toolbar: [{ name: "create", text: "New Audit" }],
+        toolbar: [
+            { template: kendo.template( $( "#soGrdSaclToolBarTemplate" ).html() ) } 
+            ],        
         editable: "inline",
         edit: function( e: kendo.ui.GridEditEvent ) {
             // edit event is triggered before the editor form is shown. By this time the editor UI elements are already bound to the model.
@@ -794,10 +802,11 @@ function setupVariables() {
     k$soGrdSacl = $soGrdSacl.data( "kendoGrid" );
     $soCtxMnu = $( ID.SO_TREELIST_CTX_MENU );
     k$soCtxMnu = $soCtxMnu.data( "kendoContextMenu" );
+    k$soSpltr = $soSpltr.data( "kendoSplitter" );
 }
 function setupEventHandlers() {
-    $(window)
-        .resize(debounce(resizeSplitter, 500))
+    $( window )
+        .resize( debounce( resizeSplitter, 500 ) )
         .trigger("resize");
 
     $( ID.SO_TREELIST ).on( "click", "tbody tr", soTlClick );
@@ -808,6 +817,9 @@ function setupEventHandlers() {
         };
     } )
 
+    $( "#dacladd" ).on( 'click', function ( e ) {
+        k$soGrdDacl.addRow();
+    })
 }
 
 function enableDisableToolBarButtons( enable: boolean ) {
@@ -819,7 +831,7 @@ function enableDisableToolBarButtons( enable: boolean ) {
 
 export function soShow() {
     if ( !soVM.get( "visible" ) ) soVM.set( "visible", true );
-    resizeSplitter();
+    k$soSpltr.resize(true);
 }
 export function soHide() {
     if (soVM.get("visible")) soVM.set("visible", false);
@@ -833,20 +845,13 @@ export function soLoad() {
     k$soTl.dataSource.read();
 }
 function resizeSplitter() {
-    //console.log( "In resizeSplitter..." );
+    console.log( "In resizeSplitter..." );
     let top = 85; //125; // height occupied above splitter
     let bottom = 25; // height occupied below splitter
     let height = $(window).height() - (top + bottom) - 1; // to stop the body scrollbar from appearing
     height = height <= 0 ? 100 : height;
-    //$soSpltr.height(height);
-    //console.log( height );
-    // let width = $( window ).width() -
-    $soSpltr.data( "kendoSplitter" ).wrapper.height( height );
-    $soSpltr.data( "kendoSplitter" ).resize(true);
-    //const soTbHeight = 40;
-    //$soSpltr.closest( '.wrapper' ).height( height - soTbHeight );
-    //k$soTl.wrapper.height( height - soTbHeight );
-    //k$soTl.resize();
+    k$soSpltr.wrapper.height( height );
+    k$soSpltr.resize(true);
 }
 export function soTbbExpandClick(e: any) {
 

@@ -7,7 +7,7 @@ module.exports = {
     output: {
         filename: "bundle.js",
         path: path.resolve(__dirname, "dist"),
-        library: "SUPLEXUI",
+        library: "SuplexAdmin",
         sourceMapFilename: "Scripts.dist.bundle.js.map" // Because C# project references Scripts.dist.bundle.js
     },
 

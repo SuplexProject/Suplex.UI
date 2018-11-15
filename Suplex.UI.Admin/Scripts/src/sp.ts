@@ -37,6 +37,8 @@ let k$spMsMembers: kendo.ui.MultiSelect;
 let k$spLbMemberOf: kendo.ui.ListBox = null;
 let k$spLbMembers: kendo.ui.ListBox = null;
 let k$spTlGroupHierarchy: kendo.ui.TreeList = null;
+let k$spSpltr: kendo.ui.Splitter = null;
+
 export let trustees: any[] = [];
 
 export let spMsMemberOfDataSource: kendo.data.DataSource = new kendo.data.DataSource( {
@@ -141,7 +143,9 @@ let spVM = kendo.observable({
                 showEditor = false;
             }
             if (showEditor != this.get("visible")) {
-                this.set("visible", showEditor);
+                this.set( "visible", showEditor );
+                if ( showEditor )
+                    k$spSpltr.resize(true);  
             }
             
             this.set("hasChanges", false);
@@ -283,7 +287,8 @@ function setupVariables() {
     k$spMsMembers = $spMsMembers.data( "kendoMultiSelect" );
     k$spLbMemberOf = $spLbMemberOf.data("kendoListBox");
     k$spLbMembers = $spLbMembers.data("kendoListBox");
-    k$spTlGroupHierarchy = $spTlGroupHierarchy.data("kendoTreeList");
+    k$spTlGroupHierarchy = $spTlGroupHierarchy.data( "kendoTreeList" );
+    k$spSpltr = $spSpltr.data( "kendoSplitter" );
 }
 
 function resizeSplitter() {
@@ -296,8 +301,8 @@ function resizeSplitter() {
     //console.log( height );
     //$spSpltr.trigger( "resize" )
     //$spSpltr.data('kendoSplitter').trigger( "resize" )
-    $spSpltr.data( "kendoSplitter" ).wrapper.height( height );
-    $spSpltr.data("kendoSplitter").resize(true);
+    k$spSpltr.wrapper.height( height );
+    k$spSpltr.resize(true);
 }
 export function spReset() : void {
     (spVM as any).reset();
@@ -306,7 +311,7 @@ export function spReset() : void {
 }
 export function spShow() : void {
     if ( !spVM.get( "visible" ) ) spVM.set( "visible", true );
-    resizeSplitter();
+    k$spSpltr.resize();
 }
 
 export function spHide() : void {

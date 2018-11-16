@@ -35,18 +35,20 @@
             <kendo-splitter name="spSpltrLeft" orientation="SplitterOrientation.Vertical" class="no-splitbar full-height">
                 <pane size="40px" scrollable="false" resizable="false" collapsible="false">
                     <div class="mainHdr">
-                        <kendo-toolbar id="spTb" >
-                            <toolbar-items>
-                                <item template="<input class='k-textbox' id='spTxtGrdFilter' placeholder='Filter' />" overflow="ShowInOverflowPopup.Never" />
-                                <item type="CommandType.SplitButton" id="spBtnNew" text="New" title="New User or Group" click="SuplexAdmin.spBtnNewClick" overflow="ShowInOverflowPopup.Never">
-                                    <menu-buttons>
-                                        <toolbar-button id="spBtnNewUser" text="New User" sprite-css-class="icon-user" />
-                                        <toolbar-button id="spBtnNewGroup" text="New Group" sprite-css-class="icon-group" />
-                                    </menu-buttons>
-                                </item>
-                                <item type="CommandType.Button" id="spBtnDelete" text="Delete" title="Delete selected security principal" click="SuplexAdmin.spBtnDeleteClick" data-bind="enabled:securityPrincipalSelected" overflow="ShowInOverflowPopup.Never" />
-                            </toolbar-items>
-                        </kendo-toolbar>
+                        <div>
+                            <kendo-toolbar id="spTb">
+                                <toolbar-items>
+                                    <item template="<input class='k-textbox' id='spTxtGrdFilter' placeholder='Filter' />" overflow="ShowInOverflowPopup.Never" />
+                                    <item type="CommandType.SplitButton" id="spBtnNew" text="New" title="New User or Group" click="SuplexAdmin.spBtnNewClick" overflow="ShowInOverflowPopup.Never">
+                                        <menu-buttons>
+                                            <toolbar-button id="spBtnNewUser" text="New User" sprite-css-class="icon-user" />
+                                            <toolbar-button id="spBtnNewGroup" text="New Group" sprite-css-class="icon-group" />
+                                        </menu-buttons>
+                                    </item>
+                                    <item type="CommandType.Button" id="spBtnDelete" text="Delete" title="Delete selected security principal" click="SuplexAdmin.spBtnDeleteClick" data-bind="enabled:securityPrincipalSelected" overflow="ShowInOverflowPopup.Never" />
+                                </toolbar-items>
+                            </kendo-toolbar>
+                        </div>
                     </div>
                 </pane>
                 <pane scrollable="true" resizable="false" collapsible="false">
@@ -90,15 +92,15 @@
             <kendo-splitter name="spSpltrRight" orientation="SplitterOrientation.Vertical" class="no-splitbar full-height" data-bind="visible: editor.visible">
                 <pane size="40px" scrollable="false" resizable="false" collapsible="false">
                     <div class="mainHdr">
-                        <div style="position: relative;">
+                        <div>
                             <h2><span data-bind="visible: editor.model.IsUser">User </span><span data-bind="invisible: editor.model.IsUser">Group </span>Properties <span data-bind="visible: editor.hasChanges" style="color:red">*</span></h2>
-                            <div class="saveDiscardButtons">
+                            <div class="mainHdrRight">
                                 @(Html.Kendo().Button().Name( "spBtnSave" ).Content( "Save" )
-                                            .HtmlAttributes( new { type = "button", data_bind = "enabled: editor.hasChanges" } )
+                                            .HtmlAttributes( new { type = "button", data_bind = "enabled: editor.hasChanges", @class = "w105" } )
                                             .Events( e => e.Click( "SuplexAdmin.spBtnSaveClick" ) ))
 
                                 @(Html.Kendo().Button().Name( "spBtnDiscard" ).Content( "Discard" )
-                                            .HtmlAttributes( new { type = "button" } )
+                                            .HtmlAttributes( new { type = "button", @class = "w105" } )
                                             .Events( e => e.Click( "SuplexAdmin.spBtnDiscardClick" ) ))
                             </div>
                         </div>
@@ -189,11 +191,13 @@
                             <div class="clearfix"></div>
                         </div>
                         <div data-bind="invisible: editor.model.IsUser">
-                            <div class="accordion">
-                                <h2 class="k-link">
-                                    <span class="k-icon k-i-arrow-chevron-up"></span>
-                                    Group Hierarchy
-                                </h2>
+                            <div class="subHdr js-accordion">
+                                <div>
+                                    <div class="subHdrLeft k-link">
+                                        <span class="k-icon k-i-arrow-chevron-up"></span>
+                                        Group Hierarchy
+                                    </div>
+                                </div>
                             </div>
                             <div id="spTlGroupHierarchy"></div>
                         </div>
@@ -218,35 +222,37 @@
             <kendo-splitter name="soSpltrLeft" orientation="SplitterOrientation.Vertical" class="no-splitbar full-height">
                 <pane size="40px" scrollable="false" resizable="false" collapsible="false">
                     <div class="mainHdr">
-                        <kendo-toolbar id="soTb">
-                            <toolbar-items>
-                                <item type="CommandType.SplitButton" id="soTbbNew" text="New" title="New Root or Child" click="SuplexAdmin.soTbbNewClick" overflow="ShowInOverflowPopup.Never">
-                                    <menu-buttons>
-                                        <toolbar-button id="soTbbNewRoot" text="New Root" />
-                                        <toolbar-button id="soTbbNewChild" text="New Child" />
-                                    </menu-buttons>
-                                </item>
-                                <item type="CommandType.SplitButton" id="soTbbCopy" text="Copy" title="Copy (shallow) as Root or Child" click="SuplexAdmin.soTbbCopyClick" overflow="ShowInOverflowPopup.Never">
-                                    <menu-buttons>
-                                        <toolbar-button id="soTbbCopyAsRoot" text="Copy As Root" />
-                                        <toolbar-button id="soTbbCopyAsChild" text="Copy As Child" />
-                                    </menu-buttons>
-                                </item>
-                                <item type="CommandType.Button" id="soTbbDelete" text="Delete" title="Delete selected secure object" click="SuplexAdmin.soTbbDeleteClick" data-bind="enabled:secureObjectSelected" overflow="ShowInOverflowPopup.Never" />
-                                <item type="CommandType.SplitButton" id="soTbbExpand" text="Expand" title="Expand selected node or the whole tree" click="SuplexAdmin.soTbbExpandClick" overflow="ShowInOverflowPopup.Never">
-                                    <menu-buttons>
-                                        <toolbar-button id="soTbbExpandTree" text="Expand Tree" />
-                                        <toolbar-button id="soTbbExpandNode" text="Expand Selected Node" />
-                                    </menu-buttons>
-                                </item>
-                                <item type="CommandType.SplitButton" id="soTbbCollapse" text="Collapse" title="Collapse selected node or the whole tree" click="SuplexAdmin.soTbbCollapseClick" overflow="ShowInOverflowPopup.Never">
-                                    <menu-buttons>
-                                        <toolbar-button id="soTbbCollapseTree" text="Collapse Tree" />
-                                        <toolbar-button id="soTbbCollapseNode" text="Collapse Selected Node" />
-                                    </menu-buttons>
-                                </item>
-                            </toolbar-items>
-                        </kendo-toolbar>
+                        <div>
+                            <kendo-toolbar id="soTb">
+                                <toolbar-items>
+                                    <item type="CommandType.SplitButton" id="soTbbNew" text="New" title="New Root or Child" click="SuplexAdmin.soTbbNewClick" overflow="ShowInOverflowPopup.Never">
+                                        <menu-buttons>
+                                            <toolbar-button id="soTbbNewRoot" text="New Root" />
+                                            <toolbar-button id="soTbbNewChild" text="New Child" />
+                                        </menu-buttons>
+                                    </item>
+                                    <item type="CommandType.SplitButton" id="soTbbCopy" text="Copy" title="Copy (shallow) as Root or Child" click="SuplexAdmin.soTbbCopyClick" overflow="ShowInOverflowPopup.Never">
+                                        <menu-buttons>
+                                            <toolbar-button id="soTbbCopyAsRoot" text="Copy As Root" />
+                                            <toolbar-button id="soTbbCopyAsChild" text="Copy As Child" />
+                                        </menu-buttons>
+                                    </item>
+                                    <item type="CommandType.Button" id="soTbbDelete" text="Delete" title="Delete selected secure object" click="SuplexAdmin.soTbbDeleteClick" data-bind="enabled:secureObjectSelected" overflow="ShowInOverflowPopup.Never" />
+                                    <item type="CommandType.SplitButton" id="soTbbExpand" text="Expand" title="Expand selected node or the whole tree" click="SuplexAdmin.soTbbExpandClick" overflow="ShowInOverflowPopup.Never">
+                                        <menu-buttons>
+                                            <toolbar-button id="soTbbExpandTree" text="Expand Tree" />
+                                            <toolbar-button id="soTbbExpandNode" text="Expand Selected Node" />
+                                        </menu-buttons>
+                                    </item>
+                                    <item type="CommandType.SplitButton" id="soTbbCollapse" text="Collapse" title="Collapse selected node or the whole tree" click="SuplexAdmin.soTbbCollapseClick" overflow="ShowInOverflowPopup.Never">
+                                        <menu-buttons>
+                                            <toolbar-button id="soTbbCollapseTree" text="Collapse Tree" />
+                                            <toolbar-button id="soTbbCollapseNode" text="Collapse Selected Node" />
+                                        </menu-buttons>
+                                    </item>
+                                </toolbar-items>
+                            </kendo-toolbar>
+                        </div>
                     </div>
                 </pane>
                 <pane scrollable="true" resizable="false" collapsible="false">
@@ -299,13 +305,13 @@
             <kendo-splitter name="soSpltrRight" orientation="SplitterOrientation.Vertical" class="no-splitbar full-height" data-bind="visible: editor.visible">
                 <pane size="40px" scrollable="false" resizable="false" collapsible="false">
                     <div class="mainHdr">
-                        <div style="position: relative;">
-                            <h2 style="vertical-align:middle;color: #555; background-color: inherit;font-weight: bold;"><span>Secure Object </span>Properties <span data-bind="visible: editor.hasChanges" style="color:red">*</span></h2>
-                            <div style="display:inline-block;position: absolute; right:0; bottom: 3px;">
-                                @(Html.Kendo().Button().Name( "soBtnSave" ).Content( "Save" ).HtmlAttributes( new { type = "button", data_bind = "enabled: editor.hasChanges" } )
+                        <div>
+                            <div class="mainHdrLeft" style="vertical-align:middle;color: #555; background-color: inherit;font-weight: bold;"><span>Secure Object </span>Properties <span data-bind="visible: editor.hasChanges" style="color:red">*</span></div>
+                            <div class="mainHdrRight">
+                                @(Html.Kendo().Button().Name( "soBtnSave" ).Content( "Save" ).HtmlAttributes( new { type = "button", data_bind = "enabled: editor.hasChanges", @class = "w105" } )
                                     .Events( e => e.Click( "SuplexAdmin.soBtnSaveClick" ) ))
 
-                                @(Html.Kendo().Button().Name( "soBtnDiscard" ).Content( "Discard" ).HtmlAttributes( new { type = "button" } )
+                                @(Html.Kendo().Button().Name( "soBtnDiscard" ).Content( "Discard" ).HtmlAttributes( new { type = "button", @class = "w105" } )
                                     .Events( e => e.Click( "SuplexAdmin.soBtnDiscardClick" ) ))
                             </div>
                         </div>
@@ -336,28 +342,43 @@
                             </div>
                             <div class="clearfix"></div>
                         </div>
-                        <div class="accordion">
-                            <h2 class="k-link">
-                                <span class="k-icon k-i-arrow-chevron-up"></span>
-                                Permissions: <span data-bind="text: editor.daclItemCount"></span>
-                            </h2>
-                            <button id="dacladd" class="k-button">New Permission</button>
+                        <div class="subHdr js-accordion">
+                            <div>
+                                <div class="subHdrLeft k-link">
+                                    <span class="k-icon k-i-arrow-chevron-up"></span>
+                                    Permissions (<span data-bind="text: editor.daclItemCount"></span>)
+                                </div>
+                                <div class="subHdrRight">
+                                    <input id="daclAllowInherit1" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.DaclAllowInherit, events: {  change: editor.raiseChange }" />
+                                    <label class="k-checkbox-label" for="daclAllowInherit1" style="vertical-align:middle;font-weight:bold;">Inherit Permission</label>
+                                    <button id="soBtnDaclAdd" class="k-button w105" style="margin-left: 10px;">New Permission</button>
+                                </div>
+                            </div>
                         </div>
-                        <div id="soGrdDacl" class="no-hover"></div><div class="vspace3"></div>
-                        <div class="accordion">
-                            <h2 class="k-link">
-                                <span class="k-icon k-i-arrow-chevron-up"></span>
-                                Audit: <span data-bind="text: editor.saclItemCount"></span>
-                            </h2>
+                        <div id="soGrdDacl" class="no-hover"></div><div class="h3"></div>
+                        <div class="subHdr js-accordion">
+                            <div>
+                                <div class="subHdrLeft k-link">
+                                    <span class="k-icon k-i-arrow-chevron-up"></span>
+                                    Audit (<span data-bind="text: editor.saclItemCount"></span>)
+                                </div>
+                                <div class="subHdrRight">
+                                    <input id="saclAllowInherit1" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
+                                    <label class="k-checkbox-label" for="saclAllowInherit1" style="vertical-align:middle;font-weight:bold;">Inherit Audit</label>
+                                    <btn id="soBtnSaclAdd" class="k-button w105" style="margin-left: 10px;">New Audit</btn>
+                                </div>
+                            </div>
                         </div>
-                        <div id="soGrdSacl" class="no-hover"></div><div class="vspace3"></div>
-                        <div class="accordion">
-                            <h2 class="k-link">
-                                <span class="k-icon k-i-arrow-chevron-up"></span>
-                                Security Inheritance Settings: <span data-bind="text: editor.securityInheritanceState"></span>
-                            </h2>
+                        <div id="soGrdSacl" class="no-hover"></div><div class="h3"></div>
+                        <div class="subHdr js-accordion">
+                            <div>
+                                <div class="subHdrLeft k-link">
+                                    <span class="k-icon k-i-arrow-chevron-up"></span>
+                                    Security Inheritance Settings: <span data-bind="text: editor.securityInheritanceState"></span>
+                                </div>
+                            </div>
                         </div>
-                        <div id="soSecurityInheritance" class="mb3">
+                        <div id="soSecurityInheritance">
                             <div class="formElement">
                                 <div class="formLabel" data-bind="style:{color: editor.daclAllowInheritTextColor}">Permission Inheritance</div>
                                 <div class="formInput">
@@ -433,7 +454,7 @@
         <div style='float:right;'><span class='k-icon k-i-close-outline clickable'></span></div>
     </div>
 </script>
-<script id="soGrdSaclToolBarTemplate" type="text/x-kendo-template">
+@*<script id="soGrdSaclToolBarTemplate" type="text/x-kendo-template">
     <div style="display:inline-block;">
         <a class="k-button k-button-icontext k-grid-add" href="\\#">
             <span class="k-icon k-i-plus"></span>New Audit
@@ -441,7 +462,7 @@
         <input id="saclAllowInherit1" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
         <label class="k-checkbox-label" for="saclAllowInherit1" style="vertical-align: middle;">Inherit Audit</label>
     </div>
-</script>
+</script>*@
 <script>
     var spNameTemplate = kendo.template( $( "#spNameTemplate" ).html() );
     var spGroupMembershipItemTemplate = kendo.template( $( "#spGroupMembershipItemTemplate" ).html() );

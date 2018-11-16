@@ -496,7 +496,7 @@ function setupWidgets() {
                 ],
             },
         ],
-        toolbar: [ { name: "create", text: "New Permission" } ],
+        //toolbar: [ { name: "create", text: "New Permission" } ],
         editable: "inline",
         edit: function ( e: kendo.ui.GridEditEvent ) {
             // edit event is triggered before the editor form is shown. By this time the editor UI elements are already bound to the model.
@@ -598,9 +598,9 @@ function setupWidgets() {
             },
         ],
         //toolbar: [{ name: "create", text: "New Audit" }],
-        toolbar: [
-            { template: kendo.template( $( "#soGrdSaclToolBarTemplate" ).html() ) } 
-            ],        
+        //toolbar: [
+        //    { template: kendo.template( $( "#soGrdSaclToolBarTemplate" ).html() ) } 
+        //    ],        
         editable: "inline",
         edit: function( e: kendo.ui.GridEditEvent ) {
             // edit event is triggered before the editor form is shown. By this time the editor UI elements are already bound to the model.
@@ -817,9 +817,12 @@ function setupEventHandlers() {
         };
     } )
 
-    $( "#dacladd" ).on( 'click', function ( e ) {
+    $( "#soBtnDaclAdd" ).on( 'click', function ( e ) {
         k$soGrdDacl.addRow();
-    })
+    } )
+    $( "#soBtnSaclAdd" ).on( 'click', function ( e ) {
+        k$soGrdSacl.addRow();
+    } )
 }
 
 function enableDisableToolBarButtons( enable: boolean ) {

@@ -43,7 +43,7 @@ input:-ms-input-placeholder {
     font-style: italic;
 }
 
-/* kendo overrides */
+/* == kendo overrides == */
 .k-grid tbody tr.k-grid-edit-row td {
     vertical-align: top
 }
@@ -64,34 +64,40 @@ input:-ms-input-placeholder {
 .k-grid tr td {
     vertical-align: top;
 }
-/* tool bars */
-#tbMain { /*, #spTb, #soTb { */
-    margin-bottom: -1px;
-}
-#spTb, #soTb {
-    border-width: 0;
-}
 /* toolbar split buttons - restore style as it is overwritten by bootstrap style */
 .k-split-container .k-button {
     border-width: 0;
     color: inherit;
 }
+
+/* == tool bars == */
+#tbMain { /*, #spTb, #soTb { */
+    margin-bottom: -1px;
+}
+#spTb, #soTb {
+    border-width: 0;
+    background-color: inherit;
+}
+
+#spTb .k-textbox {
+    margin-right: 0.2em;
+}
 #spTb .k-state-disabled,
 #soTb .k-state-disabled {
     opacity: 1
 }
+
 #spTb .k-split-button:focus,
 #soTb .k-split-button:focus {
-    background-color: #fff ;
+    background-color: #fff;
 }
-/* security principal icons */
+
+/* == security principal icons == */
 .icon-user {
     background: url('/Images.sp-sprite.png') 0px 0px;
     margin-right: 5px !important;
 }
 .icon-group {
-    /*background-image: url('/Images.users-16x16.png');*/
-    /*background: url('/Images.spicons-sprite.png') 0px -64px;*/
     background: url('/Images.sp-sprite.png') 0px -16px;
     margin-right: 5px !important;
 }
@@ -100,7 +106,7 @@ input:-ms-input-placeholder {
     margin-right: 5px !important;
 }
 
-/* secure object icons */
+/* == secure object icons == */
 .icon-secure {
     background: url('/Images.so-sprite.png') 0px -32px;
     margin-right: 5px !important;
@@ -109,53 +115,8 @@ input:-ms-input-placeholder {
     background: url('/Images.so-sprite.png') 0px -16px;
     margin-right: 5px !important;
 }
-/* errors on editors */
-.error {
-    border: 1px solid #f66;
-    margin-bottom: 5px;
-}
-.error h2 {
-    background-color: #f66;
-    color: #fff;
-}
-.error h2, .error div {
-    padding: 5px;
-}
 
-/* TO DELETE : file select dialog */
-/*#tvSelectFile, #tvSaveAs {
-    height: 300px;
-}
-
-#tvSelectFile .k-sprite,
-#tvSaveAs .k-sprite {
-        background-image: url(/Images.fs-sprite.png);
-    }
-
-.folder {
-    background-position: 0 0;
-}
-
-.file {
-    background-position: 0 -16px;
-}*/
-
-/* -- controls inside grid editor */
-/* can delete these 2 if confirm not using treeview inside grid */
-/*.gridEditor.k-treeview .k-item {
-    padding: 0px;
-}
-.gridEditor.k-treeview .k-state-focused {
-    border-color: transparent !important;
-    box-shadow: none !important;
-}*/
-.gridEditor ul li {
-    white-space: nowrap;
-    overflow:hidden;
-    text-overflow: ellipsis;
-}
-/* styles for generic form elements */
-/* ================================ */
+/* == generic form elements == */
 .formElement{
     clear:both;
 }
@@ -199,13 +160,7 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     visibility: hidden;
 }
 
-/* stops background from scrolling when dialog is open */
-/* https://stackoverflow.com/questions/22257104/kendo-window-scrolling-background-window */
-.no-scroll {
-    overflow: hidden;
-}
-
-/* splitter bar */
+/* == splitter bar == */
 .k-splitter .k-ghost-splitbar-horizontal {   /*, .k-splitter .k-splitbar-horizontal { NOT SURE WHAT THIS IS FOR */
     width: 3px;
 }
@@ -225,9 +180,9 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     height:0;
     border-width:0;
 }
-/* styles for secure object editor */
-/* =============================== */
-/* -- edit/delete/save/cancel buttons with no text */
+
+/* == sacl/dacl == */
+/* edit/delete/save/cancel buttons with no text */
 /* https://docs.telerik.com/kendo-ui/knowledge-base/grid-icon-only-buttons */
 #soGrdDacl.k-grid .k-grid-toolbar .k-grid-add,
 #soGrdDacl.k-grid tbody .k-grid-edit,
@@ -254,7 +209,6 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 #soGrdSacl.k-grid tbody .k-grid-customdelete .k-icon {
     margin: 0;
 }
-
 #soSecurityInheritance .formElement .formLabel {
     width: 300px;
     text-align: left;
@@ -267,26 +221,28 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 #soGrdSacl td:nth-child(n+4):nth-child(-n+6) {
     text-align: center;
 }
+#daclAllowInherit1.k-checkbox:checked + label,
+#saclAllowInherit1.k-checkbox:checked + label {
+    color: inherit;
+}
+#daclAllowInherit1.k-checkbox + label,
+#saclAllowInherit1.k-checkbox + label {
+    color: red;
+}
+
+/* TO DO: check if this is stll needed */
 #spView {
     position: relative; /* required for kendo ui progress to work */
 }
 
-/* tool bar */
 
-/*#spTb .k-button,*/
-#spTb .k-textbox {
-    margin-right: 0.2em;
-}
-
-/* security principals grid */
+/* == security principals grid == */
 #spGrd .k-dirty {
     display: none; /* don't show dirty flag */
 }
-
 #spGrd .k-footer-template {
     display: none;
 }
-
 #spGrd.k-grid tr + .k-grouping-row td {
     border-top-width: 1px
 }
@@ -294,19 +250,32 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 #spGrd td:nth-child(4) {
     text-align: center;
 }
-/* security principal editor */
+.gridEditor ul li {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* == editor error == */
 #spEditorError,
 #soEditorError {
     margin-bottom: 5px;
 }
+/* errors on editors */
+.error {
+    border: 1px solid #f66;
+    margin-bottom: 5px;
+}
+.error h2 {
+    background-color: #f66;
+    color: #fff;
+}
+.error h2, .error div {
+    padding: 5px;
+}
 
 #spTlGroupHierarchy {
     width: 645px;
-}
-
-.clickable {
-    cursor: pointer;
-    outline: none;
 }
 
 /* hide treelist horizontal scrollbar as it is not being used. the widget height is not set. Scrollbar is enabled on the splitter pane */
@@ -320,51 +289,52 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     overflow-y: visible;
 }
 
-.full-height {
-    height: 100%;
-}
-
+/* headings */
 .mainHdr {
     background-color: #a9a9a9;
     color: #000;
-    /*padding: 3px;*/
+}
+.subHdr {
+    background-color: #eee;
+}
+.mainHdr, .subHdr {
     box-sizing: border-box;
     height: 40px;
-    
     padding: 3px;
 }
-.mainHdr>div {
-    
-    background-color: inherit;
-    
+.mainHdr>div,
+.subHdr>div{
+    position: relative;
+    line-height: 34px;
 }
-.mainHdr h2 {
+.mainHdrLeft,
+.subHdrLeft {
     color: #555;
     font-weight: bold;
     display: inline-block;
-    line-height: 34px;
 }
-.saveDiscardButtons {
+.mainHdrRight,
+.subHdrRight {
     display: inline-block;
     position: absolute;
     right: 0;
-    line-height: 34px;
+    bottom: 0;
 }
-.accordion {
-    /*margin-bottom: 5px;*/
-    /*border: 1px solid #eee;*/
-    background-color: #a9a9a9;
-    height: 40px;
-    box-sizing: border-box;
-}
-.accordion h2 {
-    /*background-color: #a9a9a9;*/
-    color: #fff;
-    height: 40px;
-    box-sizing: border-box;
-    line-height: 40px;
-    display: inline-block;
-}
-.vspace3 {
+.h3 {
     height: 3px;
+}
+.w105 {
+    width: 105px;
+}
+.full-height {
+    height: 100%;
+}
+.clickable {
+    cursor: pointer;
+    outline: none;
+}
+/* stops background from scrolling when dialog is open */
+/* https://stackoverflow.com/questions/22257104/kendo-window-scrolling-background-window */
+.no-scroll {
+    overflow: hidden;
 }

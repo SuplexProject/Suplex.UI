@@ -6198,9 +6198,9 @@ function setupVariables() {
     $tbbShowSecurityPrincipals = $(_ids__WEBPACK_IMPORTED_MODULE_0__["TBB_SHOW_SECURITY_PRINCIPALS"]);
 }
 function setupEventHandlers() {
-    $(".accordion h2").click(function () {
+    $(".js-accordion .k-link").click(function () {
         $(this)
-            .closest('.accordion')
+            .closest('.js-accordion')
             .next()
             .toggle();
         $(this)
@@ -6729,7 +6729,6 @@ function setupWidgets() {
                 ],
             },
         ],
-        toolbar: [{ name: "create", text: "New Permission" }],
         editable: "inline",
         edit: function (e) {
             var model = e.model;
@@ -6816,9 +6815,6 @@ function setupWidgets() {
                     },
                 ],
             },
-        ],
-        toolbar: [
-            { template: kendo.template($("#soGrdSaclToolBarTemplate").html()) }
         ],
         editable: "inline",
         edit: function (e) {
@@ -7007,8 +7003,11 @@ function setupEventHandlers() {
         }
         ;
     });
-    $("#dacladd").on('click', function (e) {
+    $("#soBtnDaclAdd").on('click', function (e) {
         k$soGrdDacl.addRow();
+    });
+    $("#soBtnSaclAdd").on('click', function (e) {
+        k$soGrdSacl.addRow();
     });
 }
 function enableDisableToolBarButtons(enable) {

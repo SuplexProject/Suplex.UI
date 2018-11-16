@@ -72,9 +72,9 @@ function setupVariables() {
 }
 
 function setupEventHandlers() {
-    $(".accordion h2").click(function() {
+    $(".js-accordion .k-link").click(function() {
         $( this )
-            .closest( '.accordion' )
+            .closest( '.js-accordion' )
             .next()
             .toggle();
         //$( this ).find( "span:first-child" ).toggleClass( "k-i-arrow-chevron-up k-i-arrow-chevron-down" )

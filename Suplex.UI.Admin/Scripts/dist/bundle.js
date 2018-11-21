@@ -5976,7 +5976,7 @@ module.exports = function(originalModule) {
 /*!********************!*\
   !*** ./src/ids.ts ***!
   \********************/
-/*! exports provided: TB_MAIN, TBB_SHOW_SECURITY_PRINCIPALS, TBB_SHOW_SECURE_OBJECTS, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SO_VIEW, SO_SPLITTER, SO_TB, SO_TBB_NEW, SO_TBB_NEW_ROOT, SO_TBB_NEW_CHILD, SO_TBB_COPY, SO_TBB_COPY_AS_ROOT, SO_TBB_COPY_AS_CHILD, SO_TBB_DELETE, SO_TBB_EXPAND, SO_TBB_EXPAND_NODE, SO_TBB_EXPAND_TREE, SO_TBB_COLLAPSE, SO_TBB_COLLAPSE_TREE, SO_TBB_COLLAPSE_NODE, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW_ROOT, SO_TREELIST_CTX_MENU_NEW_CHILD, SO_TREELIST_CTX_MENU_COPY_AS_ROOT, SO_TREELIST_CTX_MENU_COPY_AS_CHILD, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND_TREE, SO_TREELIST_CTX_MENU_EXPAND_NODE, SO_TREELIST_CTX_MENU_COLLAPSE_TREE, SO_TREELIST_CTX_MENU_COLLAPSE_NODE */
+/*! exports provided: TB_MAIN, TBB_SHOW_SECURITY_PRINCIPALS, TBB_SHOW_SECURE_OBJECTS, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SO_VIEW, SO_SPLITTER, SO_TB, SO_TBB_NEW, SO_TBB_NEW_ROOT, SO_TBB_NEW_CHILD, SO_TBB_COPY, SO_TBB_COPY_AS_ROOT, SO_TBB_COPY_AS_CHILD, SO_TBB_DELETE, SO_TBB_EXPAND, SO_TBB_EXPAND_NODE, SO_TBB_EXPAND_TREE, SO_TBB_COLLAPSE, SO_TBB_COLLAPSE_TREE, SO_TBB_COLLAPSE_NODE, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW_ROOT, SO_TREELIST_CTX_MENU_NEW_CHILD, SO_TREELIST_CTX_MENU_COPY_AS_ROOT, SO_TREELIST_CTX_MENU_COPY_AS_CHILD, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND_TREE, SO_TREELIST_CTX_MENU_EXPAND_NODE, SO_TREELIST_CTX_MENU_COLLAPSE_TREE, SO_TREELIST_CTX_MENU_COLLAPSE_NODE, SO_DROPDOWNLIST_AUDIT_FILTER, SO_POPUP_AUDIT_FILTER_CONTAINER, SO_POPUP_AUDIT_FILTER */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6031,6 +6031,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_EXPAND_NODE", function() { return SO_TREELIST_CTX_MENU_EXPAND_NODE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_COLLAPSE_TREE", function() { return SO_TREELIST_CTX_MENU_COLLAPSE_TREE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST_CTX_MENU_COLLAPSE_NODE", function() { return SO_TREELIST_CTX_MENU_COLLAPSE_NODE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_DROPDOWNLIST_AUDIT_FILTER", function() { return SO_DROPDOWNLIST_AUDIT_FILTER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_POPUP_AUDIT_FILTER_CONTAINER", function() { return SO_POPUP_AUDIT_FILTER_CONTAINER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_POPUP_AUDIT_FILTER", function() { return SO_POPUP_AUDIT_FILTER; });
 var TB_MAIN = "#tbMain";
 var TBB_SHOW_SECURITY_PRINCIPALS = "#tbbShowSecurityPrincipals";
 var TBB_SHOW_SECURE_OBJECTS = "#tbbShowSecureObjects";
@@ -6081,6 +6084,9 @@ var SO_TREELIST_CTX_MENU_EXPAND_TREE = "#soTlMnuExpandTree";
 var SO_TREELIST_CTX_MENU_EXPAND_NODE = "#soTlMnuExpandNode";
 var SO_TREELIST_CTX_MENU_COLLAPSE_TREE = "#soTlMnuCollapseTree";
 var SO_TREELIST_CTX_MENU_COLLAPSE_NODE = "#soTlMnuCollapseNode";
+var SO_DROPDOWNLIST_AUDIT_FILTER = "#soDdlAuditFilter";
+var SO_POPUP_AUDIT_FILTER_CONTAINER = "#soPopAuditFilterContainer";
+var SO_POPUP_AUDIT_FILTER = "#soPopAuditFilter";
 
 
 /***/ }),
@@ -6148,6 +6154,15 @@ var $tbMain = $(_ids__WEBPACK_IMPORTED_MODULE_0__["TB_MAIN"]);
 var k$tbMain = null;
 var $tbbShowSecureObjects = null;
 var $tbbShowSecurityPrincipals = null;
+$.when(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["showProgress"])())
+    .then(_so__WEBPACK_IMPORTED_MODULE_2__["soGetInitialData"])
+    .then(function () {
+    $(document).ready(function () {
+        init();
+        $("html").removeClass("no-fouc");
+    });
+})
+    .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
 function init() {
     setupWidgets();
     setupVariables();
@@ -6257,10 +6272,6 @@ function tbbSwitchView(e) {
             Object(_so__WEBPACK_IMPORTED_MODULE_2__["soHide"])();
     }
 }
-$(document).ready(function () {
-    init();
-    $("html").removeClass("no-fouc");
-});
 
 
 
@@ -6272,11 +6283,12 @@ $(document).ready(function () {
 /*!*******************!*\
   !*** ./src/so.ts ***!
   \*******************/
-/*! exports provided: trusteesDataSource, soSetup, soShow, soHide, soReset, soLoad, soTbbExpandClick, soTbbCollapseClick, soTbbNewClick, soTbbCopyClick, soBtnSaveClick, soTbbDeleteClick, soBtnDiscardClick, soVerifySaveChanges, soTlDrop */
+/*! exports provided: soGetInitialData, trusteesDataSource, soSetup, soShow, soHide, soReset, soLoad, soTbbExpandClick, soTbbCollapseClick, soTbbNewClick, soTbbCopyClick, soBtnSaveClick, soTbbDeleteClick, soBtnDiscardClick, soVerifySaveChanges, soTlDrop */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soGetInitialData", function() { return soGetInitialData; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "trusteesDataSource", function() { return trusteesDataSource; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soSetup", function() { return soSetup; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soShow", function() { return soShow; });
@@ -6325,6 +6337,10 @@ var k$soGrdSacl = null;
 var k$soSpltr = null;
 var $soCtxMnu = null;
 var k$soCtxMnu = null;
+var $soDdlAuditFilter = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_DROPDOWNLIST_AUDIT_FILTER"]);
+var $soPopAuditFilterContainer = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_POPUP_AUDIT_FILTER_CONTAINER"]);
+var $soPopAuditFilter = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_POPUP_AUDIT_FILTER"]);
+var k$soPopAuditFilter = null;
 var auditTypes = [];
 var rightTypes = [];
 var rights = {};
@@ -6333,45 +6349,48 @@ var dacl = [];
 var sacl = [];
 var daclLocalId;
 var saclLocalId;
-var dfdSecureObjectDefaults = $
-    .get(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetSecureObjectDefaults", "Admin"))
-    .done(function (data) {
-    secureObjectDefaults = data;
-    soVM.editor.set("secureObjectDefaults", secureObjectDefaults);
-})
-    .fail(function (jqXHR, textStatus, errorThrown) {
-    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
-    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
-});
-var dfdAuditTypes = $
-    .get(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetAuditTypes", "Admin"))
-    .done(function (data) {
-    auditTypes = data;
-    soVM.editor.set("auditTypes", auditTypes);
-})
-    .fail(function (jqXHR, textStatus, errorThrown) {
-    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
-    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
-});
-var dfdRights = $
-    .get(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetRights", "Admin"))
-    .done(function (data) {
-    rightTypes = [];
-    rights = {};
-    $.each(data, function (index, item) {
-        rights[item.RightType] = rights[item.RightType] || [];
-        rights[item.RightType].push(item);
-        if (rightTypes.indexOf(item.RightType) < 0) {
-            rightTypes.push(item.RightType);
-        }
+function soGetInitialData() {
+    var dfd = $.Deferred();
+    var dfdSecureObjectDefaults = $
+        .get(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetSecureObjectDefaults", "Admin"))
+        .done(function (data) {
+        secureObjectDefaults = data;
+        soVM.editor.set("secureObjectDefaults", secureObjectDefaults);
+    })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
     });
-})
-    .fail(function (jqXHR, textStatus, errorThrown) {
-    var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
-    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
-});
-Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showProgress"])();
-$.when(dfdAuditTypes, dfdRights, dfdSecureObjectDefaults).always(_utils__WEBPACK_IMPORTED_MODULE_2__["hideProgress"]);
+    var dfdAuditTypes = $
+        .get(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetAuditTypes", "Admin"))
+        .done(function (data) {
+        auditTypes = data;
+        soVM.editor.set("auditTypes", auditTypes);
+    })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
+    });
+    var dfdRights = $
+        .get(Object(_utils__WEBPACK_IMPORTED_MODULE_2__["getActionUrl"])("GetRights", "Admin"))
+        .done(function (data) {
+        rightTypes = [];
+        rights = {};
+        $.each(data, function (index, item) {
+            rights[item.RightType] = rights[item.RightType] || [];
+            rights[item.RightType].push(item);
+            if (rightTypes.indexOf(item.RightType) < 0) {
+                rightTypes.push(item.RightType);
+            }
+        });
+    })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+        var msg = Object(_utils__WEBPACK_IMPORTED_MODULE_2__["decipherJqXhrError"])(jqXHR, textStatus);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["notifyError"])("There is a problem getting information from the server.<br/>" + msg);
+    });
+    $.when(dfdAuditTypes, dfdRights, dfdSecureObjectDefaults).always(function () { dfd.resolve(); });
+    return dfd.promise();
+}
 var trusteesDataSource = new kendo.data.DataSource({
     data: [],
     schema: {
@@ -6577,22 +6596,6 @@ var soVM = kendo.observable({
         hasError: false,
         model: new soEditorModel(),
         auditTypes: [],
-        daclAllowInheritTextColor: function () {
-            if (this.model.get("DaclAllowInherit")) {
-                return "";
-            }
-            else {
-                return "#f00";
-            }
-        },
-        saclAllowInheritTextColor: function () {
-            if (this.model.get("SaclAllowInherit")) {
-                return "";
-            }
-            else {
-                return "#f00";
-            }
-        },
         reset: function (showEditor) {
             if (showEditor == undefined) {
                 showEditor = false;
@@ -6610,11 +6613,6 @@ var soVM = kendo.observable({
             var that = this;
             that.editor.set("hasChanges", true);
         },
-        setSaclAuditTypeFilterToDefault: function () {
-            var that = this;
-            that.editor.model.set("SaclAuditTypeFilter", secureObjectDefaults["SaclAuditTypeFilterArray"]);
-            that.editor.set("hasChanges", true);
-        },
         kDsDacl: soDaclDataSource,
         kDsSacl: soSaclDataSource,
         daclItemCount: function () {
@@ -6623,10 +6621,10 @@ var soVM = kendo.observable({
         saclItemCount: function () {
             return this.get("kDsSacl") ? this.get("kDsSacl").total() : 0;
         },
-        securityInheritanceState: function () {
-            if (this.model.get("DaclAllowInherit") == secureObjectDefaults["DaclAllowInherit"] &&
-                this.model.get("SaclAllowInherit") == secureObjectDefaults["SaclAllowInherit"] &&
-                this.saclAuditTypeFilterIsDefault())
+        saclAuditTypeFilterState: function () {
+            if (this.model.get("SaclAuditTypeFilter").reduce(function (result, itemVal) {
+                return result | itemVal;
+            }, 0) == secureObjectDefaults["SaclAuditTypeFilter"])
                 return "Default";
             else
                 return "Modified";
@@ -6635,6 +6633,11 @@ var soVM = kendo.observable({
             return (this.model.get("SaclAuditTypeFilter").reduce(function (result, itemVal) {
                 return result | itemVal;
             }, 0) == secureObjectDefaults["SaclAuditTypeFilter"]);
+        },
+        setSaclAuditTypeFilterToDefault: function () {
+            var that = this;
+            that.editor.model.set("SaclAuditTypeFilter", secureObjectDefaults["SaclAuditTypeFilterArray"]);
+            that.editor.set("hasChanges", true);
         },
     },
     secureObjectSelected: function () {
@@ -6689,20 +6692,20 @@ function setupWidgets() {
             {
                 field: "Right",
                 title: "Right",
-                width: "200px",
+                width: "120px",
                 template: getRightAsString,
             },
             {
                 field: "Allowed",
                 title: "Allowed",
-                width: "80px",
+                width: "75px",
                 template: "<input id='1#=UId#' type='checkbox' class='k-checkbox' #: Allowed ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UId#' />",
                 editor: boolEditor
             },
             {
                 field: "Inheritable",
                 title: "Inheritable",
-                width: "100px",
+                width: "85px",
                 template: "<input id='2#=UId#' type='checkbox' class='k-checkbox' #: Inheritable ? 'checked =\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UId#' />",
                 editor: boolEditor
             },
@@ -6769,27 +6772,24 @@ function setupWidgets() {
             {
                 field: "Right",
                 title: "Right",
-                width: "200px",
+                width: "120px",
                 template: getRightAsString,
             },
             {
                 field: "Allowed",
                 title: "Allowed",
-                width: "80px",
                 template: "<input id='1#=UId#' type='checkbox' class='k-checkbox' #: Allowed ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UId#' />",
                 editor: boolEditor
             },
             {
                 field: "Denied",
                 title: "Denied",
-                width: "80px",
                 template: "<input id='2#=UId#' type='checkbox' class='k-checkbox' #: Denied ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UId#' />",
                 editor: boolEditor
             },
             {
                 field: "Inheritable",
                 title: "Inheritable",
-                width: "100px",
                 template: "<input id='3#=UId#' type='checkbox' class='k-checkbox' #: Inheritable ? 'checked =\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='3#=UId#' />",
                 editor: boolEditor,
             },
@@ -6981,6 +6981,23 @@ function setupWidgets() {
         },
     })
         .data("kendoValidator");
+    $soPopAuditFilter.kendoPopup({
+        anchor: $soDdlAuditFilter,
+        appendTo: $soPopAuditFilterContainer,
+        open: function (e) {
+            $("body").addClass("no-scroll");
+        },
+        close: function (e) {
+            $("body").removeClass("no-scroll");
+        }
+    });
+    $soDdlAuditFilter
+        .click(function () {
+        k$soPopAuditFilter.toggle();
+    });
+    $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_DROPDOWNLIST_AUDIT_FILTER"] + " .k-dropdown-wrap").hover(function () {
+        $(this).toggleClass("k-state-hover");
+    });
 }
 function setupVariables() {
     $soTb = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TB"]);
@@ -6991,6 +7008,7 @@ function setupVariables() {
     $soCtxMnu = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TREELIST_CTX_MENU"]);
     k$soCtxMnu = $soCtxMnu.data("kendoContextMenu");
     k$soSpltr = $soSpltr.data("kendoSplitter");
+    k$soPopAuditFilter = $soPopAuditFilter.data("kendoPopup");
 }
 function setupEventHandlers() {
     $(window)

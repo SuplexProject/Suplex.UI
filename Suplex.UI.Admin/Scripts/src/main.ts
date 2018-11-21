@@ -2,13 +2,23 @@
 //import * as constants from "./constants";
 import { spSetup, spShow, spHide, spReset, spLoad, spVerifySaveChanges } from "./sp";
 
-import { soSetup, soHide, soShow, soReset, soLoad, soVerifySaveChanges } from "./so";
-import { getActionUrl, AjaxResponseStatus, notifyError, decipherJqXhrError, AjaxResponse } from "./utils";
+import { soSetup, soHide, soShow, soReset, soLoad, soVerifySaveChanges, soGetInitialData } from "./so";
+import { getActionUrl, AjaxResponseStatus, notifyError, decipherJqXhrError, AjaxResponse, showProgress, hideProgress } from "./utils";
 
 let $tbMain = $( ID.TB_MAIN );
 let k$tbMain: kendo.ui.ToolBar = null;
 let $tbbShowSecureObjects: JQuery = null;
 let $tbbShowSecurityPrincipals: JQuery = null;
+
+$.when( showProgress() )
+    .then( soGetInitialData )
+    .then( () => {
+        $( document ).ready( function () {
+            init();
+            $( "html" ).removeClass( "no-fouc" );
+        } );
+    } )
+    .always( hideProgress );
 
 function init() {
    
@@ -138,10 +148,10 @@ function tbbSwitchView(e: any) {
     }
 }
 
-$(document).ready(function() {
-    init();
-    $("html").removeClass("no-fouc");
-});
+//$(document).ready(function() {
+//    init();
+//    $("html").removeClass("no-fouc");
+//});
 
 export {
     tbbRemoteRefreshClick,

@@ -93,15 +93,17 @@
                 <pane size="40px" scrollable="false" resizable="false" collapsible="false">
                     <div class="mainHdr">
                         <div>
-                            <h2><span data-bind="visible: editor.model.IsUser">User </span><span data-bind="invisible: editor.model.IsUser">Group </span>Properties <span data-bind="visible: editor.hasChanges" style="color:red">*</span></h2>
+                            <div class="mainHdrLeft" style="background-color: inherit;">
+                                <span data-bind="visible: editor.model.IsUser">User </span><span data-bind="invisible: editor.model.IsUser">Group </span>Properties <span data-bind="visible: editor.hasChanges" style="color:red">*</span>
+                            </div>
                             <div class="mainHdrRight">
                                 @(Html.Kendo().Button().Name( "spBtnSave" ).Content( "Save" )
-                                            .HtmlAttributes( new { type = "button", data_bind = "enabled: editor.hasChanges", @class = "w105" } )
-                                            .Events( e => e.Click( "SuplexAdmin.spBtnSaveClick" ) ))
+                                                    .HtmlAttributes( new { type = "button", data_bind = "enabled: editor.hasChanges", @class = "w105" } )
+                                                    .Events( e => e.Click( "SuplexAdmin.spBtnSaveClick" ) ))
 
                                 @(Html.Kendo().Button().Name( "spBtnDiscard" ).Content( "Discard" )
-                                            .HtmlAttributes( new { type = "button", @class = "w105" } )
-                                            .Events( e => e.Click( "SuplexAdmin.spBtnDiscardClick" ) ))
+                                                    .HtmlAttributes( new { type = "button", @class = "w105" } )
+                                                    .Events( e => e.Click( "SuplexAdmin.spBtnDiscardClick" ) ))
                             </div>
                         </div>
                     </div>
@@ -306,7 +308,7 @@
                 <pane size="40px" scrollable="false" resizable="false" collapsible="false">
                     <div class="mainHdr">
                         <div>
-                            <div class="mainHdrLeft" style="vertical-align:middle;color: #555; background-color: inherit;font-weight: bold;"><span>Secure Object </span>Properties <span data-bind="visible: editor.hasChanges" style="color:red">*</span></div>
+                            <div class="mainHdrLeft" style="background-color: inherit;"><span>Secure Object </span>Properties <span data-bind="visible: editor.hasChanges" style="color:red">*</span></div>
                             <div class="mainHdrRight">
                                 @(Html.Kendo().Button().Name( "soBtnSave" ).Content( "Save" ).HtmlAttributes( new { type = "button", data_bind = "enabled: editor.hasChanges", @class = "w105" } )
                                     .Events( e => e.Click( "SuplexAdmin.soBtnSaveClick" ) ))
@@ -323,7 +325,7 @@
                             <h2>Errors</h2>
                             <div id="soEditorError"></div>
                         </div>
-                        <div style="margin:3px;">
+                        <div class="m3">
                             <div class="formElement">
                                 <div class="formLabel">Unique Name</div>
                                 <div class="formInput">
@@ -349,13 +351,13 @@
                                     Permissions (<span data-bind="text: editor.daclItemCount"></span>)
                                 </div>
                                 <div class="subHdrRight">
-                                    <input id="daclAllowInherit1" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.DaclAllowInherit, events: {  change: editor.raiseChange }" />
-                                    <label class="k-checkbox-label" for="daclAllowInherit1" style="vertical-align:middle;font-weight:bold;">Inherit Permission</label>
+                                    <input id="daclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.DaclAllowInherit, events: {  change: editor.raiseChange }" />
+                                    <label class="k-checkbox-label va-mid bold" for="daclAllowInherit">Inherit Permission</label>
                                     <button id="soBtnDaclAdd" class="k-button w105" style="margin-left: 10px;">New Permission</button>
                                 </div>
                             </div>
                         </div>
-                        <div id="soGrdDacl" class="no-hover"></div><div class="h3"></div>
+                        <div id="soGrdDacl" class="no-hover"></div><div class="h5 m0"></div>
                         <div class="subHdr js-accordion">
                             <div>
                                 <div class="subHdrLeft k-link">
@@ -363,54 +365,89 @@
                                     Audit (<span data-bind="text: editor.saclItemCount"></span>)
                                 </div>
                                 <div class="subHdrRight">
-                                    <input id="saclAllowInherit1" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
-                                    <label class="k-checkbox-label" for="saclAllowInherit1" style="vertical-align:middle;font-weight:bold;">Inherit Audit</label>
+                                    <span class="va-mid bold">Audit Filter</span>
+                                    <span id="soDdlAuditFilter" class="k-widget k-dropdown k-header" style="width:150px;">
+                                        <span class="k-dropdown-wrap k-state-default">
+                                            <span class="k-input" data-bind="text: editor.saclAuditTypeFilterState"></span>
+                                            <span class="k-select">
+                                                <span class="k-icon k-i-arrow-60-down"></span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                    <div id="soPopAuditFilterContainer" style="position:relative;display:inline-block;">
+                                        <div id="soPopAuditFilter" class="k-container k-popup" style="width:150px;padding:3px;box-sizing: border-box;">
+                                            <!-- http://jsfiddle.net/shahr0oz/psEVy/ -->
+                                            <ul data-bind="source: editor.auditTypes" data-template="soAuditTypeFilterTemplate"></ul>
+                                            <br />
+                                            <button class="k-button" data-bind="disabled: editor.saclAuditTypeFilterIsDefault, events: { click: editor.setSaclAuditTypeFilterToDefault }">Use Default Filter</button>
+                                        </div>
+                                    </div>
+                                    <input id="saclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
+                                    <label class="k-checkbox-label va-mid bold" for="saclAllowInherit">Inherit Audit</label>
                                     <btn id="soBtnSaclAdd" class="k-button w105" style="margin-left: 10px;">New Audit</btn>
                                 </div>
                             </div>
                         </div>
-                        <div id="soGrdSacl" class="no-hover"></div><div class="h3"></div>
-                        <div class="subHdr js-accordion">
-                            <div>
-                                <div class="subHdrLeft k-link">
-                                    <span class="k-icon k-i-arrow-chevron-up"></span>
-                                    Security Inheritance Settings: <span data-bind="text: editor.securityInheritanceState"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="soSecurityInheritance">
-                            <div class="formElement">
-                                <div class="formLabel" data-bind="style:{color: editor.daclAllowInheritTextColor}">Permission Inheritance</div>
-                                <div class="formInput">
-                                    <input id="daclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.DaclAllowInherit, events: {  change: editor.raiseChange }" />
-                                    <label class="k-checkbox-label" for="daclAllowInherit"></label>
-                                </div>
-                            </div>
-                            <div class="formElement">
-                                <div class="formLabel" style="font-size:0.9em;padding-left:10px;">If blocked, this object will not inherit permissions from parent objects.</div>
-                            </div>
-                            <div class="formElement">
-                                <div class="formLabel" data-bind="style:{color: editor.saclAllowInheritTextColor}">Audit Inheritance</div>
-                                <div class="formInput">
-                                    <input id="saclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
-                                    <label class="k-checkbox-label" for="saclAllowInherit"></label>
-                                </div>
-                            </div>
-                            <div class="formElement">
-                                <div class="formLabel" style="font-size:0.9em;padding-left:10px;">If blocked, this object will not inherit permissions from parent objects.</div>
-                            </div>
-                            <div class="formElement">
-                                <div class="formLabel">Specify Audit Filter</div>
-                                <div class="formInput">
-                                    <!-- http://jsfiddle.net/shahr0oz/psEVy/ -->
-                                    <ul data-bind="source: editor.auditTypes" data-template="soAuditTypeFilterTemplate"></ul>
-                                    <br />
-                                    <button class="k-button" data-bind="disabled: editor.saclAuditTypeFilterIsDefault, events: { click: editor.setSaclAuditTypeFilterToDefault }">Use Default Filter</button>
+                        <div id="soGrdSacl" class="no-hover"></div>
 
-                                </div>
-                            </div>
-                            <div class="clearfix"></div>
+                        @*<div>
+            <div class="formElement m3">
+                <div class="formLabel">Audit Filter</div>
+                <div class="formInput">
+                    <ul data-bind="source: editor.auditTypes" data-template="soAuditTypeFilterTemplate"></ul>
+                    <br />
+                    <button class="k-button" data-bind="disabled: editor.saclAuditTypeFilterIsDefault, events: { click: editor.setSaclAuditTypeFilterToDefault }">Use Default Filter</button>
+
+                </div>
+                <div class="clearfix"></div>
+                <span id="soDdlAuditFilter" class="k-widget k-dropdown k-header" style="width:200px;">
+                    <span class="k-dropdown-wrap k-state-default">
+                        <span class="k-input" data-bind="text: editor.saclAuditTypeFilterIsDefault"></span>
+                        <span class="k-select">
+                            <span class="k-icon k-i-arrow-60-down"></span>
+                        </span>
+                    </span>
+                </span>
+                <div id="soPopAuditFilterContainer" style="position: relative;"></div>
+                <div id="soPopAuditFilter" class="k-container k-popup" style="width:200px;padding:3px;box-sizing: border-box;">
+                    <div class="formElement">
+                        <div class="formInput">
+                            <ul data-bind="source: editor.auditTypes" data-template="soAuditTypeFilterTemplate"></ul>
+                            <br />
+                            <button class="k-button" data-bind="disabled: editor.saclAuditTypeFilterIsDefault, events: { click: editor.setSaclAuditTypeFilterToDefault }">Use Default Filter</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+                        @*<div class="subHdr js-accordion">
+            <div>
+                <div class="subHdrLeft k-link">
+                    <span class="k-icon k-i-arrow-chevron-up"></span>
+                    Security Inheritance Settings: <span data-bind="text: editor.securityInheritanceState"></span>
+                </div>
+            </div>
+        </div>
+        <div id="soSecurityInheritance">
+            <div class="formElement">
+                <div class="formLabel" data-bind="style:{color: editor.daclAllowInheritTextColor}">Permission Inheritance</div>
+                <div class="formInput">
+                    <input id="daclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.DaclAllowInherit, events: {  change: editor.raiseChange }" />
+                    <label class="k-checkbox-label" for="daclAllowInherit"></label>
+                </div>
+            </div>
+            <div class="formElement">
+                <div class="formLabel" style="font-size:0.9em;padding-left:10px;">If blocked, this object will not inherit permissions from parent objects.</div>
+            </div>
+            <div class="formElement">
+                <div class="formLabel" data-bind="style:{color: editor.saclAllowInheritTextColor}">Audit Inheritance</div>
+                <div class="formInput">
+                    <input id="saclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
+                    <label class="k-checkbox-label" for="saclAllowInherit"></label>
+                </div>
+            </div>
+
+        </div>*@
                     </div>
                 </pane>
             </kendo-splitter>

@@ -38,6 +38,11 @@ let k$soSpltr: kendo.ui.Splitter = null;
 let $soCtxMnu: JQuery = null;
 let k$soCtxMnu: kendo.ui.ContextMenu = null;
 
+let $soDdlAuditFilter = $( ID.SO_DROPDOWNLIST_AUDIT_FILTER );
+let $soPopAuditFilterContainer = $( ID.SO_POPUP_AUDIT_FILTER_CONTAINER );
+let $soPopAuditFilter = $( ID.SO_POPUP_AUDIT_FILTER );
+let k$soPopAuditFilter: kendo.ui.Popup = null
+
 let auditTypes: string[] = [];
 let rightTypes: string[] = [];
 let rights = {};
@@ -49,49 +54,96 @@ let sacl: Array<any> = [];
 let daclLocalId: number;
 let saclLocalId: number;
 
-let dfdSecureObjectDefaults = $
-    .get(getActionUrl("GetSecureObjectDefaults", "Admin"))
-    .done(function(data) {
-        // let arr = [];
-        secureObjectDefaults = data;
-        (soVM as any).editor.set("secureObjectDefaults", secureObjectDefaults);
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        let msg = decipherJqXhrError(jqXHR, textStatus);
-        notifyError(`There is a problem getting information from the server.<br/>${msg}`);
-    });
+//let dfdSecureObjectDefaults = $
+//    .get(getActionUrl("GetSecureObjectDefaults", "Admin"))
+//    .done(function(data) {
+//        // let arr = [];
+//        secureObjectDefaults = data;
+//        (soVM as any).editor.set("secureObjectDefaults", secureObjectDefaults);
+//    })
+//    .fail(function(jqXHR, textStatus, errorThrown) {
+//        let msg = decipherJqXhrError(jqXHR, textStatus);
+//        notifyError(`There is a problem getting information from the server.<br/>${msg}`);
+//    });
 
-let dfdAuditTypes = $
-    .get(getActionUrl("GetAuditTypes", "Admin"))
-    .done(function(data) {
-        auditTypes = data;
-        (soVM as any).editor.set("auditTypes", auditTypes);
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        let msg = decipherJqXhrError(jqXHR, textStatus);
-        notifyError(`There is a problem getting information from the server.<br/>${msg}`);
-    });
-let dfdRights = $
-    .get(getActionUrl("GetRights", "Admin"))
-    .done(function(data) {
-        rightTypes = [];
-        rights = {};
-        $.each(data, function(index, item) {
-            rights[item.RightType] = rights[item.RightType] || [];
-            rights[item.RightType].push(item);
-            if (rightTypes.indexOf(item.RightType) < 0) {
-                rightTypes.push(item.RightType);
-            }
-        });
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        let msg = decipherJqXhrError(jqXHR, textStatus);
-        notifyError(`There is a problem getting information from the server.<br/>${msg}`);
-    });
+//let dfdAuditTypes = $
+//    .get(getActionUrl("GetAuditTypes", "Admin"))
+//    .done(function(data) {
+//        auditTypes = data;
+//        (soVM as any).editor.set("auditTypes", auditTypes);
+//    })
+//    .fail(function(jqXHR, textStatus, errorThrown) {
+//        let msg = decipherJqXhrError(jqXHR, textStatus);
+//        notifyError(`There is a problem getting information from the server.<br/>${msg}`);
+//    });
+//let dfdRights = $
+//    .get(getActionUrl("GetRights", "Admin"))
+//    .done(function(data) {
+//        rightTypes = [];
+//        rights = {};
+//        $.each(data, function(index, item) {
+//            rights[item.RightType] = rights[item.RightType] || [];
+//            rights[item.RightType].push(item);
+//            if (rightTypes.indexOf(item.RightType) < 0) {
+//                rightTypes.push(item.RightType);
+//            }
+//        });
+//    })
+//    .fail(function(jqXHR, textStatus, errorThrown) {
+//        let msg = decipherJqXhrError(jqXHR, textStatus);
+//        notifyError(`There is a problem getting information from the server.<br/>${msg}`);
+//    });
 
 // block UI to ensure data is available before user starts to use
-showProgress();
-$.when(dfdAuditTypes, dfdRights, dfdSecureObjectDefaults).always(hideProgress);
+//showProgress();
+//$.when(dfdAuditTypes, dfdRights, dfdSecureObjectDefaults).always(hideProgress);
+
+export function soGetInitialData() {
+    let dfd = $.Deferred();
+
+    let dfdSecureObjectDefaults = $
+        .get(getActionUrl("GetSecureObjectDefaults", "Admin"))
+        .done(function(data) {
+            // let arr = [];
+            secureObjectDefaults = data;
+            (soVM as any).editor.set("secureObjectDefaults", secureObjectDefaults);
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            let msg = decipherJqXhrError(jqXHR, textStatus);
+            notifyError(`There is a problem getting information from the server.<br/>${msg}`);
+        });
+    let dfdAuditTypes = $
+        .get( getActionUrl( "GetAuditTypes", "Admin" ) )
+        .done( function ( data ) {
+            auditTypes = data;
+            ( soVM as any ).editor.set( "auditTypes", auditTypes );
+        })
+        .fail( function ( jqXHR, textStatus, errorThrown ) {
+            let msg = decipherJqXhrError( jqXHR, textStatus );
+            notifyError( `There is a problem getting information from the server.<br/>${msg}` );
+        });
+    let dfdRights = $
+        .get( getActionUrl( "GetRights", "Admin" ) )
+        .done(function(data) {
+            rightTypes = [];
+            rights = {};
+            $.each( data, function ( index, item ) {
+                rights[item.RightType] = rights[item.RightType] || [];
+                rights[item.RightType].push( item );
+                if ( rightTypes.indexOf( item.RightType ) < 0 ) {
+                    rightTypes.push( item.RightType );
+                }
+            });
+        })
+        .fail( function ( jqXHR, textStatus, errorThrown ) {
+            let msg = decipherJqXhrError( jqXHR, textStatus );
+            notifyError( `There is a problem getting information from the server.<br/>${msg}` );
+        });
+
+    $.when( dfdAuditTypes, dfdRights, dfdSecureObjectDefaults ).always( () => { dfd.resolve(); } );
+
+    return dfd.promise();    
+}
 
 export let trusteesDataSource = new kendo.data.DataSource( {
     data: [],
@@ -304,7 +356,7 @@ let soEditorModel = kendo.data.Model.define({
 // properties required at the point of binding the view to the ViewModel must be a concrete value
 // if the property value depends on external factors and may not be available at the time of binding,
 // set it to a default value first.this will allow the binding to be successful
-let soVM = kendo.observable({
+let soVM = kendo.observable( {
     visible: false,
     selectedUId: null,
     editor: {
@@ -314,79 +366,80 @@ let soVM = kendo.observable({
         hasError: false,
         model: new soEditorModel(), // matches the model from the server
         auditTypes: [], // one time set by ajax call. use to display the audit type filter checkboxes
-        daclAllowInheritTextColor: function() {
-            if (this.model.get("DaclAllowInherit")) {
-                return "";
-            } else {
-                return "#f00";
-            }
-        },
-        saclAllowInheritTextColor: function() {
-            if (this.model.get("SaclAllowInherit")) {
-                return "";
-            } else {
-                return "#f00";
-            }
-        },
-        reset: function(showEditor?: boolean) {
-            if (showEditor == undefined) {
+        //daclAllowInheritTextColor: function () {
+        //    if ( this.model.get( "DaclAllowInherit" ) ) {
+        //        return "";
+        //    } else {
+        //        return "#f00";
+        //    }
+        //},
+        //saclAllowInheritTextColor: function () {
+        //    if ( this.model.get( "SaclAllowInherit" ) ) {
+        //        return "";
+        //    } else {
+        //        return "#f00";
+        //    }
+        //},
+        reset: function ( showEditor?: boolean ) {
+            if ( showEditor == undefined ) {
                 showEditor = false;
             }
-            if (showEditor != this.get("visible")) {
+            if ( showEditor != this.get( "visible" ) ) {
                 this.set( "visible", showEditor );
                 if ( showEditor )
-                    k$soSpltr.resize(true);     // somehow hidden elements don't automatically resize. this command forces it
+                    k$soSpltr.resize( true );     // somehow hidden elements don't automatically resize. this command forces it
             }
             // this.set( "visible", false )
-            this.set("hasChanges", false);
-            this.set("hasError", false);
-            this.set("model", new soEditorModel());
+            this.set( "hasChanges", false );
+            this.set( "hasError", false );
+            this.set( "model", new soEditorModel() );
         },
-        //setError: function(trueOrFalse: boolean) {
-        //    if (this.get("hasError") == trueOrFalse) return;
-        //    this.set("hasError", trueOrFalse);
-        //},
-        raiseChange: function() {
+        raiseChange: function () {
             // event handler for UI elements bound to the model. fired when there are changes to the element
             let that = this;
-            that.editor.set("hasChanges", true);
-        },
-        setSaclAuditTypeFilterToDefault: function() {
-            let that = this;
-            that.editor.model.set( "SaclAuditTypeFilter", secureObjectDefaults["SaclAuditTypeFilterArray"] );
             that.editor.set( "hasChanges", true );
         },
         kDsDacl: soDaclDataSource, // required so we display dacl item count on the editor
         kDsSacl: soSaclDataSource, // required so we display sacl item count on the editor
-        daclItemCount: function() {
-            return this.get("kDsDacl") ? this.get("kDsDacl").total() : 0;
+        daclItemCount: function () {
+            return this.get( "kDsDacl" ) ? this.get( "kDsDacl" ).total() : 0;
         },
-        saclItemCount: function() {
-            return this.get("kDsSacl") ? this.get("kDsSacl").total() : 0;
+        saclItemCount: function () {
+            return this.get( "kDsSacl" ) ? this.get( "kDsSacl" ).total() : 0;
         },
-        securityInheritanceState: function() {
-            // returns default if default setting, else modified
-            if (
-                this.model.get("DaclAllowInherit") == secureObjectDefaults["DaclAllowInherit"] &&
-                this.model.get("SaclAllowInherit") == secureObjectDefaults["SaclAllowInherit"] &&
-                this.saclAuditTypeFilterIsDefault()
-            )
+        //securityInheritanceState: function() {  
+        //    // returns default if default setting, else modified
+        //    if (
+        //        this.model.get("DaclAllowInherit") == secureObjectDefaults["DaclAllowInherit"] &&
+        //        this.model.get("SaclAllowInherit") == secureObjectDefaults["SaclAllowInherit"] &&
+        //        this.saclAuditTypeFilterIsDefault()
+        //    )
+        //        return "Default";
+        //    else return "Modified";
+        //},
+        saclAuditTypeFilterState: function () {
+            // doesn't work when calling saclAuditTypeFilterIsDefault directly. so had to repeat the code here
+            // return ( this.get( "saclAuditTypeFilterIsDefault" ) == true ? "Default" : "Modified" );
+            if ( this.model.get( "SaclAuditTypeFilter" ).reduce( function ( result: any, itemVal: any ) {
+                return result | itemVal;
+            }, 0 ) == secureObjectDefaults["SaclAuditTypeFilter"] )
                 return "Default";
-            else return "Modified";
+            else
+                return "Modified";
         },
         saclAuditTypeFilterIsDefault: function() {
-            //let v = 0
-            //let filterArray = this.model.get( "SaclAuditTypeFilter" )       // this is in int[] format
-            //$.each( filterArray , function ( index, item ) {
-            //    v |= item //parseInt(item)
-            //} )
-            //return ( v == secureObjectDefaults["SaclAuditTypeFilter"] )
             return (
                 this.model.get("SaclAuditTypeFilter").reduce(function(result: any, itemVal: any) {
                     return result | itemVal;
                 }, 0) == secureObjectDefaults["SaclAuditTypeFilter"]
             );
         },
+        setSaclAuditTypeFilterToDefault: function () {
+            let that = this;
+            that.editor.model.set( "SaclAuditTypeFilter", secureObjectDefaults["SaclAuditTypeFilterArray"] );
+            that.editor.set( "hasChanges", true );
+        },
+
     },
     secureObjectSelected: function() {
         return this.get("selectedUId") != null;
@@ -455,20 +508,20 @@ function setupWidgets() {
             {
                 field: "Right",
                 title: "Right",
-                width: "200px",
+                width: "120px",
                 template: getRightAsString,
             }, // editor is created in the grid edit event. We will bind the value manually
             {
                 field: "Allowed",
                 title: "Allowed",
-                width: "80px",
+                width: "75px",
                 template: "<input id='1#=UId#' type='checkbox' class='k-checkbox' #: Allowed ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UId#' />",
                 editor: boolEditor
             },
             {
                 field: "Inheritable",
                 title: "Inheritable",
-                width: "100px",
+                width: "85px",
                 template: "<input id='2#=UId#' type='checkbox' class='k-checkbox' #: Inheritable ? 'checked =\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UId#' />",
                 editor: boolEditor
             },
@@ -549,27 +602,24 @@ function setupWidgets() {
             {
                 field: "Right",
                 title: "Right",
-                width: "200px",
+                width: "120px",
                 template: getRightAsString,
             }, // editor is created in the grid edit event. We will bind the value manually
             {
                 field: "Allowed",
                 title: "Allowed",
-                width: "80px",
                 template: "<input id='1#=UId#' type='checkbox' class='k-checkbox' #: Allowed ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UId#' />",
                 editor: boolEditor
             },
             {
                 field: "Denied",
                 title: "Denied",
-                width: "80px",
                 template: "<input id='2#=UId#' type='checkbox' class='k-checkbox' #: Denied ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UId#' />",
                 editor: boolEditor
             },
             {
                 field: "Inheritable",
                 title: "Inheritable",
-                width: "100px",
                 template: "<input id='3#=UId#' type='checkbox' class='k-checkbox' #: Inheritable ? 'checked =\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='3#=UId#' />",
                 editor: boolEditor,
             },
@@ -792,7 +842,44 @@ function setupWidgets() {
                 $("span.k-invalid-msg").hide();
             },
         })
-        .data("kendoValidator");
+        .data( "kendoValidator" );
+
+    //$( "#popAuditFilter" ).kendoPopup( {
+    //    anchor: $( "#spnAuditFilter" )
+    //} );
+    //let t = '<input type="checkbox" class="k-checkbox" name="soAuditTypeFilter" id="#: data.Id #" data-type="number" data-bind="checked: editor.model.SaclAuditTypeFilter, value:Id, attr:{id:Id}, events:{change: editor.raiseChange}" /><label class="k-checkbox-label" for="#: data.Id#">#: data.Name # </label>';
+    //$( "#lbAuditFilter" ).kendoListBox( {
+    //    autoBind: false,
+    //    dataTextField: "Name",
+    //    dataValueField: "Id",
+    //    template: t,
+    //    dataSource: {
+    //        transport: {
+    //            read: getActionUrl( "GetAuditTypes", "Admin" )
+    //        }
+    //    }
+    //} ).data( 'kendoListBox' ).dataSource.fetch();
+    $soPopAuditFilter.kendoPopup( {
+        anchor: $soDdlAuditFilter,
+        appendTo: $soPopAuditFilterContainer,
+        open: function ( e ) {
+            $( "body" ).addClass( "no-scroll" );    // prevent scrollbar from appearing unnecessarily in the <body> 
+        },
+        close: function ( e ) {
+            $( "body" ).removeClass( "no-scroll" );
+        }
+    } );
+    $soDdlAuditFilter
+        .click( function () {
+            ( k$soPopAuditFilter as any ).toggle();
+            //( $( "#soPopAuditFilter" ).data( "kendoPopup" ) as any ).toggle();
+        } );
+
+    //$( "#soDdlAuditFilter .k-dropdown-wrap" ).hover( function () {
+    $( ID.SO_DROPDOWNLIST_AUDIT_FILTER + " .k-dropdown-wrap" ).hover( function () {
+        $( this ).toggleClass( "k-state-hover" );
+    } );
+
 }
 function setupVariables() {
     $soTb = $( ID.SO_TB );
@@ -803,6 +890,7 @@ function setupVariables() {
     $soCtxMnu = $( ID.SO_TREELIST_CTX_MENU );
     k$soCtxMnu = $soCtxMnu.data( "kendoContextMenu" );
     k$soSpltr = $soSpltr.data( "kendoSplitter" );
+    k$soPopAuditFilter = $soPopAuditFilter.data( "kendoPopup" );
 }
 function setupEventHandlers() {
     $( window )

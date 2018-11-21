@@ -55,3 +55,7 @@ export const SO_TREELIST_CTX_MENU_EXPAND_TREE = "#soTlMnuExpandTree";
 export const SO_TREELIST_CTX_MENU_EXPAND_NODE = "#soTlMnuExpandNode";
 export const SO_TREELIST_CTX_MENU_COLLAPSE_TREE = "#soTlMnuCollapseTree";
 export const SO_TREELIST_CTX_MENU_COLLAPSE_NODE = "#soTlMnuCollapseNode";
+
+export const SO_DROPDOWNLIST_AUDIT_FILTER = "#soDdlAuditFilter";
+export const SO_POPUP_AUDIT_FILTER_CONTAINER = "#soPopAuditFilterContainer";
+export const SO_POPUP_AUDIT_FILTER = "#soPopAuditFilter";

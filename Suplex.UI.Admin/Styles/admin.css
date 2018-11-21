@@ -155,6 +155,9 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     border-color: transparent;
 }
 
+ul li .k-checkbox-label {
+    margin-top: 3px;
+}
 .no-fouc #spView,
 .no-fouc #soView {
     visibility: hidden;
@@ -221,12 +224,12 @@ label.k-textbox { /* to make display only field look like kendo textbox */
 #soGrdSacl td:nth-child(n+4):nth-child(-n+6) {
     text-align: center;
 }
-#daclAllowInherit1.k-checkbox:checked + label,
-#saclAllowInherit1.k-checkbox:checked + label {
+#daclAllowInherit.k-checkbox:checked + label,
+#saclAllowInherit.k-checkbox:checked + label {
     color: inherit;
 }
-#daclAllowInherit1.k-checkbox + label,
-#saclAllowInherit1.k-checkbox + label {
+#daclAllowInherit.k-checkbox + label,
+#saclAllowInherit.k-checkbox + label {
     color: red;
 }
 
@@ -295,7 +298,7 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     color: #000;
 }
 .subHdr {
-    background-color: #eee;
+    background-color: #d2d2d2;
 }
 .mainHdr, .subHdr {
     box-sizing: border-box;
@@ -320,14 +323,30 @@ label.k-textbox { /* to make display only field look like kendo textbox */
     right: 0;
     bottom: 0;
 }
-.h3 {
+.mainHdr .k-state-disabled, 
+.subHdr .k-state-disabled {
+    opacity: 1;
+}
+.h5 {
     height: 3px;
+}
+.m0 {
+    margin: 0;
+}
+.m3 {
+    margin:3px;
 }
 .w105 {
     width: 105px;
 }
 .full-height {
     height: 100%;
+}
+.bold {
+    font-weight:bold;
+}
+.va-mid {
+    vertical-align: middle;
 }
 .clickable {
     cursor: pointer;

@@ -38,7 +38,8 @@
                         <div>
                             <kendo-toolbar id="spTb">
                                 <toolbar-items>
-                                    <item template="<input class='k-textbox' id='spTxtGrdFilter' placeholder='Filter' />" overflow="ShowInOverflowPopup.Never" />
+                                    
+                                    <item template="<span class='k-textbox k-space-right' style='width:200px;'><input type='text' id='spTxtGrdFilter' placeholder='Filter'/><span id='spBtnClearTxtGrdFilter' class='k-icon k-i-close-outline' title='Clear'></span>" overflow="ShowInOverflowPopup.Never" />
                                     <item type="CommandType.SplitButton" id="spBtnNew" text="New" title="New User or Group" click="SuplexAdmin.spBtnNewClick" overflow="ShowInOverflowPopup.Never">
                                         <menu-buttons>
                                             <toolbar-button id="spBtnNewUser" text="New User" sprite-css-class="icon-user" />

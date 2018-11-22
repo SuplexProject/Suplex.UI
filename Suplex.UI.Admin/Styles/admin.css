@@ -69,7 +69,12 @@ input:-ms-input-placeholder {
     border-width: 0;
     color: inherit;
 }
-
+.k-textbox.k-space-right {
+    background-image: none;
+}
+.k-textbox .k-icon {
+    cursor: pointer;
+}
 /* == tool bars == */
 #tbMain { /*, #spTb, #soTb { */
     margin-bottom: -1px;
@@ -253,10 +258,9 @@ ul li .k-checkbox-label {
 #spGrd td:nth-child(4) {
     text-align: center;
 }
-.gridEditor ul li {
+ul.gridEditor {
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 /* == editor error == */

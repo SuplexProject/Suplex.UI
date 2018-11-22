@@ -14,7 +14,7 @@ import {
     AjaxResponse,
     AjaxResponseStatus
 } from "./utils";
-import { trusteesDataSource } from "./so"
+//import { soTrusteesDataSource } from "./so"
 
 let $spView = $(ID.SP_VIEW);
 let $spSpltr = $(ID.SP_SPLITTER);
@@ -40,6 +40,8 @@ let k$spTlGroupHierarchy: kendo.ui.TreeList = null;
 let k$spSpltr: kendo.ui.Splitter = null;
 
 export let trustees: any[] = [];
+
+export let spGrdDataSource: kendo.data.DataSource = null;
 
 export let spMsMemberOfDataSource: kendo.data.DataSource = new kendo.data.DataSource( {
     data: [],
@@ -71,7 +73,7 @@ export let spLbMemberOfDataSource: kendo.data.DataSource = new kendo.data.DataSo
     },
     sort: { field: "Name", dir: "asc" },
     push: function ( e: kendo.data.DataSourcePushEvent ) {
-        console.log( "push", e );
+        //console.log( "push", e );
         setVMEditorHasChangesFlag( true );
     }
 } )
@@ -87,7 +89,7 @@ export let spLbMembersDataSource: kendo.data.DataSource = new kendo.data.DataSou
         { field: "Name", dir: "asc" }
     ],
     push: function ( e: kendo.data.DataSourcePushEvent ) {
-        console.log( "push", e );
+        //console.log( "push", e );
         setVMEditorHasChangesFlag( true );
     }
 })
@@ -258,9 +260,12 @@ function setupEventHandlers() : void {
             k$spGrd.dataSource.filter({});
         }
     } );
+    $( ID.SP_BTN_CLEAR_TXT_GRD_FILTER ).on( 'click', function ( e ) {
+        $spTxtGrdFilter.val( "" ).trigger( "input" ).focus();
+    } );
 
     k$spLbMemberOf.wrapper.find( ".k-list" ).on( "click", ".k-item .clickable", function ( e ) {
-        console.log( "In MemberOf listbox item click event handler..." );
+        //console.log( "In MemberOf listbox item click event handler..." );
         let item: JQuery = $( e.target ).closest( ".k-item" );
         let dataItem: any = k$spLbMemberOf.dataItem( item );
         if ( !spMsMemberOfDataSource.get( dataItem.UId ) ) {
@@ -269,7 +274,7 @@ function setupEventHandlers() : void {
         spLbMemberOfDataSource.pushDestroy( dataItem );
     } )
     k$spLbMembers.wrapper.find( ".k-list" ).on( "click", ".k-item .clickable", function ( e ) {
-        console.log( "In Members listbox item click event handler..." );
+        //console.log( "In Members listbox item click event handler..." );
         let item: JQuery = $( e.target ).closest( ".k-item" );
         let dataItem: any = k$spLbMembers.dataItem( item );
         if ( !spMsMembersDataSource.get( dataItem.UId ) ) {
@@ -289,6 +294,7 @@ function setupVariables() {
     k$spLbMembers = $spLbMembers.data("kendoListBox");
     k$spTlGroupHierarchy = $spTlGroupHierarchy.data( "kendoTreeList" );
     k$spSpltr = $spSpltr.data( "kendoSplitter" );
+    spGrdDataSource = k$spGrd.dataSource;
 }
 
 function resizeSplitter() {
@@ -297,10 +303,6 @@ function resizeSplitter() {
     let bottom = 25; // height occupied below splitter
     let height = $(window).height() - (top + bottom) - 1;
     height = height <= 0 ? 100 : height;
-    //$spSpltr.height(height);
-    //console.log( height );
-    //$spSpltr.trigger( "resize" )
-    //$spSpltr.data('kendoSplitter').trigger( "resize" )
     k$spSpltr.wrapper.height( height );
     k$spSpltr.resize(true);
 }
@@ -462,6 +464,8 @@ function populateEditor( data: AjaxResponse ) : void {
             spMsMembersDataSource.data( data.Data.NotMembers );
             k$spTlGroupHierarchy.dataSource.data( data.Data.GroupHierarchy);
         }
+        k$spMsMemberOf.value( [] )
+        k$spMsMembers.value( [] )
     }
 }
 function resetEditor(showEditor: boolean) : void {
@@ -720,7 +724,6 @@ export function spBtnNewClick(e: any): void {
             //https://www.telerik.com/forums/open-split-button-with-js
             let $btn = $( "#" + e.id ).closest( '.k-split-button' );
             let popup = $btn.data( "kendoPopup" );
-            console.log( popup );
             if ( popup ) {
                 if ( popup.visible() ) {
                     popup.close();
@@ -732,12 +735,12 @@ export function spBtnNewClick(e: any): void {
             break;
 
         case ID.SP_BTN_NEW_USER: 
-            console.log( "-- new user" );
+            //console.log( "-- new user" );
             newUser();
             break;
 
         case ID.SP_BTN_NEW_GROUP:
-            console.log( "-- new group" );
+            //console.log( "-- new group" );
             newGroup();
             break;
     }
@@ -900,7 +903,7 @@ export function spBtnMemberOfAddClick( e: MouseEvent ) {
         //    spLbMemberOfDataSource.pushCreate( item );
         //}
     //} )
-    //k$spMsMemberOf.value( [] );
+    k$spMsMemberOf.value( [] ); // clear selected items
     spLbMemberOfDataSource.pushCreate( selectedItems );
     spMsMemberOfDataSource.pushDestroy( selectedItems );
     
@@ -918,17 +921,17 @@ export function spBtnMembersAddClick( e: MouseEvent ) {
         //    spLbMembersDataSource.pushCreate( item );
         //}
     //} )
-    //k$spMsMembers.value( [] ); 
+    k$spMsMembers.value( [] ); 
     spLbMembersDataSource.pushCreate( selectedItems );
     spMsMembersDataSource.pushDestroy( selectedItems );
 }
 
 export function spGrdDataSourceChange( e: kendo.data.DataSourceChangeEvent ) {
     // update the trustee datasource
-    var data = this.data().toJSON();
-    // take only groups and only UId and Name
-    var trustees = data.filter( ( item:any ) => { return !item.IsUser } )
-        .map( ( item: any ) => { return { "UId": item.UId, "Name": item.Name } } )
-    trusteesDataSource.data( trustees );
+    //var data = this.data().toJSON();
+    //// take only groups and only UId and Name
+    //var trustees = data.filter( ( item:any ) => { return !item.IsUser } )
+    //    .map( ( item: any ) => { return { "UId": item.UId, "Name": item.Name } } )
+    //soTrusteesDataSource.data( trustees );
 
 }

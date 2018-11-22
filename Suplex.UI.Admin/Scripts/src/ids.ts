@@ -20,6 +20,7 @@ export const SP_TREELIST_GROUP_HIERARCHY = "#spTlGroupHierarchy";
 export const SP_BTN_NEW = "#spBtnNew";
 export const SP_BTN_NEW_USER = "#spBtnNewUser";
 export const SP_BTN_NEW_GROUP = "#spBtnNewGroup";
+export const SP_BTN_CLEAR_TXT_GRD_FILTER = "#spBtnClearTxtGrdFilter";
 
 // secure objects
 export const SO_VIEW = "#soView";

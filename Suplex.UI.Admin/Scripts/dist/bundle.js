@@ -5976,7 +5976,7 @@ module.exports = function(originalModule) {
 /*!********************!*\
   !*** ./src/ids.ts ***!
   \********************/
-/*! exports provided: TB_MAIN, TBB_SHOW_SECURITY_PRINCIPALS, TBB_SHOW_SECURE_OBJECTS, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SO_VIEW, SO_SPLITTER, SO_TB, SO_TBB_NEW, SO_TBB_NEW_ROOT, SO_TBB_NEW_CHILD, SO_TBB_COPY, SO_TBB_COPY_AS_ROOT, SO_TBB_COPY_AS_CHILD, SO_TBB_DELETE, SO_TBB_EXPAND, SO_TBB_EXPAND_NODE, SO_TBB_EXPAND_TREE, SO_TBB_COLLAPSE, SO_TBB_COLLAPSE_TREE, SO_TBB_COLLAPSE_NODE, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW_ROOT, SO_TREELIST_CTX_MENU_NEW_CHILD, SO_TREELIST_CTX_MENU_COPY_AS_ROOT, SO_TREELIST_CTX_MENU_COPY_AS_CHILD, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND_TREE, SO_TREELIST_CTX_MENU_EXPAND_NODE, SO_TREELIST_CTX_MENU_COLLAPSE_TREE, SO_TREELIST_CTX_MENU_COLLAPSE_NODE, SO_DROPDOWNLIST_AUDIT_FILTER, SO_POPUP_AUDIT_FILTER_CONTAINER, SO_POPUP_AUDIT_FILTER */
+/*! exports provided: TB_MAIN, TBB_SHOW_SECURITY_PRINCIPALS, TBB_SHOW_SECURE_OBJECTS, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SP_BTN_CLEAR_TXT_GRD_FILTER, SO_VIEW, SO_SPLITTER, SO_TB, SO_TBB_NEW, SO_TBB_NEW_ROOT, SO_TBB_NEW_CHILD, SO_TBB_COPY, SO_TBB_COPY_AS_ROOT, SO_TBB_COPY_AS_CHILD, SO_TBB_DELETE, SO_TBB_EXPAND, SO_TBB_EXPAND_NODE, SO_TBB_EXPAND_TREE, SO_TBB_COLLAPSE, SO_TBB_COLLAPSE_TREE, SO_TBB_COLLAPSE_NODE, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW_ROOT, SO_TREELIST_CTX_MENU_NEW_CHILD, SO_TREELIST_CTX_MENU_COPY_AS_ROOT, SO_TREELIST_CTX_MENU_COPY_AS_CHILD, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND_TREE, SO_TREELIST_CTX_MENU_EXPAND_NODE, SO_TREELIST_CTX_MENU_COLLAPSE_TREE, SO_TREELIST_CTX_MENU_COLLAPSE_NODE, SO_DROPDOWNLIST_AUDIT_FILTER, SO_POPUP_AUDIT_FILTER_CONTAINER, SO_POPUP_AUDIT_FILTER */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6000,6 +6000,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_BTN_NEW", function() { return SP_BTN_NEW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_BTN_NEW_USER", function() { return SP_BTN_NEW_USER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_BTN_NEW_GROUP", function() { return SP_BTN_NEW_GROUP; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SP_BTN_CLEAR_TXT_GRD_FILTER", function() { return SP_BTN_CLEAR_TXT_GRD_FILTER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_VIEW", function() { return SO_VIEW; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_SPLITTER", function() { return SO_SPLITTER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TB", function() { return SO_TB; });
@@ -6053,6 +6054,7 @@ var SP_TREELIST_GROUP_HIERARCHY = "#spTlGroupHierarchy";
 var SP_BTN_NEW = "#spBtnNew";
 var SP_BTN_NEW_USER = "#spBtnNewUser";
 var SP_BTN_NEW_GROUP = "#spBtnNewGroup";
+var SP_BTN_CLEAR_TXT_GRD_FILTER = "#spBtnClearTxtGrdFilter";
 var SO_VIEW = "#soView";
 var SO_SPLITTER = "#soSpltr";
 var SO_TB = "#soTb";
@@ -6283,13 +6285,13 @@ function tbbSwitchView(e) {
 /*!*******************!*\
   !*** ./src/so.ts ***!
   \*******************/
-/*! exports provided: soGetInitialData, trusteesDataSource, soSetup, soShow, soHide, soReset, soLoad, soTbbExpandClick, soTbbCollapseClick, soTbbNewClick, soTbbCopyClick, soBtnSaveClick, soTbbDeleteClick, soBtnDiscardClick, soVerifySaveChanges, soTlDrop */
+/*! exports provided: soGetInitialData, soTrusteesDataSource, soSetup, soShow, soHide, soReset, soLoad, soTbbExpandClick, soTbbCollapseClick, soTbbNewClick, soTbbCopyClick, soBtnSaveClick, soTbbDeleteClick, soBtnDiscardClick, soVerifySaveChanges, soTlDrop */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soGetInitialData", function() { return soGetInitialData; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "trusteesDataSource", function() { return trusteesDataSource; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soTrusteesDataSource", function() { return soTrusteesDataSource; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soSetup", function() { return soSetup; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soShow", function() { return soShow; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "soHide", function() { return soHide; });
@@ -6307,6 +6309,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ids__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ids */ "./src/ids.ts");
 /* harmony import */ var lodash_es_debounce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash-es/debounce */ "./node_modules/lodash-es/debounce.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
+/* harmony import */ var _sp__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./sp */ "./src/sp.ts");
 var __assign = (undefined && undefined.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -6318,6 +6321,7 @@ var __assign = (undefined && undefined.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+
 
 
 
@@ -6391,7 +6395,7 @@ function soGetInitialData() {
     $.when(dfdAuditTypes, dfdRights, dfdSecureObjectDefaults).always(function () { dfd.resolve(); });
     return dfd.promise();
 }
-var trusteesDataSource = new kendo.data.DataSource({
+var soTrusteesDataSource = new kendo.data.DataSource({
     data: [],
     schema: {
         model: {
@@ -6622,12 +6626,7 @@ var soVM = kendo.observable({
             return this.get("kDsSacl") ? this.get("kDsSacl").total() : 0;
         },
         saclAuditTypeFilterState: function () {
-            if (this.model.get("SaclAuditTypeFilter").reduce(function (result, itemVal) {
-                return result | itemVal;
-            }, 0) == secureObjectDefaults["SaclAuditTypeFilter"])
-                return "Default";
-            else
-                return "Modified";
+            return (this.saclAuditTypeFilterIsDefault() == true ? "Default" : "Modified");
         },
         saclAuditTypeFilterIsDefault: function () {
             return (this.model.get("SaclAuditTypeFilter").reduce(function (result, itemVal) {
@@ -6724,6 +6723,7 @@ function setupWidgets() {
                                 .then(function (response) {
                                 if (response == _utils__WEBPACK_IMPORTED_MODULE_2__["DialogResponse"].Yes) {
                                     k$soGrdDacl.dataSource.remove(data);
+                                    k$soGrdDacl.dataSource.sync();
                                     setVMEditorHasChangesFlag(true);
                                 }
                             });
@@ -6808,6 +6808,7 @@ function setupWidgets() {
                                 .then(function (response) {
                                 if (response == _utils__WEBPACK_IMPORTED_MODULE_2__["DialogResponse"].Yes) {
                                     k$soGrdSacl.dataSource.remove(data);
+                                    k$soGrdSacl.dataSource.sync();
                                     setVMEditorHasChangesFlag(true);
                                 }
                             });
@@ -7027,6 +7028,25 @@ function setupEventHandlers() {
     $("#soBtnSaclAdd").on('click', function (e) {
         k$soGrdSacl.addRow();
     });
+    _sp__WEBPACK_IMPORTED_MODULE_3__["spGrdDataSource"].bind('change', function (e) {
+        console.log(e.action, e.items);
+        var proceed = false;
+        if (typeof e.action == 'undefined') {
+            proceed = true;
+        }
+        else if (e.action == 'add' || e.action == 'remove') {
+            var impactedItems = e.items;
+            if (impactedItems.filter(function (item) { return !item.IsUser; }).length > 0) {
+                proceed = true;
+            }
+        }
+        if (proceed) {
+            var data = this.data().toJSON();
+            var trustees = data.filter(function (item) { return !item.IsUser; })
+                .map(function (item) { return { "UId": item.UId, "Name": item.Name }; });
+            soTrusteesDataSource.data(trustees);
+        }
+    });
 }
 function enableDisableToolBarButtons(enable) {
     k$soTb.enable($(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COPY"]), enable);
@@ -7052,7 +7072,6 @@ function soLoad() {
     k$soTl.dataSource.read();
 }
 function resizeSplitter() {
-    console.log("In resizeSplitter...");
     var top = 85;
     var bottom = 25;
     var height = $(window).height() - (top + bottom) - 1;
@@ -7508,20 +7527,20 @@ function populateEditor(data) {
     }
 }
 function trusteeDropDownEditor(container, options) {
-    $('<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required"/>')
+    $('<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required" data-required-msg="Trustee is required"/>')
         .appendTo(container)
         .kendoDropDownList({
         dataTextField: "Name",
         dataValueField: "UId",
         valuePrimitive: true,
-        dataSource: trusteesDataSource
+        dataSource: soTrusteesDataSource
     });
     $('<span class="k-invalid-msg" data-for="' + options.field + '"></span>').appendTo(container);
 }
 function getTrusteeName(gridDataItem) {
     if (gridDataItem.TrusteeUId == null)
         return "";
-    var trusteeLookupItem = trusteesDataSource.get(gridDataItem.TrusteeUId);
+    var trusteeLookupItem = soTrusteesDataSource.get(gridDataItem.TrusteeUId);
     if (trusteeLookupItem)
         return kendo.htmlEncode(trusteeLookupItem.Name);
     else
@@ -7809,12 +7828,13 @@ function soTlDrop(e) {
 /*!*******************!*\
   !*** ./src/sp.ts ***!
   \*******************/
-/*! exports provided: trustees, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spSetup, spReset, spShow, spHide, spLoad, spVerifySaveChanges, spGetNameIconClass, spBtnSaveClick, spBtnDiscardClick, spBtnNewClick, spBtnDeleteClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spGrdDataSourceChange */
+/*! exports provided: trustees, spGrdDataSource, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spSetup, spReset, spShow, spHide, spLoad, spVerifySaveChanges, spGetNameIconClass, spBtnSaveClick, spBtnDiscardClick, spBtnNewClick, spBtnDeleteClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spGrdDataSourceChange */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "trustees", function() { return trustees; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spGrdDataSource", function() { return spGrdDataSource; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spMsMemberOfDataSource", function() { return spMsMemberOfDataSource; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spMsMembersDataSource", function() { return spMsMembersDataSource; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spLbMemberOfDataSource", function() { return spLbMemberOfDataSource; });
@@ -7837,8 +7857,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash_es_debounce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash-es/debounce */ "./node_modules/lodash-es/debounce.js");
 /* harmony import */ var _ids__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ids */ "./src/ids.ts");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./src/utils.ts");
-/* harmony import */ var _so__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./so */ "./src/so.ts");
-
 
 
 
@@ -7863,6 +7881,7 @@ var k$spLbMembers = null;
 var k$spTlGroupHierarchy = null;
 var k$spSpltr = null;
 var trustees = [];
+var spGrdDataSource = null;
 var spMsMemberOfDataSource = new kendo.data.DataSource({
     data: [],
     schema: {
@@ -7893,7 +7912,6 @@ var spLbMemberOfDataSource = new kendo.data.DataSource({
     },
     sort: { field: "Name", dir: "asc" },
     push: function (e) {
-        console.log("push", e);
         setVMEditorHasChangesFlag(true);
     }
 });
@@ -7909,7 +7927,6 @@ var spLbMembersDataSource = new kendo.data.DataSource({
         { field: "Name", dir: "asc" }
     ],
     push: function (e) {
-        console.log("push", e);
         setVMEditorHasChangesFlag(true);
     }
 });
@@ -8063,8 +8080,10 @@ function setupEventHandlers() {
             k$spGrd.dataSource.filter({});
         }
     });
+    $(_ids__WEBPACK_IMPORTED_MODULE_2__["SP_BTN_CLEAR_TXT_GRD_FILTER"]).on('click', function (e) {
+        $spTxtGrdFilter.val("").trigger("input").focus();
+    });
     k$spLbMemberOf.wrapper.find(".k-list").on("click", ".k-item .clickable", function (e) {
-        console.log("In MemberOf listbox item click event handler...");
         var item = $(e.target).closest(".k-item");
         var dataItem = k$spLbMemberOf.dataItem(item);
         if (!spMsMemberOfDataSource.get(dataItem.UId)) {
@@ -8073,7 +8092,6 @@ function setupEventHandlers() {
         spLbMemberOfDataSource.pushDestroy(dataItem);
     });
     k$spLbMembers.wrapper.find(".k-list").on("click", ".k-item .clickable", function (e) {
-        console.log("In Members listbox item click event handler...");
         var item = $(e.target).closest(".k-item");
         var dataItem = k$spLbMembers.dataItem(item);
         if (!spMsMembersDataSource.get(dataItem.UId)) {
@@ -8091,6 +8109,7 @@ function setupVariables() {
     k$spLbMembers = $spLbMembers.data("kendoListBox");
     k$spTlGroupHierarchy = $spTlGroupHierarchy.data("kendoTreeList");
     k$spSpltr = $spSpltr.data("kendoSplitter");
+    spGrdDataSource = k$spGrd.dataSource;
 }
 function resizeSplitter() {
     var top = 85;
@@ -8243,6 +8262,8 @@ function populateEditor(data) {
             spMsMembersDataSource.data(data.Data.NotMembers);
             k$spTlGroupHierarchy.dataSource.data(data.Data.GroupHierarchy);
         }
+        k$spMsMemberOf.value([]);
+        k$spMsMembers.value([]);
     }
 }
 function resetEditor(showEditor) {
@@ -8468,7 +8489,6 @@ function spBtnNewClick(e) {
             console.log("-- new");
             var $btn = $("#" + e.id).closest('.k-split-button');
             var popup = $btn.data("kendoPopup");
-            console.log(popup);
             if (popup) {
                 if (popup.visible()) {
                     popup.close();
@@ -8479,11 +8499,9 @@ function spBtnNewClick(e) {
             }
             break;
         case _ids__WEBPACK_IMPORTED_MODULE_2__["SP_BTN_NEW_USER"]:
-            console.log("-- new user");
             newUser();
             break;
         case _ids__WEBPACK_IMPORTED_MODULE_2__["SP_BTN_NEW_GROUP"]:
-            console.log("-- new group");
             newGroup();
             break;
     }
@@ -8619,6 +8637,7 @@ function spBtnMemberOfAddClick(e) {
     var selectedItems = k$spMsMemberOf.dataItems();
     if (selectedItems.length == 0)
         return;
+    k$spMsMemberOf.value([]);
     spLbMemberOfDataSource.pushCreate(selectedItems);
     spMsMemberOfDataSource.pushDestroy(selectedItems);
 }
@@ -8627,14 +8646,11 @@ function spBtnMembersAddClick(e) {
     var selectedItems = k$spMsMembers.dataItems();
     if (selectedItems.length == 0)
         return;
+    k$spMsMembers.value([]);
     spLbMembersDataSource.pushCreate(selectedItems);
     spMsMembersDataSource.pushDestroy(selectedItems);
 }
 function spGrdDataSourceChange(e) {
-    var data = this.data().toJSON();
-    var trustees = data.filter(function (item) { return !item.IsUser; })
-        .map(function (item) { return { "UId": item.UId, "Name": item.Name }; });
-    _so__WEBPACK_IMPORTED_MODULE_4__["trusteesDataSource"].data(trustees);
 }
 
 

@@ -16,6 +16,7 @@ import {
     AjaxResponse,
     AjaxResponseStatus,
 } from "./utils";
+import { spGrdDataSource } from "./sp"
 
 let $soView = $( ID.SO_VIEW );
 let $soTl = $( ID.SO_TREELIST );
@@ -145,7 +146,7 @@ export function soGetInitialData() {
     return dfd.promise();    
 }
 
-export let trusteesDataSource = new kendo.data.DataSource( {
+export let soTrusteesDataSource = new kendo.data.DataSource( {
     data: [],
     schema: {
         model: {
@@ -366,20 +367,6 @@ let soVM = kendo.observable( {
         hasError: false,
         model: new soEditorModel(), // matches the model from the server
         auditTypes: [], // one time set by ajax call. use to display the audit type filter checkboxes
-        //daclAllowInheritTextColor: function () {
-        //    if ( this.model.get( "DaclAllowInherit" ) ) {
-        //        return "";
-        //    } else {
-        //        return "#f00";
-        //    }
-        //},
-        //saclAllowInheritTextColor: function () {
-        //    if ( this.model.get( "SaclAllowInherit" ) ) {
-        //        return "";
-        //    } else {
-        //        return "#f00";
-        //    }
-        //},
         reset: function ( showEditor?: boolean ) {
             if ( showEditor == undefined ) {
                 showEditor = false;
@@ -418,14 +405,7 @@ let soVM = kendo.observable( {
         //    else return "Modified";
         //},
         saclAuditTypeFilterState: function () {
-            // doesn't work when calling saclAuditTypeFilterIsDefault directly. so had to repeat the code here
-            // return ( this.get( "saclAuditTypeFilterIsDefault" ) == true ? "Default" : "Modified" );
-            if ( this.model.get( "SaclAuditTypeFilter" ).reduce( function ( result: any, itemVal: any ) {
-                return result | itemVal;
-            }, 0 ) == secureObjectDefaults["SaclAuditTypeFilter"] )
-                return "Default";
-            else
-                return "Modified";
+            return ( this.saclAuditTypeFilterIsDefault() == true ? "Default" : "Modified" );
         },
         saclAuditTypeFilterIsDefault: function() {
             return (
@@ -540,7 +520,8 @@ function setupWidgets() {
                                 .then( (response: DialogResponse) => {
                                     if ( response == DialogResponse.Yes ) {
                                         // ok
-                                        k$soGrdDacl.dataSource.remove(data);
+                                        k$soGrdDacl.dataSource.remove( data );
+                                        k$soGrdDacl.dataSource.sync()  
                                         setVMEditorHasChangesFlag(true);
                                     }
                                 });
@@ -638,8 +619,9 @@ function setupWidgets() {
                                 .then( ( response: DialogResponse ) => {
                                     if ( response == DialogResponse.Yes ) {
                                         // ok
-                                        k$soGrdSacl.dataSource.remove(data);
-                                        setVMEditorHasChangesFlag(true);
+                                        k$soGrdSacl.dataSource.remove( data );
+                                        k$soGrdSacl.dataSource.sync();
+                                        setVMEditorHasChangesFlag( true );
                                     }
                                 });
                         },
@@ -911,6 +893,32 @@ function setupEventHandlers() {
     $( "#soBtnSaclAdd" ).on( 'click', function ( e ) {
         k$soGrdSacl.addRow();
     } )
+
+    spGrdDataSource.bind( 'change', function ( e: kendo.data.DataSourceChangeEvent ) {
+        console.log( e.action, e.items );
+        let proceed = false;
+        // see if we need to do anything
+        if ( typeof e.action == 'undefined' ) {
+            proceed = true;
+        } else if ( e.action == 'add' || e.action == 'remove' ) {
+            // see if impacted items are group. we are only interested in groups
+            let impactedItems = e.items;
+            if ( impactedItems.filter( ( item: any ) => { return !item.IsUser } ).length > 0 ) {
+                proceed = true;
+            }
+        }
+        if ( proceed ) {
+
+            var data = this.data().toJSON();
+            // take only groups and only UId and Name
+            var trustees = data.filter( ( item: any ) => { return !item.IsUser } )
+                .map( ( item: any ) => { return { "UId": item.UId, "Name": item.Name } } )
+            soTrusteesDataSource.data( trustees );
+            // if delete, check if dacl sacl has a reference to the deleted trustees
+            // what happens if dacl/sacl is in edit mode?
+
+        }
+    })
 }
 
 function enableDisableToolBarButtons( enable: boolean ) {
@@ -936,7 +944,7 @@ export function soLoad() {
     k$soTl.dataSource.read();
 }
 function resizeSplitter() {
-    console.log( "In resizeSplitter..." );
+    //console.log( "In resizeSplitter..." );
     let top = 85; //125; // height occupied above splitter
     let bottom = 25; // height occupied below splitter
     let height = $(window).height() - (top + bottom) - 1; // to stop the body scrollbar from appearing
@@ -1492,13 +1500,13 @@ function populateEditor(data: AjaxResponse) {
 function trusteeDropDownEditor(container: JQuery<HTMLElement>, options: kendo.ui.GridColumnEditorOptions) {
     // TODO: Put explicit type
     //$( '<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required"/>' )
-    $('<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required"/>')
+    $('<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required" data-required-msg="Trustee is required"/>')
         .appendTo(container)
         .kendoDropDownList({
             dataTextField: "Name",
             dataValueField: "UId",
             valuePrimitive: true,
-            dataSource: trusteesDataSource
+            dataSource: soTrusteesDataSource
         });
     $('<span class="k-invalid-msg" data-for="' + options.field + '"></span>').appendTo(container);
 }
@@ -1506,7 +1514,7 @@ function getTrusteeName(gridDataItem: any) {
     // TODO: Put explicit type
     if (gridDataItem.TrusteeUId == null) return "";
 
-    var trusteeLookupItem: any = trusteesDataSource.get( gridDataItem.TrusteeUId );
+    var trusteeLookupItem: any = soTrusteesDataSource.get( gridDataItem.TrusteeUId );
     if ( trusteeLookupItem )
         return kendo.htmlEncode( trusteeLookupItem.Name );
     else
@@ -1762,7 +1770,7 @@ function soTlClick() {
             resetEditor( true );
 
             showProgress();
-            //$.when( trusteesDataSource.read(), getSecureObject( selectedItem.UId ) )
+            //$.when( soTrusteesDataSource.read(), getSecureObject( selectedItem.UId ) )
             //    .done( ( arg1: any, arg2: any ) => {
             //        let data = arg2;
             //        populateEditor( data );

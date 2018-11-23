@@ -80,7 +80,7 @@
                                                                      ag.Add( p => p.Source ).Count();
                                                                  } )
                                                                  .Sort( s => s.Add( "Name" ).Ascending() )
-                                                                 .Events( e => e.Error( "SuplexAdmin.dataSourceError" ).Change( "SuplexAdmin.spGrdDataSourceChange" ) )
+                                                                 .Events( e => e.Error( "SuplexAdmin.dataSourceError" ) )
                                                                  .Model( m => m.Id( r => r.UId ) )
                                                             )
                         )

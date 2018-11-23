@@ -169,8 +169,7 @@ export {
     spMsMemberOfDataSource,
     spMsMembersDataSource,
     spLbMemberOfDataSource,
-    spLbMembersDataSource,
-    spGrdDataSourceChange
+    spLbMembersDataSource
 } from "./sp";
 export {
     soTlDrop,

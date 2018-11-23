@@ -14,7 +14,6 @@ import {
     AjaxResponse,
     AjaxResponseStatus
 } from "./utils";
-//import { soTrusteesDataSource } from "./so"
 
 let $spView = $(ID.SP_VIEW);
 let $spSpltr = $(ID.SP_SPLITTER);
@@ -841,8 +840,11 @@ function processDeleteActionResponse( data: AjaxResponse, gridDataItemToDelete: 
         ds.remove( gridDataItemToDelete );
         setVMSelectedUId( null );
 
-        // reset editor 
-        resetEditor(true);
+        // see if we need to reset editor
+        if ( spVM.get( "editor.visible" ) && spVM.get( "editor.model.UId" ) == gridDataItemToDelete.UId ) {
+            resetEditor( false );
+            clearGridSelection();
+        }
 
         notifySuccess( `${gridDataItemToDelete.IsUser ? 'User' : 'Group' } <b>${gridDataItemToDelete.Name}</b> deleted successfully.` );
         return $
@@ -926,12 +928,3 @@ export function spBtnMembersAddClick( e: MouseEvent ) {
     spMsMembersDataSource.pushDestroy( selectedItems );
 }
 
-export function spGrdDataSourceChange( e: kendo.data.DataSourceChangeEvent ) {
-    // update the trustee datasource
-    //var data = this.data().toJSON();
-    //// take only groups and only UId and Name
-    //var trustees = data.filter( ( item:any ) => { return !item.IsUser } )
-    //    .map( ( item: any ) => { return { "UId": item.UId, "Name": item.Name } } )
-    //soTrusteesDataSource.data( trustees );
-
-}

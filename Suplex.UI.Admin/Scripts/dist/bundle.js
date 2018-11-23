@@ -6097,7 +6097,7 @@ var SO_POPUP_AUDIT_FILTER = "#soPopAuditFilter";
 /*!*********************!*\
   !*** ./src/main.ts ***!
   \*********************/
-/*! exports provided: tbbRemoteRefreshClick, tbbSwitchView, spGetNameIconClass, spBtnNewClick, spBtnDeleteClick, spBtnSaveClick, spBtnDiscardClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spGrdDataSourceChange, soTlDrop, soTbbNewClick, soTbbCopyClick, soTbbDeleteClick, soTbbExpandClick, soTbbCollapseClick, soBtnSaveClick, soBtnDiscardClick */
+/*! exports provided: tbbRemoteRefreshClick, tbbSwitchView, spGetNameIconClass, spBtnNewClick, spBtnDeleteClick, spBtnSaveClick, spBtnDiscardClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, soTlDrop, soTbbNewClick, soTbbCopyClick, soTbbDeleteClick, soTbbExpandClick, soTbbCollapseClick, soBtnSaveClick, soBtnDiscardClick */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6129,8 +6129,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spLbMemberOfDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spLbMemberOfDataSource"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spLbMembersDataSource", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spLbMembersDataSource"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "spGrdDataSourceChange", function() { return _sp__WEBPACK_IMPORTED_MODULE_1__["spGrdDataSourceChange"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "soTlDrop", function() { return _so__WEBPACK_IMPORTED_MODULE_2__["soTlDrop"]; });
 
@@ -7031,20 +7029,32 @@ function setupEventHandlers() {
     _sp__WEBPACK_IMPORTED_MODULE_3__["spGrdDataSource"].bind('change', function (e) {
         console.log(e.action, e.items);
         var proceed = false;
+        var impactedGroups = [];
         if (typeof e.action == 'undefined') {
             proceed = true;
         }
         else if (e.action == 'add' || e.action == 'remove') {
-            var impactedItems = e.items;
-            if (impactedItems.filter(function (item) { return !item.IsUser; }).length > 0) {
+            impactedGroups = e.items.filter(function (item) { return !item.IsUser; });
+            if (impactedGroups.length > 0) {
                 proceed = true;
             }
         }
         if (proceed) {
+            console.log("refreshing trustees");
             var data = this.data().toJSON();
             var trustees = data.filter(function (item) { return !item.IsUser; })
                 .map(function (item) { return { "UId": item.UId, "Name": item.Name }; });
             soTrusteesDataSource.data(trustees);
+            if (e.action == "remove") {
+                if (dacl.length > 0 || sacl.length > 0) {
+                    for (var i = 0, len = impactedGroups.length; i < len; i++) {
+                        dacl = dacl.filter(function (item) { return (item.TrusteeUId != impactedGroups[i].UId); });
+                        sacl = dacl.filter(function (item) { return (item.TrusteeUId != impactedGroups[i].UId); });
+                    }
+                    soDaclDataSource.read();
+                    soSaclDataSource.read();
+                }
+            }
         }
     });
 }
@@ -7828,7 +7838,7 @@ function soTlDrop(e) {
 /*!*******************!*\
   !*** ./src/sp.ts ***!
   \*******************/
-/*! exports provided: trustees, spGrdDataSource, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spSetup, spReset, spShow, spHide, spLoad, spVerifySaveChanges, spGetNameIconClass, spBtnSaveClick, spBtnDiscardClick, spBtnNewClick, spBtnDeleteClick, spBtnMemberOfAddClick, spBtnMembersAddClick, spGrdDataSourceChange */
+/*! exports provided: trustees, spGrdDataSource, spMsMemberOfDataSource, spMsMembersDataSource, spLbMemberOfDataSource, spLbMembersDataSource, spSetup, spReset, spShow, spHide, spLoad, spVerifySaveChanges, spGetNameIconClass, spBtnSaveClick, spBtnDiscardClick, spBtnNewClick, spBtnDeleteClick, spBtnMemberOfAddClick, spBtnMembersAddClick */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7852,7 +7862,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnDeleteClick", function() { return spBtnDeleteClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnMemberOfAddClick", function() { return spBtnMemberOfAddClick; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spBtnMembersAddClick", function() { return spBtnMembersAddClick; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "spGrdDataSourceChange", function() { return spGrdDataSourceChange; });
 /* harmony import */ var lodash_es_differenceBy__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash-es/differenceBy */ "./node_modules/lodash-es/differenceBy.js");
 /* harmony import */ var lodash_es_debounce__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash-es/debounce */ "./node_modules/lodash-es/debounce.js");
 /* harmony import */ var _ids__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ids */ "./src/ids.ts");
@@ -8586,7 +8595,10 @@ function processDeleteActionResponse(data, gridDataItemToDelete) {
         var ds = k$spGrd.dataSource;
         ds.remove(gridDataItemToDelete);
         setVMSelectedUId(null);
-        resetEditor(true);
+        if (spVM.get("editor.visible") && spVM.get("editor.model.UId") == gridDataItemToDelete.UId) {
+            resetEditor(false);
+            clearGridSelection();
+        }
         Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifySuccess"])((gridDataItemToDelete.IsUser ? 'User' : 'Group') + " <b>" + gridDataItemToDelete.Name + "</b> deleted successfully.");
         return $
             .Deferred()
@@ -8649,8 +8661,6 @@ function spBtnMembersAddClick(e) {
     k$spMsMembers.value([]);
     spLbMembersDataSource.pushCreate(selectedItems);
     spMsMembersDataSource.pushDestroy(selectedItems);
-}
-function spGrdDataSourceChange(e) {
 }
 
 

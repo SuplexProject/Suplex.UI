@@ -897,25 +897,41 @@ function setupEventHandlers() {
     spGrdDataSource.bind( 'change', function ( e: kendo.data.DataSourceChangeEvent ) {
         console.log( e.action, e.items );
         let proceed = false;
+        let impactedGroups: any[] = [];
         // see if we need to do anything
         if ( typeof e.action == 'undefined' ) {
             proceed = true;
         } else if ( e.action == 'add' || e.action == 'remove' ) {
             // see if impacted items are group. we are only interested in groups
-            let impactedItems = e.items;
-            if ( impactedItems.filter( ( item: any ) => { return !item.IsUser } ).length > 0 ) {
+            impactedGroups = e.items.filter( ( item: any ) => { return !item.IsUser } )
+            if ( impactedGroups.length > 0 ) {
                 proceed = true;
             }
         }
         if ( proceed ) {
-
+            console.log("refreshing trustees")
             var data = this.data().toJSON();
             // take only groups and only UId and Name
             var trustees = data.filter( ( item: any ) => { return !item.IsUser } )
                 .map( ( item: any ) => { return { "UId": item.UId, "Name": item.Name } } )
             soTrusteesDataSource.data( trustees );
-            // if delete, check if dacl sacl has a reference to the deleted trustees
+
+            // if action is delete, check if dacl sacl has a reference to the deleted trustees
             // what happens if dacl/sacl is in edit mode?
+            if ( e.action == "remove" ) {
+                 
+                if ( dacl.length > 0 || sacl.length > 0 ) {
+                    for ( var i = 0, len = impactedGroups.length; i < len; i++ ) {
+                        // if trustee is referenced in dacl / sacl, delete them
+                        dacl = dacl.filter( ( item: any ) => { return (item.TrusteeUId != impactedGroups[i].UId ) } );
+                        sacl = dacl.filter( ( item: any ) => { return ( item.TrusteeUId != impactedGroups[i].UId ) } );
+                    }
+                    soDaclDataSource.read();
+                    soSaclDataSource.read();
+                    // doesn't look like we need to refresh grid
+                    
+                }
+            }
 
         }
     })

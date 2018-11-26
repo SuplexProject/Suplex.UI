@@ -10,7 +10,6 @@ import {
     notifyError,
     notifySuccess,
     isPowerOfTwo,
-    showAlert,
     dataSourceError,
     DialogResponse,
     AjaxResponse,
@@ -826,21 +825,6 @@ function setupWidgets() {
         })
         .data( "kendoValidator" );
 
-    //$( "#popAuditFilter" ).kendoPopup( {
-    //    anchor: $( "#spnAuditFilter" )
-    //} );
-    //let t = '<input type="checkbox" class="k-checkbox" name="soAuditTypeFilter" id="#: data.Id #" data-type="number" data-bind="checked: editor.model.SaclAuditTypeFilter, value:Id, attr:{id:Id}, events:{change: editor.raiseChange}" /><label class="k-checkbox-label" for="#: data.Id#">#: data.Name # </label>';
-    //$( "#lbAuditFilter" ).kendoListBox( {
-    //    autoBind: false,
-    //    dataTextField: "Name",
-    //    dataValueField: "Id",
-    //    template: t,
-    //    dataSource: {
-    //        transport: {
-    //            read: getActionUrl( "GetAuditTypes", "Admin" )
-    //        }
-    //    }
-    //} ).data( 'kendoListBox' ).dataSource.fetch();
     $soPopAuditFilter.kendoPopup( {
         anchor: $soDdlAuditFilter,
         appendTo: $soPopAuditFilterContainer,
@@ -909,7 +893,7 @@ function setupEventHandlers() {
             }
         }
         if ( proceed ) {
-            console.log("refreshing trustees")
+            //console.log("refreshing trustees")
             var data = this.data().toJSON();
             // take only groups and only UId and Name
             var trustees = data.filter( ( item: any ) => { return !item.IsUser } )
@@ -1192,29 +1176,28 @@ export function soBtnSaveClick() {
     }
 }
 function validateEditor() {
-    console.log("In validateEditor...");
-    let ok;
+    console.log("In validateEditor...");    
+    let msg = "";
 
     // make sure the 2 grids have exited edit mode
-    if (k$soGrdDacl.table.find("tr.k-grid-edit-row").length > 0 || k$soGrdSacl.table.find("tr.k-grid-edit-row").length > 0) {
-        showAlert("Alert", "<p style='text-align:center;width:400px;'>Complete the 'Permission' and 'Audit' sections first before you save.</p>");
-        ok = false;
-    } else {
-        ok = validator.validate();
-        if (!ok) {
-            let errors = validator.errors();
-            let msg = "";
-            $(errors).each(function() {
-                msg = this + "<br/>";
-            });
-            if (msg.length > 0) {
-                $soEditorError.html(msg);
-            }
-            //( soVM as any ).editor.setError( true );
-            setVMEditorHasErrorFlag( true );
-        }
+    if ( k$soGrdDacl.table.find("tr.k-grid-edit-row").length > 0 ) {
+        msg += "Complete the 'Permission' section<br/>";
+    } 
+    if ( k$soGrdSacl.table.find( "tr.k-grid-edit-row" ).length > 0 ) {
+        msg += "Complete the 'Audit' section<br/>";
     }
-    return ok;
+    if ( !validator.validate() ) {
+        let errors = validator.errors();
+        $( errors ).each( function () {
+            msg += this + "<br/>";
+        } );
+    }
+    if ( msg.length > 0 ) {
+        $soEditorError.html( msg );
+        setVMEditorHasErrorFlag( true );
+    }
+
+    return ( msg.length == 0 ? true : false );
 }
 
 function saveSecureObject() {
@@ -1516,7 +1499,7 @@ function populateEditor(data: AjaxResponse) {
 function trusteeDropDownEditor(container: JQuery<HTMLElement>, options: kendo.ui.GridColumnEditorOptions) {
     // TODO: Put explicit type
     //$( '<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required"/>' )
-    $('<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required" data-required-msg="Trustee is required"/>')
+    $('<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required" data-required-msg="Group is required"/>')
         .appendTo(container)
         .kendoDropDownList({
             dataTextField: "Name",

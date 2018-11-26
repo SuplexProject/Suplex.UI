@@ -449,9 +449,11 @@ function populateEditor( data: AjaxResponse ) : void {
             membersOriginal = [];
             memberOfOriginal = JSON.parse( JSON.stringify( data.Data.MemberOf)); // clone
             k$spLbMemberOf.dataSource.data( data.Data.MemberOf );
+            k$spLbMembers.dataSource.data( [] );
+            k$spMsMemberOf.value( [] )
+            k$spMsMembers.value( [] )
             spMsMemberOfDataSource.data( data.Data.NotMemberOf );
             spMsMembersDataSource.data( [] );
-            spLbMemberOfDataSource.data( data.Data.MemberOf );
             k$spTlGroupHierarchy.dataSource.data( [] );
         } else if (data.Data.Group) {
             ( spVM as any ).editor.set( "model", data.Data.Group);
@@ -459,12 +461,12 @@ function populateEditor( data: AjaxResponse ) : void {
             membersOriginal = JSON.parse( JSON.stringify( data.Data.Members ) ); // clone
             k$spLbMemberOf.dataSource.data( data.Data.MemberOf );
             k$spLbMembers.dataSource.data( data.Data.Members );
+            k$spMsMemberOf.value( [] )
+            k$spMsMembers.value( [] )
             spMsMemberOfDataSource.data( data.Data.NotMemberOf );
             spMsMembersDataSource.data( data.Data.NotMembers );
             k$spTlGroupHierarchy.dataSource.data( data.Data.GroupHierarchy);
         }
-        k$spMsMemberOf.value( [] )
-        k$spMsMembers.value( [] )
     }
 }
 function resetEditor(showEditor: boolean) : void {
@@ -503,9 +505,6 @@ export function spBtnSaveClick() : void {
                 .then( processSaveActionResponse )
                 .always( hideProgress );
         }
-    }
-    else {
-        notifyError( "Please correct the error(s) on the form first." );
     }
 
 }
@@ -625,20 +624,26 @@ function saveGroup() : JQueryPromise<AjaxResponse> {
 }
 
 function validateEditor() : boolean {
-    console.log("In validateEditor...");
-    let ok = validator.validate();
-    if (!ok) {
-        let errors = validator.errors();
-        let msg = "";
-        $(errors).each(function() {
-            msg = this + "<br/>";
-        });
-        if (msg.length > 0) {
-            $spEditorError.html(msg);
-        }
-        setVMEditorHasErrorFlag(true);
+    console.log( "In validateEditor..." );
+    let msg: string = "";
+    if ( k$spMsMemberOf.value().length != 0 ) {
+        msg += "Complete the 'Member Of' section<br/>";
     }
-    return ok;
+    if ( ( spVM as any ).editor.isLocalGroup() && k$spMsMembers.value().length != 0 ) {
+        msg += "Complete the 'Members' section<br/>";
+    }
+    if ( !validator.validate() ) {
+        let errors = validator.errors();
+        $( errors ).each( function () {
+            msg += this + "<br/>";
+        } );
+    }
+    if ( msg.length > 0 ) {
+        $spEditorError.html( msg );
+        setVMEditorHasErrorFlag( true );
+    }  
+    
+    return ( msg.length == 0 ? true : false );
 }
 function selectGridItem(uId: string) : void {
     if (!uId) return;

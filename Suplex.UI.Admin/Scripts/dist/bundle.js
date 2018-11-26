@@ -7275,26 +7275,24 @@ function soBtnSaveClick() {
 }
 function validateEditor() {
     console.log("In validateEditor...");
-    var ok;
-    if (k$soGrdDacl.table.find("tr.k-grid-edit-row").length > 0 || k$soGrdSacl.table.find("tr.k-grid-edit-row").length > 0) {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_2__["showAlert"])("Alert", "<p style='text-align:center;width:400px;'>Complete the 'Permission' and 'Audit' sections first before you save.</p>");
-        ok = false;
+    var msg = "";
+    if (k$soGrdDacl.table.find("tr.k-grid-edit-row").length > 0) {
+        msg += "Complete the 'Permission' section<br/>";
     }
-    else {
-        ok = validator.validate();
-        if (!ok) {
-            var errors = validator.errors();
-            var msg_1 = "";
-            $(errors).each(function () {
-                msg_1 = this + "<br/>";
-            });
-            if (msg_1.length > 0) {
-                $soEditorError.html(msg_1);
-            }
-            setVMEditorHasErrorFlag(true);
-        }
+    if (k$soGrdSacl.table.find("tr.k-grid-edit-row").length > 0) {
+        msg += "Complete the 'Audit' section<br/>";
     }
-    return ok;
+    if (!validator.validate()) {
+        var errors = validator.errors();
+        $(errors).each(function () {
+            msg += this + "<br/>";
+        });
+    }
+    if (msg.length > 0) {
+        $soEditorError.html(msg);
+        setVMEditorHasErrorFlag(true);
+    }
+    return (msg.length == 0 ? true : false);
 }
 function saveSecureObject() {
     console.log("In saveSecureObject...");
@@ -7391,12 +7389,12 @@ function processSaveActionResponse(data) {
     else {
         if (data.ValidationErrors) {
             if ($soEditorError) {
-                var msg_2 = "";
+                var msg_1 = "";
                 $(data.ValidationErrors).each(function () {
-                    msg_2 += this + "<br/>";
+                    msg_1 += this + "<br/>";
                 });
-                if (msg_2.length > 0) {
-                    $soEditorError.html(msg_2);
+                if (msg_1.length > 0) {
+                    $soEditorError.html(msg_1);
                 }
             }
             setVMEditorHasErrorFlag(true);
@@ -8256,9 +8254,11 @@ function populateEditor(data) {
             membersOriginal = [];
             memberOfOriginal = JSON.parse(JSON.stringify(data.Data.MemberOf));
             k$spLbMemberOf.dataSource.data(data.Data.MemberOf);
+            k$spLbMembers.dataSource.data([]);
+            k$spMsMemberOf.value([]);
+            k$spMsMembers.value([]);
             spMsMemberOfDataSource.data(data.Data.NotMemberOf);
             spMsMembersDataSource.data([]);
-            spLbMemberOfDataSource.data(data.Data.MemberOf);
             k$spTlGroupHierarchy.dataSource.data([]);
         }
         else if (data.Data.Group) {
@@ -8267,12 +8267,12 @@ function populateEditor(data) {
             membersOriginal = JSON.parse(JSON.stringify(data.Data.Members));
             k$spLbMemberOf.dataSource.data(data.Data.MemberOf);
             k$spLbMembers.dataSource.data(data.Data.Members);
+            k$spMsMemberOf.value([]);
+            k$spMsMembers.value([]);
             spMsMemberOfDataSource.data(data.Data.NotMemberOf);
             spMsMembersDataSource.data(data.Data.NotMembers);
             k$spTlGroupHierarchy.dataSource.data(data.Data.GroupHierarchy);
         }
-        k$spMsMemberOf.value([]);
-        k$spMsMembers.value([]);
     }
 }
 function resetEditor(showEditor) {
@@ -8308,9 +8308,6 @@ function spBtnSaveClick() {
                 .then(processSaveActionResponse)
                 .always(_utils__WEBPACK_IMPORTED_MODULE_3__["hideProgress"]);
         }
-    }
-    else {
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["notifyError"])("Please correct the error(s) on the form first.");
     }
 }
 function processSaveActionResponse(data) {
@@ -8418,19 +8415,24 @@ function saveGroup() {
 }
 function validateEditor() {
     console.log("In validateEditor...");
-    var ok = validator.validate();
-    if (!ok) {
+    var msg = "";
+    if (k$spMsMemberOf.value().length != 0) {
+        msg += "Complete the 'Member Of' section<br/>";
+    }
+    if (spVM.editor.isLocalGroup() && k$spMsMembers.value().length != 0) {
+        msg += "Complete the 'Members' section<br/>";
+    }
+    if (!validator.validate()) {
         var errors = validator.errors();
-        var msg_2 = "";
         $(errors).each(function () {
-            msg_2 = this + "<br/>";
+            msg += this + "<br/>";
         });
-        if (msg_2.length > 0) {
-            $spEditorError.html(msg_2);
-        }
+    }
+    if (msg.length > 0) {
+        $spEditorError.html(msg);
         setVMEditorHasErrorFlag(true);
     }
-    return ok;
+    return (msg.length == 0 ? true : false);
 }
 function selectGridItem(uId) {
     if (!uId)

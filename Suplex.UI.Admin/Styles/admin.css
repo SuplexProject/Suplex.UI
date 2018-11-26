@@ -217,10 +217,24 @@ ul li .k-checkbox-label {
 #soGrdSacl.k-grid tbody .k-grid-customdelete .k-icon {
     margin: 0;
 }
-#soSecurityInheritance .formElement .formLabel {
+/* these 2 def will make sure that the validation message is not 'hidden'. It's not really but you need to scroll to see it */
+/* happens when it is the only row in the grid */
+#soGrdDacl .k-tooltip-validation,
+#soGrdSacl .k-tooltip-validation {
+    margin-top: 0 !important;
+    display: block;
+    position: static;
+    padding: 0;
+}
+#soGrdDacl .k-callout,
+#soGrdSacl .k-callout {
+    display: none;
+}
+
+/*#soSecurityInheritance .formElement .formLabel {
     width: 300px;
     text-align: left;
-}
+}*/
 #soTl th:nth-child(n+2),
 #soTl td:nth-child(n+2),
 #soGrdDacl th:nth-child(n+4):nth-child(-n+5),
@@ -239,10 +253,10 @@ ul li .k-checkbox-label {
 }
 
 /* TO DO: check if this is stll needed */
-#spView {
-    position: relative; /* required for kendo ui progress to work */
-}
-
+/* required for kendo ui progress to work */
+/*#spView {
+    position: relative; 
+}*/
 
 /* == security principals grid == */
 #spGrd .k-dirty {

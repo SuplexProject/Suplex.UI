@@ -6231,29 +6231,26 @@ function tbbRemoteRefreshClick() {
             return Object(_so__WEBPACK_IMPORTED_MODULE_2__["soVerifySaveChanges"])();
         }
         else {
-            return false;
+            Object(_so__WEBPACK_IMPORTED_MODULE_2__["soHide"])();
+            Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spShow"])();
+            return $.Deferred().reject().promise();
         }
     })
         .then(function (proceed) {
         if (proceed) {
-            isConnected()
-                .then(function () {
-                Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spReset"])();
-                Object(_so__WEBPACK_IMPORTED_MODULE_2__["soReset"])();
-                Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spLoad"])();
-                Object(_so__WEBPACK_IMPORTED_MODULE_2__["soLoad"])();
-                if ($tbbShowSecureObjects.hasClass("k-state-disabled") && $tbbShowSecurityPrincipals.hasClass("k-state-disabled")) {
-                    k$tbMain.enable($tbbShowSecureObjects, true);
-                    k$tbMain.enable($tbbShowSecurityPrincipals, true);
-                    $(_ids__WEBPACK_IMPORTED_MODULE_0__["TBB_SHOW_SECURE_OBJECTS"]).click();
-                }
-            })
-                .fail(function () {
-                k$tbMain.enable($tbbShowSecureObjects, false);
-                k$tbMain.enable($tbbShowSecurityPrincipals, false);
-                Object(_so__WEBPACK_IMPORTED_MODULE_2__["soHide"])();
-                Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spHide"])();
-            });
+            Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spReset"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_2__["soReset"])();
+            Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spLoad"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_2__["soLoad"])();
+            if ($tbbShowSecureObjects.hasClass("k-state-disabled") && $tbbShowSecurityPrincipals.hasClass("k-state-disabled")) {
+                k$tbMain.enable($tbbShowSecureObjects, true);
+                k$tbMain.enable($tbbShowSecurityPrincipals, true);
+                $(_ids__WEBPACK_IMPORTED_MODULE_0__["TBB_SHOW_SECURE_OBJECTS"]).click();
+            }
+        }
+        else {
+            Object(_sp__WEBPACK_IMPORTED_MODULE_1__["spHide"])();
+            Object(_so__WEBPACK_IMPORTED_MODULE_2__["soShow"])();
         }
     });
 }
@@ -6444,20 +6441,18 @@ var soDaclDataSource = new kendo.data.DataSource({
                 TrusteeUId: {
                     type: "string",
                     validation: {
-                        required: true,
+                        trusteevalidation: validateTrustee
                     },
                 },
                 RightType: {
                     type: "string",
                     validation: {
-                        required: true,
                         righttypevalidation: validateRightType,
                     },
                 },
                 Right: {
                     defaultValue: [],
                     validation: {
-                        required: true,
                         rightvalidation: validateRight,
                     },
                 },
@@ -6514,13 +6509,12 @@ var soSaclDataSource = new kendo.data.DataSource({
                 TrusteeUId: {
                     type: "string",
                     validation: {
-                        required: true,
+                        trusteevalidation: validateTrustee
                     },
                 },
                 RightType: {
                     type: "string",
                     validation: {
-                        required: true,
                         righttypevalidation: validateRightType,
                     },
                 },
@@ -7027,7 +7021,6 @@ function setupEventHandlers() {
         k$soGrdSacl.addRow();
     });
     _sp__WEBPACK_IMPORTED_MODULE_3__["spGrdDataSource"].bind('change', function (e) {
-        console.log(e.action, e.items);
         var proceed = false;
         var impactedGroups = [];
         if (typeof e.action == 'undefined') {
@@ -7040,7 +7033,6 @@ function setupEventHandlers() {
             }
         }
         if (proceed) {
-            console.log("refreshing trustees");
             var data = this.data().toJSON();
             var trustees = data.filter(function (item) { return !item.IsUser; })
                 .map(function (item) { return { "UId": item.UId, "Name": item.Name }; });
@@ -7065,9 +7057,10 @@ function enableDisableToolBarButtons(enable) {
     k$soTb.enable($(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COLLAPSE_NODE"]), enable);
 }
 function soShow() {
-    if (!soVM.get("visible"))
+    if (!soVM.get("visible")) {
         soVM.set("visible", true);
-    k$soSpltr.resize(true);
+        k$soSpltr.resize(true);
+    }
 }
 function soHide() {
     if (soVM.get("visible"))
@@ -7276,17 +7269,17 @@ function soBtnSaveClick() {
 function validateEditor() {
     console.log("In validateEditor...");
     var msg = "";
-    if (k$soGrdDacl.table.find("tr.k-grid-edit-row").length > 0) {
-        msg += "Complete the 'Permission' section<br/>";
-    }
-    if (k$soGrdSacl.table.find("tr.k-grid-edit-row").length > 0) {
-        msg += "Complete the 'Audit' section<br/>";
-    }
     if (!validator.validate()) {
         var errors = validator.errors();
         $(errors).each(function () {
             msg += this + "<br/>";
         });
+    }
+    if (k$soGrdDacl.table.find("tr.k-grid-edit-row").length > 0) {
+        msg += "Complete the 'Permission' section<br/>";
+    }
+    if (k$soGrdSacl.table.find("tr.k-grid-edit-row").length > 0) {
+        msg += "Complete the 'Audit' section<br/>";
     }
     if (msg.length > 0) {
         $soEditorError.html(msg);
@@ -7535,7 +7528,7 @@ function populateEditor(data) {
     }
 }
 function trusteeDropDownEditor(container, options) {
-    $('<input name="' + options.field + '" data-bind="value:' + options.field + '" required="required" data-required-msg="Trustee is required"/>')
+    $('<input name="' + options.field + '" data-bind="value:' + options.field + '" />')
         .appendTo(container)
         .kendoDropDownList({
         dataTextField: "Name",
@@ -7567,7 +7560,7 @@ function boolEditor(container, options) {
 }
 function rightTypeDropDownListEditor(container, options) {
     console.log("In rightTypeDropDownListEditor...");
-    $('<input data-bind="value:' + options.field + '" name="' + options.field + '" required="required" />')
+    $('<input data-bind="value:' + options.field + '" name="' + options.field + '" />')
         .appendTo(container)
         .kendoDropDownList({
         dataSource: rightTypes,
@@ -7658,10 +7651,19 @@ function getRightAsString(dataItem) {
     }
     return rightArr.join(", ");
 }
+function validateTrustee(input) {
+    if (input.is('[name="TrusteeUId"]')) {
+        if (input.val() == '') {
+            input.attr("data-trusteevalidation-msg", "Group is required.");
+            return false;
+        }
+    }
+    return true;
+}
 function validateRight(input) {
     if (input.is('[name="Right"]')) {
         if (input.closest("td").find("input[type=checkbox]:checked").length == 0) {
-            input.attr("data-rightvalidation-msg", "Select at least 1 right");
+            input.attr("data-rightvalidation-msg", "Select at least 1 right.");
             return false;
         }
         else {
@@ -7672,6 +7674,11 @@ function validateRight(input) {
 }
 function validateRightType(input) {
     if (input.is('[name="RightType"]')) {
+        if (input.val() == '') {
+            input.attr("data-righttypevalidation-msg", "Right Type is required.");
+            return false;
+        }
+        ;
         var row = input.closest("tr");
         var grid = row.closest("[data-role=grid]").data("kendoGrid");
         var dataItem = grid.dataItem(row);
@@ -8132,9 +8139,10 @@ function spReset() {
     k$spGrd.dataSource.data([]);
 }
 function spShow() {
-    if (!spVM.get("visible"))
+    if (!spVM.get("visible")) {
         spVM.set("visible", true);
-    k$spSpltr.resize();
+        k$spSpltr.resize();
+    }
 }
 function spHide() {
     if (spVM.get("visible"))

@@ -21,7 +21,7 @@ $.when( showProgress() )
     .always( hideProgress );
 
 function init() {
-   
+
     setupWidgets();
     setupVariables();
     setupEventHandlers();
@@ -30,8 +30,8 @@ function init() {
     soSetup();
 
     // turn off autocomplete & autocorrect
-    $("input").attr("autocomplete", "off");
-    $("input").attr("autocorrect", "off");
+    $( "input" ).attr( "autocomplete", "off" );
+    $( "input" ).attr( "autocorrect", "off" );
 
     // if no connection, hide both views, disable both buttons 
     isConnected()
@@ -49,7 +49,7 @@ function init() {
             k$tbMain.enable( $tbbShowSecurityPrincipals, false );
             soHide();
             spHide();
-        })
+        } )
 }
 
 function isConnected(): JQueryPromise<void> {
@@ -74,7 +74,7 @@ function isConnected(): JQueryPromise<void> {
 function setupWidgets() {
 }
 
-function setupVariables() {    
+function setupVariables() {
     k$tbMain = $tbMain.data( "kendoToolBar" );
     $tbbShowSecureObjects = $( ID.TBB_SHOW_SECURE_OBJECTS );
     $tbbShowSecurityPrincipals = $( ID.TBB_SHOW_SECURITY_PRINCIPALS );
@@ -82,16 +82,16 @@ function setupVariables() {
 }
 
 function setupEventHandlers() {
-    $(".js-accordion .k-link").click(function() {
+    $( ".js-accordion .k-link" ).click( function () {
         $( this )
             .closest( '.js-accordion' )
             .next()
             .toggle();
         //$( this ).find( "span:first-child" ).toggleClass( "k-i-arrow-chevron-up k-i-arrow-chevron-down" )
-        $(this)
-            .find("span.k-i-arrow-chevron-up, span.k-i-arrow-chevron-down")
-            .toggleClass("k-i-arrow-chevron-up k-i-arrow-chevron-down");
-    });
+        $( this )
+            .find( "span.k-i-arrow-chevron-up, span.k-i-arrow-chevron-down" )
+            .toggleClass( "k-i-arrow-chevron-up k-i-arrow-chevron-down" );
+    } );
 }
 
 function tbbRemoteRefreshClick() {
@@ -102,38 +102,34 @@ function tbbRemoteRefreshClick() {
                 return soVerifySaveChanges();
             }
             else {
-                return false;
+                soHide();
+                spShow();
+                return $.Deferred().reject().promise();
             }
         } )
         .then( ( proceed: boolean ) => {
             if ( proceed ) {
-                // test if there is a connection first
-                isConnected()
-                    .then( () => {
-                        spReset();
-                        soReset();
-                        spLoad();
-                        soLoad();
-                        if ( $tbbShowSecureObjects.hasClass( "k-state-disabled" ) && $tbbShowSecurityPrincipals.hasClass( "k-state-disabled" ) ) {
-                            k$tbMain.enable( $tbbShowSecureObjects, true );
-                            k$tbMain.enable( $tbbShowSecurityPrincipals, true );
-                            // default to secure object view
-                            $( ID.TBB_SHOW_SECURE_OBJECTS ).click();
-                        }
-                    } )
-                    .fail( () => {
-                        // hide both views, disable buttons
-                        k$tbMain.enable( $tbbShowSecureObjects, false );
-                        k$tbMain.enable( $tbbShowSecurityPrincipals, false );
-                        soHide();
-                        spHide();
-                    } )
+                spReset();
+                soReset();
+                spLoad();
+                soLoad();
+                if ( $tbbShowSecureObjects.hasClass( "k-state-disabled" ) && $tbbShowSecurityPrincipals.hasClass( "k-state-disabled" ) ) {
+                    k$tbMain.enable( $tbbShowSecureObjects, true );
+                    k$tbMain.enable( $tbbShowSecurityPrincipals, true );
+                    // default to secure object view
+                    $( ID.TBB_SHOW_SECURE_OBJECTS ).click();
+                }
+            }
+            else {
+                spHide();
+                soShow();
+                //return false;
             }
         } )
 }
 
-function tbbSwitchView(e: any) {
-    switch ("#" + e.id) {
+function tbbSwitchView( e: any ) {
+    switch ( "#" + e.id ) {
         case ID.TBB_SHOW_SECURITY_PRINCIPALS:
             soHide();
             spShow();

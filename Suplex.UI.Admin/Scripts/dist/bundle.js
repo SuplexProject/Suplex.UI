@@ -7020,6 +7020,10 @@ function setupEventHandlers() {
     $("#soBtnSaclAdd").on('click', function (e) {
         k$soGrdSacl.addRow();
     });
+    $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_DACL"] + "," + _ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_SACL"]).on('mouseenter', '.k-grid-edit', { title: "Edit" }, setCommandButtonTitle);
+    $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_DACL"] + "," + _ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_SACL"]).on('mouseenter', '.k-grid-customdelete', { title: "Delete" }, setCommandButtonTitle);
+    $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_DACL"] + "," + _ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_SACL"]).on('mouseenter', '.k-grid-cancel', { title: "Cancel" }, setCommandButtonTitle);
+    $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_DACL"] + "," + _ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_SACL"]).on('mouseenter', '.k-grid-update', { title: "Update" }, setCommandButtonTitle);
     _sp__WEBPACK_IMPORTED_MODULE_3__["spGrdDataSource"].bind('change', function (e) {
         var proceed = false;
         var impactedGroups = [];
@@ -7049,6 +7053,11 @@ function setupEventHandlers() {
             }
         }
     });
+}
+function setCommandButtonTitle(e) {
+    var btn = e.target;
+    if (btn.title != e.data.title)
+        btn.title = e.data.title;
 }
 function enableDisableToolBarButtons(enable) {
     k$soTb.enable($(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COPY"]), enable);
@@ -7754,7 +7763,6 @@ var soTlModel = kendo.data.TreeListModel.define({
     },
 });
 function soTlClick() {
-    console.log("In soTlClick...");
     var selectedItem = k$soTl.dataItem(k$soTl.select());
     console.log(selectedItem);
     if (!selectedItem) {

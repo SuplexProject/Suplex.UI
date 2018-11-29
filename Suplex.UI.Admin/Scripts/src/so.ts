@@ -881,6 +881,19 @@ function setupEventHandlers() {
         k$soGrdSacl.addRow();
     } )
 
+    // binding to cancel event doesn't work - at that point, the edit and delete buttons are not present yet
+    //$( ID.SO_GRD_DACL ).data( 'kendoGrid' ).bind( "dataBound", setEditDeleteCommandButtonToolTip );
+    //$( ID.SO_GRD_DACL ).data( 'kendoGrid' ).bind( "cancel", setEditDeleteCommandButtonToolTip );
+    //$( ID.SO_GRD_DACL ).data( 'kendoGrid' ).bind( "edit", setUpdateCancelCommandButtonToolTip );
+    //$( ID.SO_GRD_SACL ).data( 'kendoGrid' ).bind( "dataBound", setEditDeleteCommandButtonToolTip );
+    //$( ID.SO_GRD_SACL ).data( 'kendoGrid' ).bind( "cancel", setEditDeleteCommandButtonToolTip );
+    //$( ID.SO_GRD_SACL ).data( 'kendoGrid' ).bind( "edit", setUpdateCancelCommandButtonToolTip );
+
+    $( ID.SO_GRD_DACL + "," + ID.SO_GRD_SACL ).on( 'mouseenter', '.k-grid-edit', { title: "Edit" }, setCommandButtonTitle );
+    $( ID.SO_GRD_DACL + "," + ID.SO_GRD_SACL ).on( 'mouseenter', '.k-grid-customdelete', { title: "Delete" }, setCommandButtonTitle );
+    $( ID.SO_GRD_DACL + "," + ID.SO_GRD_SACL ).on( 'mouseenter', '.k-grid-cancel', { title: "Cancel" }, setCommandButtonTitle );
+    $( ID.SO_GRD_DACL + "," + ID.SO_GRD_SACL ).on( 'mouseenter', '.k-grid-update', { title: "Update" }, setCommandButtonTitle );
+
     spGrdDataSource.bind( 'change', function ( e: kendo.data.DataSourceChangeEvent ) {
         //console.log( e.action, e.items );
         let proceed = false;
@@ -924,6 +937,27 @@ function setupEventHandlers() {
     } )
 }
 
+function setCommandButtonTitle( e: JQueryMouseEventObject ) {
+    let btn = <HTMLElement> e.target;
+    if ( btn.title != e.data.title )
+        btn.title = e.data.title;
+}
+// kendo.ui.GridCancelEvent definition is wrong!
+//function setEditDeleteCommandButtonToolTip( e: kendo.ui.GridDataBoundEvent | kendo.ui.GridCancelEvent ) {
+//function setEditDeleteCommandButtonToolTip( e: any ) {
+//    if ( typeof e.container == 'undefined' ) {
+//        e.sender.element.find( ".k-grid-edit" ).prop( "title", "Edit" );
+//        e.sender.element.find( ".k-grid-customdelete" ).prop( "title", "Delete" );
+//    }
+//    else {
+//        e.container.find( ".k-grid-edit" ).prop( "title", "Edit" );
+//        e.container.find( ".k-grid-customdelete" ).prop( "title", "Delete" );
+//    }
+//}
+//function setUpdateCancelCommandButtonToolTip( e: kendo.ui.GridEditEvent ) {
+//    e.container.find( ".k-grid-update" ).prop( "title", "Update" );
+//    e.container.find( ".k-grid-cancel" ).prop( "title", "Cancel" );
+//}
 function enableDisableToolBarButtons( enable: boolean ) {
     k$soTb.enable( $( ID.SO_TBB_COPY ), enable );
     k$soTb.enable( $( ID.SO_TBB_NEW_CHILD ), enable );
@@ -1771,7 +1805,7 @@ let soTlModel = kendo.data.TreeListModel.define( {
 } );
 
 function soTlClick() {
-    console.log( "In soTlClick..." );
+    //console.log( "In soTlClick..." );
     let selectedItem: any = k$soTl.dataItem( k$soTl.select() ); // TODO: Put explicit type
     console.log( selectedItem );
 

@@ -41,7 +41,7 @@
     </div>
     <div class="s-nav-menu-inner">
         <ul class="s-nav-menu-list">
-            @foreach (var menuItem in Suplex.UI.WebApplication.Menu.Items)
+            @foreach( var menuItem in Suplex.UI.WebApplication.Menu.Items )
             {
                 <li>
                     <a href="@menuItem.Url">
@@ -54,6 +54,6 @@
     <script src="~/js/webapp.min.js"></script>
     <script src="~/js/jquery.ba-throttle-debounce.min.js"></script>
 
-    @RenderSection("Scripts", false)
+    @RenderSection( "Scripts", false )
 </body>
 </html>

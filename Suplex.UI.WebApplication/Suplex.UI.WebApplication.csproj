@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>Suplex.UI.WebApplication</AssemblyName>
+    <!-- 
+      the next 2 lines are really important for embedded resource to work
+      https://github.com/dotnet/core-setup/issues/2113#issuecomment-335917500 
+    -->
+    <PreserveCompilationContext>true</PreserveCompilationContext>
+    <MvcRazorExcludeRefAssembliesFromPublish>false</MvcRazorExcludeRefAssembliesFromPublish>
   </PropertyGroup>
 
   <ItemGroup>

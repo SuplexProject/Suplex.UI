@@ -22,8 +22,8 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Suplex.Security.Core" Version="1.0.18327" />
-    <PackageReference Include="Suplex.Security.WebApi.HttpClient" Version="1.0.18303" />
+    <PackageReference Include="Suplex.Security.Core" Version="1.0.18355" />
+    <PackageReference Include="Suplex.Security.WebApi.HttpClient" Version="1.0.19001" />
     <PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2018.2.516" />
     <!--<PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2018.1.221" />-->
   </ItemGroup>

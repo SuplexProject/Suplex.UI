@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Html
 @using Microsoft.Extensions.FileProviders
 @using Kendo.Mvc.TagHelpers
+@addTagHelper *, Kendo.Mvc
 @{
     ViewBag.Title = "Admin";
 }
@@ -21,7 +22,7 @@
 </kendo-toolbar>
 
 <div id="spView" data-bind="visible: visible">
-   
+
     @*<div id="spTb" class="k-block" style="padding: 4px 0;">
             <input class="k-textbox" id="spTxtGrdFilter1" placeholder="Filter" />
             @(Html.Kendo().Button().Name("spBtnNewUser").HtmlAttributes(new { type = "button" }).SpriteCssClass("icon-user").Content("New User").Events(e => e.Click("SUPLEXUI.spBtnNewUserClick")))
@@ -38,7 +39,7 @@
                         <div>
                             <kendo-toolbar id="spTb">
                                 <toolbar-items>
-                                    
+
                                     <item template="<span class='k-textbox k-space-right' style='width:200px;'><input type='text' id='spTxtGrdFilter' placeholder='Filter'/><span id='spBtnClearTxtGrdFilter' class='k-icon k-i-close-outline' title='Clear'></span>" overflow="ShowInOverflowPopup.Never" />
                                     <item type="CommandType.SplitButton" id="spBtnNew" text="New" title="New User or Group" click="SuplexAdmin.spBtnNewClick" overflow="ShowInOverflowPopup.Never">
                                         <menu-buttons>
@@ -56,33 +57,33 @@
                     <div>
 
                         @(Html.Kendo().Grid<SecurityPrincipalGridVM>()
-                                                            .Name( "spGrd" )
-                                                            .AutoBind( false )
-                                                            .Selectable( s => s.Mode( GridSelectionMode.Single ).Type( GridSelectionType.Row ) )
-                                                            .Filterable( f => f.Enabled( true ) )
-                                                            .Columns( columns =>
-                                                             {
-                                                                 columns.Bound( u => u.Name ).Width( 120 ).ClientTemplate( "#=spNameTemplate(data)#" );
-                                                                 columns.Bound( u => u.Description );
-                                                                 columns.Bound( u => u.IsEnabled ).Title( "Enabled" ).ClientTemplate( "<input id='1#=Name#' type='checkbox' class='k-checkbox' #: IsEnabled ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=Name#' />" );
-                                                                 columns.Bound( u => u.Source ).ClientGroupHeaderTemplate( "#= value #: #= count #" ).Hidden();
-                                                             } )
-                                                            .DataSource( ds => ds
-                                                                 .Ajax()
-                                                                 .ServerOperation( false )     //Paging, sorting, filtering, and grouping will be done client-side
-                                                                 .Read( read => read.Action( "GetSecurityPrincipals", "Admin" ).Type( HttpVerbs.Get ) )
-                                                                 .Group( groups =>
-                                                                  {
-                                                                     groups.AddDescending( u => u.Source );
-                                                                 } )
-                                                                 .Aggregates( ag =>
-                                                                  {
-                                                                     ag.Add( p => p.Source ).Count();
-                                                                 } )
-                                                                 .Sort( s => s.Add( "Name" ).Ascending() )
-                                                                 .Events( e => e.Error( "SuplexAdmin.dataSourceError" ) )
-                                                                 .Model( m => m.Id( r => r.UId ) )
-                                                            )
+                                                                            .Name( "spGrd" )
+                                                                            .AutoBind( false )
+                                                                            .Selectable( s => s.Mode( GridSelectionMode.Single ).Type( GridSelectionType.Row ) )
+                                                                            .Filterable( f => f.Enabled( true ) )
+                                                                            .Columns( columns =>
+                                                                             {
+                                                                                 columns.Bound( u => u.Name ).Width( 120 ).ClientTemplate( "#=spNameTemplate(data)#" );
+                                                                                 columns.Bound( u => u.Description );
+                                                                                 columns.Bound( u => u.IsEnabled ).Title( "Enabled" ).ClientTemplate( "<input id='1#=Name#' type='checkbox' class='k-checkbox' #: IsEnabled ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=Name#' />" );
+                                                                                 columns.Bound( u => u.Source ).ClientGroupHeaderTemplate( "#= value #: #= count #" ).Hidden();
+                                                                             } )
+                                                                            .DataSource( ds => ds
+                                                                                 .Ajax()
+                                                                                 .ServerOperation( false )     //Paging, sorting, filtering, and grouping will be done client-side
+                                                                                 .Read( read => read.Action( "GetSecurityPrincipals", "Admin" ).Type( HttpVerbs.Get ) )
+                                                                                 .Group( groups =>
+                                                                                  {
+                                                                                      groups.AddDescending( u => u.Source );
+                                                                                  } )
+                                                                                 .Aggregates( ag =>
+                                                                                  {
+                                                                                      ag.Add( p => p.Source ).Count();
+                                                                                  } )
+                                                                                 .Sort( s => s.Add( "Name" ).Ascending() )
+                                                                                 .Events( e => e.Error( "SuplexAdmin.dataSourceError" ) )
+                                                                                 .Model( m => m.Id( r => r.UId ) )
+                                                                            )
                         )
                     </div>
                 </pane>
@@ -99,12 +100,12 @@
                             </div>
                             <div class="mainHdrRight">
                                 @(Html.Kendo().Button().Name( "spBtnSave" ).Content( "Save" )
-                                                    .HtmlAttributes( new { type = "button", data_bind = "enabled: editor.hasChanges", @class = "w105" } )
-                                                    .Events( e => e.Click( "SuplexAdmin.spBtnSaveClick" ) ))
+                                                                    .HtmlAttributes( new { type = "button", data_bind = "enabled: editor.hasChanges", @class = "w105" } )
+                                                                    .Events( e => e.Click( "SuplexAdmin.spBtnSaveClick" ) ))
 
                                 @(Html.Kendo().Button().Name( "spBtnDiscard" ).Content( "Discard" )
-                                                    .HtmlAttributes( new { type = "button", @class = "w105" } )
-                                                    .Events( e => e.Click( "SuplexAdmin.spBtnDiscardClick" ) ))
+                                                                    .HtmlAttributes( new { type = "button", @class = "w105" } )
+                                                                    .Events( e => e.Click( "SuplexAdmin.spBtnDiscardClick" ) ))
                             </div>
                         </div>
                     </div>
@@ -159,17 +160,17 @@
                                 <div class="formInput">
                                     <div style="display:flex;">
                                         @(Html.Kendo().MultiSelect().Name( "spMsMemberOf" ).DataTextField( "Name" ).DataValueField( "UId" )
-                                                                                                                                                                                            .DataSource( "SuplexAdmin.spMsMemberOfDataSource" )
-                                                                                                                                                                                            .HtmlAttributes( new { style = "flex-grow:1" } )
-                                                                                                                                                                                            .ItemTemplateId( "spNameTemplate" )
-                                                                                                                                                                                            .TagTemplateId( "spNameTemplate" )
+                                                                                                                                                                                                            .DataSource( "SuplexAdmin.spMsMemberOfDataSource" )
+                                                                                                                                                                                                            .HtmlAttributes( new { style = "flex-grow:1" } )
+                                                                                                                                                                                                            .ItemTemplateId( "spNameTemplate" )
+                                                                                                                                                                                                            .TagTemplateId( "spNameTemplate" )
                                         )
                                         @(Html.Kendo().Button().Name( "spBtnMemberOfAdd" ).Content( "Add" ).HtmlAttributes( new { style = "width:40px;margin-left:5px;" } )
-                                                                                                                                                                    .Events( e => e.Click( "SuplexAdmin.spBtnMemberOfAddClick" ) ))
+                                                                                                                                                                                    .Events( e => e.Click( "SuplexAdmin.spBtnMemberOfAddClick" ) ))
                                     </div>
 
                                     @(Html.Kendo().ListBox().Name( "spLbMemberOf" ).DataSource( "SuplexAdmin.spLbMemberOfDataSource" ).DataTextField( "Name" ).DataValueField( "UId" ).TemplateId( "spGroupMembershipItemTemplate" )
-                                                                                                            .HtmlAttributes( new { style = "margin-top:5px;width:100%;" } ))
+                                                                                                                            .HtmlAttributes( new { style = "margin-top:5px;width:100%;" } ))
                                 </div>
                             </div>
                             <div class="formElement" data-bind="visible: editor.isLocalGroup">
@@ -178,16 +179,16 @@
                                     <div style="display:flex;">
 
                                         @(Html.Kendo().MultiSelect().Name( "spMsMembers" ).DataTextField( "Name" ).DataValueField( "UId" )
-                                                                                                                                                                    .DataSource( "SuplexAdmin.spMsMembersDataSource" )
-                                                                                                                                                                    .HtmlAttributes( new { style = "flex-grow:1" } )
-                                                                                                                                                                    .ItemTemplateId( "spNameTemplate" )
-                                                                                                                                                                    .TagTemplateId( "spNameTemplate" )
+                                                                                                                                                                                    .DataSource( "SuplexAdmin.spMsMembersDataSource" )
+                                                                                                                                                                                    .HtmlAttributes( new { style = "flex-grow:1" } )
+                                                                                                                                                                                    .ItemTemplateId( "spNameTemplate" )
+                                                                                                                                                                                    .TagTemplateId( "spNameTemplate" )
                                         )
                                         @(Html.Kendo().Button().Name( "spBtnMembersAdd" ).Content( "Add" ).HtmlAttributes( new { style = "width:40px;margin-left:5px;" } )
-                                                                                                                                                            .Events( e => e.Click( "SuplexAdmin.spBtnMembersAddClick" ) ))
+                                                                                                                                                                            .Events( e => e.Click( "SuplexAdmin.spBtnMembersAddClick" ) ))
                                     </div>
                                     @(Html.Kendo().ListBox().Name( "spLbMembers" ).DataSource( "SuplexAdmin.spLbMembersDataSource" ).DataTextField( "Name" ).DataValueField( "UId" ).TemplateId( "spGroupMembershipItemTemplate" )
-                                                                                                                    .HtmlAttributes( new { style = "margin-top:5px;width:100%;" } ))
+                                                                                                                                    .HtmlAttributes( new { style = "margin-top:5px;width:100%;" } ))
 
                                 </div>
                             </div>
@@ -262,47 +263,47 @@
                     <div id="soTl"></div>
                     <!-- there is a bug with the server wrapper where the parentId column is not serialized -->
                     @*@(Html.Kendo().TreeList<SecureObjectTreeVM>()
-                                            .Name("soTl").AutoBind(false)
-                                            .Editable(e => e.Move(true))
-                                            .Filterable(true)
-                                            .Selectable(s => s.Mode(TreeListSelectionMode.Single))
-                                            .Columns(c =>
-                                            {
-                                                c.Add().Field(f => f.UniqueName).Width(200).Template("<span class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='k-sprite #: IsSecure ? \"icon-secure\" : \"icon-non-secure\" #'></span><span>#: UniqueName #</span></span>");
-                                                c.Add().Field(f => f.IsEnabled).Title("Enabled").Template("<input id='1#=UniqueName#' type='checkbox' class='k-checkbox' #: IsEnabled ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UniqueName#' />");
-                                                c.Add().Field(f => f.DaclAllowInherit).Title("Inherit Permissions").Template("<input id='2#=UniqueName#' type='checkbox' class='k-checkbox' #: DaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UniqueName#' />");
-                                                c.Add().Field(f => f.SaclAllowInherit).Title("Inherit Audit").Template("<input id='3#=UniqueName#' type='checkbox' class='k-checkbox' #: SaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for=3#=UniqueName#' />");
-                                                c.Add().Field(f => f.ParentUId);
-
-                                            })
-                                            .DataSource(ds => ds
-                                                .Read(r => r.Action("GetSecureObjectTree", "Admin"))
-                                                .ServerOperation(false)
-                                                .Model(m =>
+                                                .Name("soTl").AutoBind(false)
+                                                .Editable(e => e.Move(true))
+                                                .Filterable(true)
+                                                .Selectable(s => s.Mode(TreeListSelectionMode.Single))
+                                                .Columns(c =>
                                                 {
-                                                    m.Id(f => f.UId);
-                                                    m.ParentId(f => f.ParentUId);
-                                                    m.Expanded(true);
-                                                    m.Field(f => f.UId);
-                                                    m.Field(f => f.ParentUId).Nullable();
-                                                    m.Field(f => f.UniqueName);
-                                                    m.Field(f => f.IsEnabled);
-                                                    m.Field(f => f.IsSecure);
-                                                    m.Field(f => f.DaclAllowInherit);
-                                                    m.Field(f => f.SaclAllowInherit);
+                                                    c.Add().Field(f => f.UniqueName).Width(200).Template("<span class='#: IsEnabled ? \"\" : \"k-state-disabled\" #'><span class='k-sprite #: IsSecure ? \"icon-secure\" : \"icon-non-secure\" #'></span><span>#: UniqueName #</span></span>");
+                                                    c.Add().Field(f => f.IsEnabled).Title("Enabled").Template("<input id='1#=UniqueName#' type='checkbox' class='k-checkbox' #: IsEnabled ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UniqueName#' />");
+                                                    c.Add().Field(f => f.DaclAllowInherit).Title("Inherit Permissions").Template("<input id='2#=UniqueName#' type='checkbox' class='k-checkbox' #: DaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UniqueName#' />");
+                                                    c.Add().Field(f => f.SaclAllowInherit).Title("Inherit Audit").Template("<input id='3#=UniqueName#' type='checkbox' class='k-checkbox' #: SaclAllowInherit ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for=3#=UniqueName#' />");
+                                                    c.Add().Field(f => f.ParentUId);
+
                                                 })
-                                                .Sort(s => s.Add("UniqueName").Ascending())
-                                                .Events(e => e.Error("SUPLEXUI.dataSourceError"))
-                                            )
-                                            .Events(e =>
-                                            {
-                                                e.Drop("SUPLEXUI.soTlDrop");
-                                            })
-                    )*@
+                                                .DataSource(ds => ds
+                                                    .Read(r => r.Action("GetSecureObjectTree", "Admin"))
+                                                    .ServerOperation(false)
+                                                    .Model(m =>
+                                                    {
+                                                        m.Id(f => f.UId);
+                                                        m.ParentId(f => f.ParentUId);
+                                                        m.Expanded(true);
+                                                        m.Field(f => f.UId);
+                                                        m.Field(f => f.ParentUId).Nullable();
+                                                        m.Field(f => f.UniqueName);
+                                                        m.Field(f => f.IsEnabled);
+                                                        m.Field(f => f.IsSecure);
+                                                        m.Field(f => f.DaclAllowInherit);
+                                                        m.Field(f => f.SaclAllowInherit);
+                                                    })
+                                                    .Sort(s => s.Add("UniqueName").Ascending())
+                                                    .Events(e => e.Error("SUPLEXUI.dataSourceError"))
+                                                )
+                                                .Events(e =>
+                                                {
+                                                    e.Drop("SUPLEXUI.soTlDrop");
+                                                })
+                        )*@
 
                 </pane>
             </kendo-splitter>
-                
+
         </pane>
         <pane>
             <kendo-splitter name="soSpltrRight" orientation="SplitterOrientation.Vertical" class="no-splitbar full-height" data-bind="visible: editor.visible">
@@ -312,10 +313,10 @@
                             <div class="mainHdrLeft" style="background-color: inherit;"><span>Secure Object </span>Properties <span data-bind="visible: editor.hasChanges" style="color:red">*</span></div>
                             <div class="mainHdrRight">
                                 @(Html.Kendo().Button().Name( "soBtnSave" ).Content( "Save" ).HtmlAttributes( new { type = "button", data_bind = "enabled: editor.hasChanges", @class = "w105" } )
-                                    .Events( e => e.Click( "SuplexAdmin.soBtnSaveClick" ) ))
+                                                    .Events( e => e.Click( "SuplexAdmin.soBtnSaveClick" ) ))
 
                                 @(Html.Kendo().Button().Name( "soBtnDiscard" ).Content( "Discard" ).HtmlAttributes( new { type = "button", @class = "w105" } )
-                                    .Events( e => e.Click( "SuplexAdmin.soBtnDiscardClick" ) ))
+                                                    .Events( e => e.Click( "SuplexAdmin.soBtnDiscardClick" ) ))
                             </div>
                         </div>
                     </div>
@@ -358,7 +359,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="soGrdDacl" class="no-hover" ></div><div class="h5 m0"></div>
+                        <div id="soGrdDacl" class="no-hover"></div><div class="h5 m0"></div>
                         <div class="subHdr js-accordion">
                             <div>
                                 <div class="subHdrLeft k-link">
@@ -389,70 +390,70 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="soGrdSacl" class="no-hover" ></div>
+                        <div id="soGrdSacl" class="no-hover"></div>
 
                         @*<div>
-            <div class="formElement m3">
-                <div class="formLabel">Audit Filter</div>
-                <div class="formInput">
-                    <ul data-bind="source: editor.auditTypes" data-template="soAuditTypeFilterTemplate"></ul>
-                    <br />
-                    <button class="k-button" data-bind="disabled: editor.saclAuditTypeFilterIsDefault, events: { click: editor.setSaclAuditTypeFilterToDefault }">Use Default Filter</button>
+                                <div class="formElement m3">
+                                    <div class="formLabel">Audit Filter</div>
+                                    <div class="formInput">
+                                        <ul data-bind="source: editor.auditTypes" data-template="soAuditTypeFilterTemplate"></ul>
+                                        <br />
+                                        <button class="k-button" data-bind="disabled: editor.saclAuditTypeFilterIsDefault, events: { click: editor.setSaclAuditTypeFilterToDefault }">Use Default Filter</button>
 
-                </div>
-                <div class="clearfix"></div>
-                <span id="soDdlAuditFilter" class="k-widget k-dropdown k-header" style="width:200px;">
-                    <span class="k-dropdown-wrap k-state-default">
-                        <span class="k-input" data-bind="text: editor.saclAuditTypeFilterIsDefault"></span>
-                        <span class="k-select">
-                            <span class="k-icon k-i-arrow-60-down"></span>
-                        </span>
-                    </span>
-                </span>
-                <div id="soPopAuditFilterContainer" style="position: relative;"></div>
-                <div id="soPopAuditFilter" class="k-container k-popup" style="width:200px;padding:3px;box-sizing: border-box;">
-                    <div class="formElement">
-                        <div class="formInput">
-                            <ul data-bind="source: editor.auditTypes" data-template="soAuditTypeFilterTemplate"></ul>
-                            <br />
-                            <button class="k-button" data-bind="disabled: editor.saclAuditTypeFilterIsDefault, events: { click: editor.setSaclAuditTypeFilterToDefault }">Use Default Filter</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>*@
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <span id="soDdlAuditFilter" class="k-widget k-dropdown k-header" style="width:200px;">
+                                        <span class="k-dropdown-wrap k-state-default">
+                                            <span class="k-input" data-bind="text: editor.saclAuditTypeFilterIsDefault"></span>
+                                            <span class="k-select">
+                                                <span class="k-icon k-i-arrow-60-down"></span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                    <div id="soPopAuditFilterContainer" style="position: relative;"></div>
+                                    <div id="soPopAuditFilter" class="k-container k-popup" style="width:200px;padding:3px;box-sizing: border-box;">
+                                        <div class="formElement">
+                                            <div class="formInput">
+                                                <ul data-bind="source: editor.auditTypes" data-template="soAuditTypeFilterTemplate"></ul>
+                                                <br />
+                                                <button class="k-button" data-bind="disabled: editor.saclAuditTypeFilterIsDefault, events: { click: editor.setSaclAuditTypeFilterToDefault }">Use Default Filter</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
                         @*<div class="subHdr js-accordion">
-            <div>
-                <div class="subHdrLeft k-link">
-                    <span class="k-icon k-i-arrow-chevron-up"></span>
-                    Security Inheritance Settings: <span data-bind="text: editor.securityInheritanceState"></span>
-                </div>
-            </div>
-        </div>
-        <div id="soSecurityInheritance">
-            <div class="formElement">
-                <div class="formLabel" data-bind="style:{color: editor.daclAllowInheritTextColor}">Permission Inheritance</div>
-                <div class="formInput">
-                    <input id="daclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.DaclAllowInherit, events: {  change: editor.raiseChange }" />
-                    <label class="k-checkbox-label" for="daclAllowInherit"></label>
-                </div>
-            </div>
-            <div class="formElement">
-                <div class="formLabel" style="font-size:0.9em;padding-left:10px;">If blocked, this object will not inherit permissions from parent objects.</div>
-            </div>
-            <div class="formElement">
-                <div class="formLabel" data-bind="style:{color: editor.saclAllowInheritTextColor}">Audit Inheritance</div>
-                <div class="formInput">
-                    <input id="saclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
-                    <label class="k-checkbox-label" for="saclAllowInherit"></label>
-                </div>
-            </div>
+                                <div>
+                                    <div class="subHdrLeft k-link">
+                                        <span class="k-icon k-i-arrow-chevron-up"></span>
+                                        Security Inheritance Settings: <span data-bind="text: editor.securityInheritanceState"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="soSecurityInheritance">
+                                <div class="formElement">
+                                    <div class="formLabel" data-bind="style:{color: editor.daclAllowInheritTextColor}">Permission Inheritance</div>
+                                    <div class="formInput">
+                                        <input id="daclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.DaclAllowInherit, events: {  change: editor.raiseChange }" />
+                                        <label class="k-checkbox-label" for="daclAllowInherit"></label>
+                                    </div>
+                                </div>
+                                <div class="formElement">
+                                    <div class="formLabel" style="font-size:0.9em;padding-left:10px;">If blocked, this object will not inherit permissions from parent objects.</div>
+                                </div>
+                                <div class="formElement">
+                                    <div class="formLabel" data-bind="style:{color: editor.saclAllowInheritTextColor}">Audit Inheritance</div>
+                                    <div class="formInput">
+                                        <input id="saclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
+                                        <label class="k-checkbox-label" for="saclAllowInherit"></label>
+                                    </div>
+                                </div>
 
-        </div>*@
+                            </div>*@
                     </div>
                 </pane>
             </kendo-splitter>
-            
+
         </pane>
     </kendo-splitter>
 </div>
@@ -493,14 +494,14 @@
     </div>
 </script>
 @*<script id="soGrdSaclToolBarTemplate" type="text/x-kendo-template">
-    <div style="display:inline-block;">
-        <a class="k-button k-button-icontext k-grid-add" href="\\#">
-            <span class="k-icon k-i-plus"></span>New Audit
-        </a>
-        <input id="saclAllowInherit1" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
-        <label class="k-checkbox-label" for="saclAllowInherit1" style="vertical-align: middle;">Inherit Audit</label>
-    </div>
-</script>*@
+        <div style="display:inline-block;">
+            <a class="k-button k-button-icontext k-grid-add" href="\\#">
+                <span class="k-icon k-i-plus"></span>New Audit
+            </a>
+            <input id="saclAllowInherit1" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
+            <label class="k-checkbox-label" for="saclAllowInherit1" style="vertical-align: middle;">Inherit Audit</label>
+        </div>
+    </script>*@
 <script>
     var spNameTemplate = kendo.template( $( "#spNameTemplate" ).html() );
     var spGroupMembershipItemTemplate = kendo.template( $( "#spGroupMembershipItemTemplate" ).html() );

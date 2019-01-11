@@ -40,27 +40,27 @@ namespace Suplex.UI.Modules.Admin.Controllers
         {
             _configuration = configuration;
             //_maskSize = int.Parse(_configuration["MaskSize"]);
-            int.TryParse(_configuration["MaskSize"], out _maskSize);
+            int.TryParse( _configuration["MaskSize"], out _maskSize );
 
             _logger = logger;
             _hostingEnvironment = hostingEnvironment;
             _mapper = mapper;
 
-            _auditTypes = _auditTypes ?? EnumHelpers.ToList(typeof(AuditType));
+            _auditTypes = _auditTypes ?? EnumHelpers.ToList( typeof( AuditType ) );
 
             _rights = _rights ?? SetupRightsValues();
 
             _secureObjectDefaults = _secureObjectDefaults ?? SetupSecureObjectDefaults();
 
             _apiUrl = _configuration["SuplexWebApiURL"];
-            _svc = new SuplexSecurityHttpApiClient(_apiUrl);
+            _svc = new SuplexSecurityHttpApiClient( _apiUrl );
 
         }
 
         public IActionResult Index()
         {
-            _logger.LogInformation("index");
-            Console.WriteLine(_hostingEnvironment.ContentRootPath);
+            _logger.LogInformation( "index" );
+            Console.WriteLine( _hostingEnvironment.ContentRootPath );
 
             return View();
 
@@ -72,44 +72,44 @@ namespace Suplex.UI.Modules.Admin.Controllers
             Dictionary<string, Object> defaultValues = new Dictionary<string, Object>();
 
             SecureObject so = new SecureObject();
-            defaultValues.Add("IsEnabled", so.IsEnabled);
-            defaultValues.Add("DaclAllowInherit", so.Security.DaclAllowInherit);
-            defaultValues.Add("SaclAllowInherit", so.Security.SaclAllowInherit);
+            defaultValues.Add( "IsEnabled", so.IsEnabled );
+            defaultValues.Add( "DaclAllowInherit", so.Security.DaclAllowInherit );
+            defaultValues.Add( "SaclAllowInherit", so.Security.SaclAllowInherit );
             int defAuditTypeFilter = (int)so.Security.SaclAuditTypeFilter;
-            defaultValues.Add("SaclAuditTypeFilter", defAuditTypeFilter); //.ToStringArray());
-            int[] defAuditTypeFilterArray = Enum.GetValues(typeof(AuditType)).Cast<int>().Where(i => (i & defAuditTypeFilter) == i).ToArray();
-            defaultValues.Add("SaclAuditTypeFilterArray", defAuditTypeFilterArray);
+            defaultValues.Add( "SaclAuditTypeFilter", defAuditTypeFilter ); //.ToStringArray());
+            int[] defAuditTypeFilterArray = Enum.GetValues( typeof( AuditType ) ).Cast<int>().Where( i => (i & defAuditTypeFilter) == i ).ToArray();
+            defaultValues.Add( "SaclAuditTypeFilterArray", defAuditTypeFilterArray );
             AccessControlEntry<FileSystemRight> dacl = new AccessControlEntry<FileSystemRight>();
-            defaultValues.Add("DaclAllowed", dacl.Allowed);
-            defaultValues.Add("DaclInheritable", dacl.Inheritable);
+            defaultValues.Add( "DaclAllowed", dacl.Allowed );
+            defaultValues.Add( "DaclInheritable", dacl.Inheritable );
             AccessControlEntryAudit<FileSystemRight> sacl = new AccessControlEntryAudit<FileSystemRight>();
-            defaultValues.Add("SaclAllowed", sacl.Allowed);
-            defaultValues.Add("SaclInheritable", sacl.Inheritable);
-            defaultValues.Add("SaclDenied", sacl.Denied);
+            defaultValues.Add( "SaclAllowed", sacl.Allowed );
+            defaultValues.Add( "SaclInheritable", sacl.Inheritable );
+            defaultValues.Add( "SaclDenied", sacl.Denied );
 
             return defaultValues;
         }
         public List<RightVM> SetupRightsValues()
         {
-            List<Type> types = new List<Type>() { typeof(UIRight), typeof(RecordRight), typeof(FileSystemRight), typeof(SynchronizationRight) };
+            List<Type> types = new List<Type>() { typeof( UIRight ), typeof( RecordRight ), typeof( FileSystemRight ), typeof( SynchronizationRight ) };
             List<RightVM> rights = new List<RightVM>();
-            foreach (Type t in types)
+            foreach( Type t in types )
             {
-                rights.AddRange(EnumHelpers.ToList(t).Select(s => new RightVM { RightType = t.GetFriendlyRightTypeName(), RightId = s.Id, RightName = s.Name }).OrderBy(o => o.RightType).ThenByDescending(o => o.RightId).ToList());
+                rights.AddRange( EnumHelpers.ToList( t ).Select( s => new RightVM { RightType = t.GetFriendlyRightTypeName(), RightId = s.Id, RightName = s.Name } ).OrderBy( o => o.RightType ).ThenByDescending( o => o.RightId ).ToList() );
             }
             return rights;
         }
         public IActionResult GetRights()
         {
-            return Json(_rights);
+            return Json( _rights );
         }
         public IActionResult GetAuditTypes()
         {
-            return Json(_auditTypes);
+            return Json( _auditTypes );
         }
         public IActionResult GetSecureObjectDefaults()
         {
-            return Json(_secureObjectDefaults);
+            return Json( _secureObjectDefaults );
         }
         #endregion
 
@@ -121,7 +121,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 List<User> users = await _svc.GetUserByNameAsync( null, false );
                 isConnected = true;
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
                 _logger.LogError( ex, "Not able to connect to remote service" );
             }
@@ -146,44 +146,45 @@ namespace Suplex.UI.Modules.Admin.Controllers
             List<SecurityPrincipalGridVM> sp = null;
             try
             {
-                Task<List<User>> taskGetUsers = _svc.GetUserByNameAsync(null, false);
-                Task<List<Group>> taskGetGroups = _svc.GetGroupByNameAsync(null, false);
+                Task<List<User>> taskGetUsers = _svc.GetUserByNameAsync( null, false );
+                Task<List<Group>> taskGetGroups = _svc.GetGroupByNameAsync( null, false );
 
                 List<User> users = await taskGetUsers;
                 List<Group> groups = await taskGetGroups;
 
-                sp = _mapper.Map<IList<User>, List<SecurityPrincipalGridVM>>(users);
-                sp.AddRange(_mapper.Map<IList<Group>, List<SecurityPrincipalGridVM>>(groups));
+                sp = _mapper.Map<IList<User>, List<SecurityPrincipalGridVM>>( users );
+                sp.AddRange( _mapper.Map<IList<Group>, List<SecurityPrincipalGridVM>>( groups ) );
 
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, "Error getting security principals");               
+                ModelState.AddModelError( string.Empty, ex.Message );
+                _logger.LogError( ex, "Error getting security principals" );
             }
 
-            if (sp == null)
+            if( sp == null )
             {
                 sp = new List<SecurityPrincipalGridVM>();
             }
-            return Json(sp.ToDataSourceResult(request));
+            return Json( sp.ToDataSourceResult( request, ModelState ) );
         }
-        
+
         public async Task<IActionResult> GetUserByUId(Guid uId)
         {
-            _logger.LogInformation($"In GetUserByUId({nameof(uId)}:{uId})");
+            _logger.LogInformation( $"In GetUserByUId({nameof( uId )}:{uId})" );
 
             ResponseVM r = null;
             try
             {
                 // Get user and get member of
-                Task<User> taskGetUser = _svc.GetUserByUIdAsync(uId);
-                Task<MembershipList<Group>> taskGetMemberOf = _svc.GetGroupMemberOfListAsync(uId, false, true);
-                await Task.WhenAll(taskGetUser, taskGetMemberOf);
+                Task<User> taskGetUser = _svc.GetUserByUIdAsync( uId );
+                Task<MembershipList<Group>> taskGetMemberOf = _svc.GetGroupMemberOfListAsync( uId, false, true );
+                await Task.WhenAll( taskGetUser, taskGetMemberOf );
                 User u = taskGetUser.Result;
-                SecurityPrincipalEditorVM sp = _mapper.Map<User, SecurityPrincipalEditorVM>(u);
+                SecurityPrincipalEditorVM sp = _mapper.Map<User, SecurityPrincipalEditorVM>( u );
                 MembershipList<Group> memberOfList = taskGetMemberOf.Result;
-                List<MemberVM> memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.MemberList);
-                List<MemberVM> notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.NonMemberList);
+                List<MemberVM> memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>( memberOfList.MemberList );
+                List<MemberVM> notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>( memberOfList.NonMemberList );
 
                 r = new ResponseVM()
                 {
@@ -192,33 +193,33 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 };
             }
 
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, $"Error retrieving information for user {uId}");
+                _logger.LogError( ex, $"Error retrieving information for user {uId}" );
                 r = new ResponseVM()
                 {
                     Status = ERROR,
                     Message = $"There is a problem retrieving information for user {uId}"
                 };
             }
-            return Json(r);
+            return Json( r );
         }
 
         public async Task<IActionResult> GetNewUser()
         {
-            _logger.LogInformation($"In GetNewUser()");
+            _logger.LogInformation( $"In GetNewUser()" );
 
             SecurityPrincipalEditorVM sp = null;
             ResponseVM r = null;
-            
+
             try
             {
                 User u = new User();
-                sp = _mapper.Map<User, SecurityPrincipalEditorVM>(u);
+                sp = _mapper.Map<User, SecurityPrincipalEditorVM>( u );
                 sp.UId = null;
 
-                List<Group> groups = await _svc.GetGroupByNameAsync(null, false);
-                List<MemberVM> notMemberOf = _mapper.Map<IEnumerable<Group>, List<MemberVM>>(groups.Where(g => g.IsLocal));
+                List<Group> groups = await _svc.GetGroupByNameAsync( null, false );
+                List<MemberVM> notMemberOf = _mapper.Map<IEnumerable<Group>, List<MemberVM>>( groups.Where( g => g.IsLocal ) );
 
                 r = new ResponseVM()
                 {
@@ -226,22 +227,22 @@ namespace Suplex.UI.Modules.Admin.Controllers
                     Data = new UserVM { User = sp, MemberOf = new List<MemberVM>(), NotMemberOf = notMemberOf }
                 };
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, $"Error retrieving information for new user");
+                _logger.LogError( ex, $"Error retrieving information for new user" );
                 r = new ResponseVM()
                 {
                     Status = ERROR,
                     Message = $"There is a problem retrieving information for new user"
                 };
             }
-            return Json(r);
+            return Json( r );
         }
         [HttpPost]
         public async Task<IActionResult> SaveUser([FromBody] UserSaveVM userSave)
         {
             bool ok = false;
-            _logger.LogInformation($"In SaveUser({nameof(userSave)}:{userSave})");
+            _logger.LogInformation( $"In SaveUser({nameof( userSave )}:{userSave})" );
 
             SecurityPrincipalEditorVM sp = userSave.User;
             List<MemberVM> memberOfToAdd = userSave.MemberOfToAdd;
@@ -253,50 +254,50 @@ namespace Suplex.UI.Modules.Admin.Controllers
             try
             {
                 // validate name: must be unique
-                Task<List<User>> getUsers = _svc.GetUserByNameAsync(sp.Name, true);
-                Task<List<Group>> getGroups = _svc.GetGroupByNameAsync(sp.Name, true);
+                Task<List<User>> getUsers = _svc.GetUserByNameAsync( sp.Name, true );
+                Task<List<Group>> getGroups = _svc.GetGroupByNameAsync( sp.Name, true );
 
                 List<User> users = await getUsers;
                 List<Group> groups = await getGroups;
 
                 // if new user
-                if (sp.UId == null)
+                if( sp.UId == null )
                 {
-                    
-                    if (users.Count != 0 || groups.Count != 0)
+
+                    if( users.Count != 0 || groups.Count != 0 )
                     {
-                        ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
+                        ModelState.AddModelError( "Name", "Name has already been used. Please choose another one." );
                     }
                 }
                 else
                 {
-                    if (users.Where(x => x.UId != sp.UId).Count() != 0 ||
-                        groups.Count != 0)
+                    if( users.Where( x => x.UId != sp.UId ).Count() != 0 ||
+                        groups.Count != 0 )
                     {
-                        ModelState.AddModelError("Name", "Name has already been used. Please choose another one.");
+                        ModelState.AddModelError( "Name", "Name has already been used. Please choose another one." );
                     }
                 }
 
-                if (ModelState.IsValid)
+                if( ModelState.IsValid )
                 {
                     User u;
                     // if new user
-                    if (sp.UId == null)
+                    if( sp.UId == null )
                     {
-                        
+
                         u = new User();
                         sp.UId = u.UId;
                     }
                     else
                     {
-                        u = await _svc.GetUserByUIdAsync(sp.UId.Value);
+                        u = await _svc.GetUserByUIdAsync( sp.UId.Value );
                     }
 
-                    _mapper.Map<SecurityPrincipalEditorVM, User>(sp, u);    // map to existing object so we dont override fields that are not used in the UI
-                    await _svc.UpsertUserAsync(u);
+                    _mapper.Map<SecurityPrincipalEditorVM, User>( sp, u );    // map to existing object so we dont override fields that are not used in the UI
+                    await _svc.UpsertUserAsync( u );
 
                     List<GroupMembershipItem> gmiToRemove = new List<GroupMembershipItem>();
-                    foreach (MemberVM i in memberOfToRemove)
+                    foreach( MemberVM i in memberOfToRemove )
                     {
                         //await _svc.DeleteGroupMembershipAsync(new GroupMembershipItem { GroupUId = i.UId, MemberUId = u.UId, IsMemberUser = u.IsUser });
                         //deleteGroupMembership.Add(_svc.DeleteGroupMembershipAsync(new GroupMembershipItem { GroupUId = i.UId, MemberUId = u.UId, IsMemberUser = u.IsUser }));
@@ -304,102 +305,102 @@ namespace Suplex.UI.Modules.Admin.Controllers
                     }
                     await _svc.DeleteGroupMembershipAsync( gmiToRemove );
                     List<GroupMembershipItem> gmiToAdd = new List<GroupMembershipItem>();
-                    foreach (MemberVM i in memberOfToAdd)
+                    foreach( MemberVM i in memberOfToAdd )
                     {
-                        gmiToAdd.Add(new GroupMembershipItem { GroupUId = i.UId, MemberUId = u.UId, IsMemberUser = u.IsUser });
+                        gmiToAdd.Add( new GroupMembershipItem { GroupUId = i.UId, MemberUId = u.UId, IsMemberUser = u.IsUser } );
                     }
                     await _svc.UpsertGroupMembershipAsync( gmiToAdd );
 
-                    sp = _mapper.Map<User, SecurityPrincipalEditorVM>(u);   // get a fresh record to return to the client
+                    sp = _mapper.Map<User, SecurityPrincipalEditorVM>( u );   // get a fresh record to return to the client
 
-                    memberOfList = await _svc.GetGroupMemberOfListAsync(u, true);
-                    memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.MemberList);
-                    notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.NonMemberList);
+                    memberOfList = await _svc.GetGroupMemberOfListAsync( u, true );
+                    memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>( memberOfList.MemberList );
+                    notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>( memberOfList.NonMemberList );
 
                     ok = true;
                 }
                 else
                 {
-                    _logger.LogError($"Error saving user {sp.UId} | {sp.Name}");
+                    _logger.LogError( $"Error saving user {sp.UId} | {sp.Name}" );
                 }
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                _logger.LogError(ex, $"Error saving user {sp.UId} | {sp.Name}");
+                ModelState.AddModelError( string.Empty, ex.Message );
+                _logger.LogError( ex, $"Error saving user {sp.UId} | {sp.Name}" );
             }
 
             ResponseVM r = new ResponseVM()
             {
                 Status = ok ? SUCCESS : ERROR,
                 Message = ok ? null : "Unable to save User due to errors.",
-                ValidationErrors = ok ? null : ModelState.Keys.SelectMany(k => ModelState[k].Errors)
-                              .Select(m => m.ErrorMessage).ToList(),
+                ValidationErrors = ok ? null : ModelState.Keys.SelectMany( k => ModelState[k].Errors )
+                              .Select( m => m.ErrorMessage ).ToList(),
                 Data = ok ? new UserVM { User = sp, MemberOf = memberOfDest, NotMemberOf = notMemberOfDest } : null
             };
 
             //https://www.telerik.com/blogs/handling-server-side-validation-errors-in-your-kendo-ui-grid
             //https://techbrij.com/modelstate-errors-angularjs-asp-net-mvc
             //https://www.jerriepelser.com/blog/validation-response-aspnet-core-webapi/
-            return Json(r);
+            return Json( r );
         }
         //[HttpPost]
         public async Task<IActionResult> DeleteUser(Guid uId)
         {
             string error = null;
             User u = null;
-            _logger.LogInformation($"In DeleteUser({nameof(uId)}:{uId})");
+            _logger.LogInformation( $"In DeleteUser({nameof( uId )}:{uId})" );
 
             ResponseVM r = null;
             try
             {
-                u = await _svc.GetUserByUIdAsync(uId);
-                if (u.IsBuiltIn)
+                u = await _svc.GetUserByUIdAsync( uId );
+                if( u.IsBuiltIn )
                 {
                     error = $"User {u.Name} cannot be deleted as it is a built-in user.";
                 }
                 else
                 {
-                    await _svc.DeleteUserAsync(uId);
+                    await _svc.DeleteUserAsync( uId );
                 }
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, $"Error deleting User {uId}");
+                _logger.LogError( ex, $"Error deleting User {uId}" );
                 error = $"An error has occurred while deleting User {u.Name}.";
             }
             r = new ResponseVM()
             {
-                Status = string.IsNullOrEmpty(error) ? SUCCESS : ERROR,
+                Status = string.IsNullOrEmpty( error ) ? SUCCESS : ERROR,
                 Message = error
             };
-            return Json(r);
+            return Json( r );
         }
         public async Task<IActionResult> GetGroupByUId(Guid uId)
         {
 
-            _logger.LogInformation($"In GetGroupByUId({nameof(uId)}:{uId})");
-            
+            _logger.LogInformation( $"In GetGroupByUId({nameof( uId )}:{uId})" );
+
             SecurityPrincipalEditorVM sp = null;
             ResponseVM r = null;
             try
             {
-                Task<Group> getGroup = _svc.GetGroupByUIdAsync(uId);
-                Task<MembershipList<SecurityPrincipalBase>> getMembersList = _svc.GetGroupMembersListAsync(uId, true);
-                Task<MembershipList<Group>> getMemberOfList = _svc.GetGroupMemberOfListAsync(uId, true);
-                Task<IEnumerable<GroupMembershipItem>> getGroupMemberhipHierarchy = _svc.GetGroupMembershipHierarchyAsync(uId, true);
+                Task<Group> getGroup = _svc.GetGroupByUIdAsync( uId );
+                Task<MembershipList<SecurityPrincipalBase>> getMembersList = _svc.GetGroupMembersListAsync( uId, true );
+                Task<MembershipList<Group>> getMemberOfList = _svc.GetGroupMemberOfListAsync( uId, true );
+                Task<IEnumerable<GroupMembershipItem>> getGroupMemberhipHierarchy = _svc.GetGroupMembershipHierarchyAsync( uId, true );
 
                 Group g = await getGroup;
                 MembershipList<SecurityPrincipalBase> membersList = await getMembersList;
                 MembershipList<Group> memberOfList = await getMemberOfList;
-                List<GroupMembershipItem> groupMembershipHierarchy = (List<GroupMembershipItem>) await getGroupMemberhipHierarchy;
+                List<GroupMembershipItem> groupMembershipHierarchy = (List<GroupMembershipItem>)await getGroupMemberhipHierarchy;
 
-                sp = _mapper.Map<Group, SecurityPrincipalEditorVM>(g);
-                List<MemberVM> membersDest = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>(membersList.MemberList);
-                List<MemberVM> notMembersDest = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>(membersList.NonMemberList);
+                sp = _mapper.Map<Group, SecurityPrincipalEditorVM>( g );
+                List<MemberVM> membersDest = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>( membersList.MemberList );
+                List<MemberVM> notMembersDest = _mapper.Map<List<SecurityPrincipalBase>, List<MemberVM>>( membersList.NonMemberList );
 
-                List<MemberVM> memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.MemberList);
-                List<MemberVM> notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>(memberOfList.NonMemberList);
+                List<MemberVM> memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>( memberOfList.MemberList );
+                List<MemberVM> notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>( memberOfList.NonMemberList );
 
                 // Build the group hierarchy data for the treelist
                 // 1. get root nodes
@@ -408,11 +409,11 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 //    .Distinct( new Suplex.UI.Modules.Admin.Helpers.GroupMembershipEqualityComparerTest() )
                 //    .ToList();
                 List<GroupMembershipItem> rootnodes = new List<GroupMembershipItem>();
-                foreach (GroupMembershipItem gmi in groupMembershipHierarchy)
+                foreach( GroupMembershipItem gmi in groupMembershipHierarchy )
                 {
                     if( rootnodes.Find( x => x.GroupUId == gmi.GroupUId ) == null )
                     {
-                        if ( groupMembershipHierarchy.Find( h => h.MemberUId == gmi.GroupUId ) == null )
+                        if( groupMembershipHierarchy.Find( h => h.MemberUId == gmi.GroupUId ) == null )
                             rootnodes.Add( new GroupMembershipItem { GroupUId = gmi.GroupUId, MemberUId = gmi.GroupUId, Group = gmi.Group, Member = gmi.Member } );
                     }
                 }
@@ -421,7 +422,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
 
                 // 2. recursively get children
                 int id = 0;
-                foreach (GroupMembershipItem node in rootnodes)
+                foreach( GroupMembershipItem node in rootnodes )
                 {
                     gh.Add( new GroupHierarchyVM { Id = ++id, ParentId = null, MemberUId = node.GroupUId, GroupUId = null, Name = node.Group.Name, Description = node.Group.Description, IsEnabled = node.Group.IsEnabled, IsLocal = node.Group.IsLocal, IsUser = node.Group.IsUser } );
                     gh.AddRange( recurseGetGroupHierarchyChildren( node, groupMembershipHierarchy, ref id, id ) );
@@ -440,16 +441,16 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 };
             }
 
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, $"Error retrieving information for Group {uId}");
+                _logger.LogError( ex, $"Error retrieving information for Group {uId}" );
                 r = new ResponseVM()
                 {
                     Status = ERROR,
                     Message = $"There is a problem retrieving information for Group {uId}"
                 };
             }
-            return Json(r);
+            return Json( r );
         }
 
         private IEnumerable<GroupHierarchyVM> recurseGetGroupHierarchyChildren(GroupMembershipItem parent, IEnumerable<GroupMembershipItem> groupMembershipHierarchy, ref int id, int parentId)
@@ -459,34 +460,34 @@ namespace Suplex.UI.Modules.Admin.Controllers
             foreach( GroupMembershipItem child in children )
             {
                 hierarchy.Add( new GroupHierarchyVM { Id = ++id, ParentId = parentId, GroupUId = child.GroupUId, MemberUId = child.MemberUId, Name = child.Member.Name, Description = child.Member.Description, IsEnabled = child.Member.IsEnabled, IsLocal = child.Member.IsLocal, IsUser = child.Member.IsUser } );
-                hierarchy.AddRange( recurseGetGroupHierarchyChildren( child, groupMembershipHierarchy, ref id, id));
+                hierarchy.AddRange( recurseGetGroupHierarchyChildren( child, groupMembershipHierarchy, ref id, id ) );
             }
             return hierarchy;
         }
         public async Task<IActionResult> GetNewGroup()
         {
-            _logger.LogInformation($"In GetNewGroup()");
+            _logger.LogInformation( $"In GetNewGroup()" );
 
             SecurityPrincipalEditorVM sp = null;
             ResponseVM r = null;
             try
             {
                 Group g = new Group();
-                sp = _mapper.Map<Group, SecurityPrincipalEditorVM>(g);
+                sp = _mapper.Map<Group, SecurityPrincipalEditorVM>( g );
                 sp.UId = null;
 
-                
-                Task<List<Group>> getGroups = _svc.GetGroupByNameAsync(null, false);
-                Task<List<User>> getUsers = _svc.GetUserByNameAsync(null, false);
+
+                Task<List<Group>> getGroups = _svc.GetGroupByNameAsync( null, false );
+                Task<List<User>> getUsers = _svc.GetUserByNameAsync( null, false );
 
                 List<Group> groups = await getGroups;
                 List<User> users = await getUsers;
 
                 // not member of = all local group
-                List<MemberVM> notMemberOf = _mapper.Map<IEnumerable<Group>, List<MemberVM>>(groups.Where(x => x.IsLocal));
+                List<MemberVM> notMemberOf = _mapper.Map<IEnumerable<Group>, List<MemberVM>>( groups.Where( x => x.IsLocal ) );
                 // not members = all security principals
-                List<MemberVM> notMembers = _mapper.Map<IEnumerable<Group>, List<MemberVM>>(groups);
-                notMembers.AddRange(_mapper.Map<IEnumerable<User>, List<MemberVM>>(users));
+                List<MemberVM> notMembers = _mapper.Map<IEnumerable<Group>, List<MemberVM>>( groups );
+                notMembers.AddRange( _mapper.Map<IEnumerable<User>, List<MemberVM>>( users ) );
 
                 r = new ResponseVM()
                 {
@@ -494,16 +495,16 @@ namespace Suplex.UI.Modules.Admin.Controllers
                     Data = new GroupVM { Group = sp, MemberOf = new List<MemberVM>(), Members = new List<MemberVM>(), GroupHierarchy = new List<GroupHierarchyVM>(), NotMemberOf = notMemberOf, NotMembers = notMembers }
                 };
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, $"Error retrieving information for new group");
+                _logger.LogError( ex, $"Error retrieving information for new group" );
                 r = new ResponseVM()
                 {
                     Status = ERROR,
                     Message = $"There is a problem retrieving information for new group"
                 };
             }
-            return Json(r);
+            return Json( r );
         }
         [HttpPost]
         public async Task<IActionResult> SaveGroup([FromBody] GroupSaveVM groupSave)
@@ -554,9 +555,9 @@ namespace Suplex.UI.Modules.Admin.Controllers
                     // if new user
                     if( sp.UId == null )
                     {
-                        
+
                         g = new Group();
-                        sp.UId = g.UId; 
+                        sp.UId = g.UId;
                         if( _maskSize == 0 )
                         {
                             sp.Mask = "0";
@@ -600,7 +601,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
 
                     // get a fresh data to send to the browser (same code as GetGroupByUId()
                     sp = _mapper.Map<Group, SecurityPrincipalEditorVM>( g );   // get a fresh record to return to the client
-                                                                               
+
                     Task<MembershipList<SecurityPrincipalBase>> getMembersList = _svc.GetGroupMembersListAsync( g, true );
                     Task<MembershipList<Group>> getMemberOfList = _svc.GetGroupMemberOfListAsync( g, true );
                     Task<IEnumerable<GroupMembershipItem>> getGroupMembershipHierarchy = _svc.GetGroupMembershipHierarchyAsync( g.UId, true );
@@ -613,7 +614,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                     memberOfDest = _mapper.Map<List<Group>, List<MemberVM>>( memberOfList.MemberList );
                     notMemberOfDest = _mapper.Map<List<Group>, List<MemberVM>>( memberOfList.NonMemberList );
 
-                    List<GroupMembershipItem> groupMembershipHierarchy = (List<GroupMembershipItem>) await getGroupMembershipHierarchy;
+                    List<GroupMembershipItem> groupMembershipHierarchy = (List<GroupMembershipItem>)await getGroupMembershipHierarchy;
                     // Build the group hierarchy data for the treelist
                     // 1. get root nodes
                     List<GroupMembershipItem> rootnodes = new List<GroupMembershipItem>();
@@ -709,7 +710,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
         #region Secure Objects
         public async Task<IActionResult> GetSecureObjectTree([DataSourceRequest] DataSourceRequest request)
         {
-            _logger.LogInformation($"In GetSecureObjectTree()");
+            _logger.LogInformation( $"In GetSecureObjectTree()" );
 
             List<SecureObjectTreeVM> treeList = null;
             try
@@ -717,30 +718,31 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 IEnumerable<SecureObject> secureObjects = await _svc.GetSecureObjectsAsync();
 
                 //treeList.AddRange(_mapper.Map<IEnumerable<SecureObject>, List<SecureObjectTreeVM>>(secureObjects.SelectRecursive(i => i.Children).ToList()));
-                treeList = _mapper.Map<IEnumerable<SecureObject>, List<SecureObjectTreeVM>>(secureObjects.SelectRecursive(i => i.Children).ToList());
+                treeList = _mapper.Map<IEnumerable<SecureObject>, List<SecureObjectTreeVM>>( secureObjects.SelectRecursive( i => i.Children ).ToList() );
                 //treeList.Sort((x, y) => x.UniqueName.CompareTo(y.UniqueName));
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, $"Error getting secure objects");
-                
+                ModelState.AddModelError( string.Empty, ex.Message );
+                _logger.LogError( ex, $"Error getting secure objects" );
+
             }
-            if (treeList == null)
+            if( treeList == null )
             {
                 treeList = new List<SecureObjectTreeVM>();
             }
-            return Json(treeList.ToTreeDataSourceResult(request));
+            return Json( treeList.ToTreeDataSourceResult( request, ModelState ) );
         }
 
         public async Task<IActionResult> GetSecureObjectByUId(Guid uId)
         {
-            _logger.LogInformation($"In GetSecureObjectByUId({nameof(uId)}:{uId})");
+            _logger.LogInformation( $"In GetSecureObjectByUId({nameof( uId )}:{uId})" );
             ResponseVM r = null;
 
             try
             {
-                SecureObject so = await _svc.GetSecureObjectByUIdAsync(uId, includeChildren: false, includeDisabled: true);
-                SecureObjectEditorVM editorVM = _mapper.Map<SecureObject, SecureObjectEditorVM>(so);
+                SecureObject so = await _svc.GetSecureObjectByUIdAsync( uId, includeChildren: false, includeDisabled: true );
+                SecureObjectEditorVM editorVM = _mapper.Map<SecureObject, SecureObjectEditorVM>( so );
                 // use this if using automapper gets too difficult
                 //editorVM.Security.Dacl = so.Security.Dacl.Select(x => new DaclVM() { UId = x.UId, TrusteeUId = x.TrusteeUId, Allowed = x.Allowed, Inheritable = x.Inheritable, RightType = x.RightData.FriendlyTypeName, Right = x.RightData.Name.Split(new string[] { ", " }, StringSplitOptions.None) }).ToList();
 
@@ -750,16 +752,16 @@ namespace Suplex.UI.Modules.Admin.Controllers
                     Data = editorVM
                 };
             }
-            catch (Exception ex)
+            catch( Exception ex )
             {
-                _logger.LogError(ex, $"Error getting secure object {uId}");
+                _logger.LogError( ex, $"Error getting secure object {uId}" );
                 r = new ResponseVM()
                 {
                     Status = ERROR,
                     Message = $"An error has occurred while retrieving secure object {uId}."
                 };
             }
-            return Json(r);
+            return Json( r );
             //return Json(r, new JsonSerializerSettings()
             //{
             //    Converters = new List<Newtonsoft.Json.JsonConverter>
@@ -808,7 +810,7 @@ namespace Suplex.UI.Modules.Admin.Controllers
                     }
                     else
                     {
-                        so = (SecureObject) await _svc.GetSecureObjectByUIdAsync( model.UId.Value, includeChildren: false, includeDisabled: true );
+                        so = (SecureObject)await _svc.GetSecureObjectByUIdAsync( model.UId.Value, includeChildren: false, includeDisabled: true );
                     }
 
                     // existing collection will be totally replaced

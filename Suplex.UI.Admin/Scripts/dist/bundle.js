@@ -8768,6 +8768,8 @@ function dataSourceError(e) {
 }
 function decipherJqXhrError(jqXHR, textStatus) {
     var errorMessage = "";
+    if (!jqXHR)
+        return errorMessage;
     if (jqXHR.status === 0) {
         errorMessage = "Not connected. Please verify network connection.";
     }

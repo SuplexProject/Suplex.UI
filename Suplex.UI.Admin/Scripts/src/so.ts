@@ -182,7 +182,6 @@ let soDaclDataSource = new kendo.data.DataSource( {
                 }
             }
             options.success( options.data );
-            console.log( "update ds" );
         },
         destroy: function ( options ) {
             for ( let i = 0; i < dacl.length; i++ ) {
@@ -553,8 +552,8 @@ function setupWidgets() {
                 // 2. new item added
                 // item delete has no effect on this flag
                 setVMEditorHasChangesFlag( true );
-                console.log( "save clicked" );
-                console.log( e )
+                //console.log( "save clicked" );
+                //console.log( e )
             }
         },
         remove: function ( e: kendo.ui.GridRemoveEvent ) {
@@ -995,7 +994,7 @@ export function soTbbExpandClick( e: any ) {
 
     switch ( "#" + e.id ) {
         case ID.SO_TBB_EXPAND:
-            console.log( "-- expand" );
+            //console.log( "-- expand" );
 
             //https://www.telerik.com/forums/open-split-button-with-js
             let $btn = $( "#" + e.id ).closest( '.k-split-button' );
@@ -1028,7 +1027,7 @@ export function soTbbCollapseClick( e: any ) {
 
     switch ( "#" + e.id ) {
         case ID.SO_TBB_COLLAPSE:
-            console.log( "-- collapse" );
+            //console.log( "-- collapse" );
 
             //https://www.telerik.com/forums/open-split-button-with-js
             let $btn = $( "#" + e.id ).closest( '.k-split-button' );
@@ -1807,7 +1806,7 @@ let soTlModel = kendo.data.TreeListModel.define( {
 function soTlClick() {
     //console.log( "In soTlClick..." );
     let selectedItem: any = k$soTl.dataItem( k$soTl.select() ); // TODO: Put explicit type
-    console.log( selectedItem );
+    //console.log( selectedItem );
 
     if ( !selectedItem ) {
         return;

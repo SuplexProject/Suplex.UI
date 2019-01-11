@@ -62,6 +62,8 @@ export function dataSourceError(e: any) : void {
 export function decipherJqXhrError(jqXHR: JQueryXHR, textStatus: string) : string {
     let errorMessage = "";
 
+    if ( !jqXHR ) return errorMessage;
+
     if (jqXHR.status === 0) {
         errorMessage = "Not connected. Please verify network connection.";
     } else if (jqXHR.status == 404) {

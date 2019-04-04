@@ -842,12 +842,12 @@ function setupWidgets() {
             ( k$soPopAuditFilter as any ).toggle();
             //( $( "#soPopAuditFilter" ).data( "kendoPopup" ) as any ).toggle();
         } );
-
+    
     //$( "#soDdlAuditFilter .k-dropdown-wrap" ).hover( function () {
     $( ID.SO_DROPDOWNLIST_AUDIT_FILTER + " .k-dropdown-wrap" ).hover( function () {
         $( this ).toggleClass( "k-state-hover" );
     } );
-
+    
 }
 function setupVariables() {
     $soTb = $( ID.SO_TB );

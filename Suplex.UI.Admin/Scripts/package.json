@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.3.5",
-    "@types/kendo-ui": "^2018.2.2",
+    "@types/kendo-ui": "^2019.1.1",
     "@types/lodash-es": "^4.17.1",
     "awesome-typescript-loader": "^5.2.0",
     "css-loader": "^1.0.0",

@@ -24,6 +24,15 @@ namespace Suplex.UI.Modules.Admin.ViewModels
         public string RightType { get; set; } 
         public int Right { get; set; }
     }
+    public class DaclConverterVM
+    {
+        public Guid? UId { get; set; }
+        public string SourceRightType { get; set; }
+        public string SourceRightValue { get; set; }
+        public string TargetRightType { get; set; }
+        public int TargetRightValue { get; set; }
+        public bool Inheritable { get; set; }
+    }
     public class SecureObjectEditorVM
     {
         public Guid? UId { get; set; }
@@ -40,7 +49,7 @@ namespace Suplex.UI.Modules.Admin.ViewModels
 
         public List<DaclVM> Dacl { get; set; }
         public List<SaclVM> Sacl { get; set; }
-
+        public List<DaclConverterVM> DaclConverters { get; set; }
 
     }
 }

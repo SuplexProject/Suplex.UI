@@ -61,9 +61,9 @@ input:-ms-input-placeholder {
 .k-grid-edit-row .k-callout-n {
     left: 20px;
 }   
-.k-grid tr td {
+/*.k-grid tr td {
     vertical-align: top;
-}
+}*/
 /* toolbar split buttons - restore style as it is overwritten by bootstrap style */
 .k-split-container .k-button {
     border-width: 0;
@@ -74,6 +74,19 @@ input:-ms-input-placeholder {
 }
 .k-textbox .k-icon {
     cursor: pointer;
+}
+.k-switch-off .k-switch-handle {
+    border-color: #a00;
+    background-color: #a00;
+}
+.k-switch-off.k-state-hover .k-switch-handle,
+.k-switch-off:hover .k-switch-handle,
+.k-switch-off:focus .k-switch-handle {
+    border-color: #a00;
+    background-color: #a00;
+}
+.k-switch-label-on, .k-switch-label-off {
+    /*display:none;*/
 }
 /* == tool bars == */
 #tbMain { /*, #spTb, #soTb { */

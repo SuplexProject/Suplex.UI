@@ -6420,7 +6420,6 @@ var soDaclDataSource = new kendo.data.DataSource({
                 }
             }
             options.success(options.data);
-            console.log("update ds");
         },
         destroy: function (options) {
             for (var i = 0; i < dacl.length; i++) {
@@ -6735,8 +6734,6 @@ function setupWidgets() {
         save: function (e) {
             if (this.dataSource.hasChanges()) {
                 setVMEditorHasChangesFlag(true);
-                console.log("save clicked");
-                console.log(e);
             }
         },
         remove: function (e) {
@@ -7094,7 +7091,6 @@ function resizeSplitter() {
 function soTbbExpandClick(e) {
     switch ("#" + e.id) {
         case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_EXPAND"]:
-            console.log("-- expand");
             var $btn = $("#" + e.id).closest('.k-split-button');
             var popup = $btn.data("kendoPopup");
             if (popup) {
@@ -7120,7 +7116,6 @@ function soTbbExpandClick(e) {
 function soTbbCollapseClick(e) {
     switch ("#" + e.id) {
         case _ids__WEBPACK_IMPORTED_MODULE_0__["SO_TBB_COLLAPSE"]:
-            console.log("-- collapse");
             var $btn = $("#" + e.id).closest('.k-split-button');
             var popup = $btn.data("kendoPopup");
             if (popup) {
@@ -7764,7 +7759,6 @@ var soTlModel = kendo.data.TreeListModel.define({
 });
 function soTlClick() {
     var selectedItem = k$soTl.dataItem(k$soTl.select());
-    console.log(selectedItem);
     if (!selectedItem) {
         return;
     }

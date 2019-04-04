@@ -138,12 +138,13 @@
                                 </div>
                             </div>
                             <div class="formElement">
-                                <div class="formLabel">Status</div>
+                                <div class="formLabel">Enabled</div>
                                 <div class="formInput">
-                                    <input type="radio" name="spIsEnabled" id="spStatusIsEnabled" style="width:0;" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
-                                    <label class="k-radio-label" for="spStatusIsEnabled">Enabled</label>
-                                    <input type="radio" name="spIsEnabled" id="spStatusIsDisabled" style="width:0;" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
-                                    <label class="k-radio-label" for="spStatusIsDisabled">Disabled</label>
+                                    @(Html.Kendo().Switch().Name( "spEnabled" ).Messages( c => c.Checked( "Yes" ).Unchecked( "No" ) ).HtmlAttributes( new { data_bind = "checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" } ) )
+                                    @*<input type="radio" name="spIsEnabled" id="spStatusIsEnabled" style="width:0;" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
+        <label class="k-radio-label" for="spStatusIsEnabled">Enabled</label>
+        <input type="radio" name="spIsEnabled" id="spStatusIsDisabled" style="width:0;" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
+        <label class="k-radio-label" for="spStatusIsDisabled">Disabled</label>*@
                                 </div>
                             </div>
                             <div class="formElement" data-bind="invisible: editor.model.IsUser">
@@ -160,17 +161,14 @@
                                 <div class="formInput">
                                     <div style="display:flex;">
                                         @(Html.Kendo().MultiSelect().Name( "spMsMemberOf" ).DataTextField( "Name" ).DataValueField( "UId" )
-                                                                                                                                                                                                            .DataSource( "SuplexAdmin.spMsMemberOfDataSource" )
-                                                                                                                                                                                                            .HtmlAttributes( new { style = "flex-grow:1" } )
-                                                                                                                                                                                                            .ItemTemplateId( "spNameTemplate" )
-                                                                                                                                                                                                            .TagTemplateId( "spNameTemplate" )
+                                            .DataSource( "SuplexAdmin.spMsMemberOfDataSource" ).HtmlAttributes( new { style = "flex-grow:1" } ).ItemTemplateId( "spNameTemplate" ).TagTemplateId( "spNameTemplate" )
                                         )
                                         @(Html.Kendo().Button().Name( "spBtnMemberOfAdd" ).Content( "Add" ).HtmlAttributes( new { style = "width:40px;margin-left:5px;" } )
-                                                                                                                                                                                    .Events( e => e.Click( "SuplexAdmin.spBtnMemberOfAddClick" ) ))
+                                            .Events( e => e.Click( "SuplexAdmin.spBtnMemberOfAddClick" ) ))
                                     </div>
 
                                     @(Html.Kendo().ListBox().Name( "spLbMemberOf" ).DataSource( "SuplexAdmin.spLbMemberOfDataSource" ).DataTextField( "Name" ).DataValueField( "UId" ).TemplateId( "spGroupMembershipItemTemplate" )
-                                                                                                                            .HtmlAttributes( new { style = "margin-top:5px;width:100%;" } ))
+                                            .HtmlAttributes( new { style = "margin-top:5px;width:100%;" } ))
                                 </div>
                             </div>
                             <div class="formElement" data-bind="visible: editor.isLocalGroup">
@@ -178,17 +176,13 @@
                                 <div class="formInput">
                                     <div style="display:flex;">
 
-                                        @(Html.Kendo().MultiSelect().Name( "spMsMembers" ).DataTextField( "Name" ).DataValueField( "UId" )
-                                                                                                                                                                                    .DataSource( "SuplexAdmin.spMsMembersDataSource" )
-                                                                                                                                                                                    .HtmlAttributes( new { style = "flex-grow:1" } )
-                                                                                                                                                                                    .ItemTemplateId( "spNameTemplate" )
-                                                                                                                                                                                    .TagTemplateId( "spNameTemplate" )
+                                        @(Html.Kendo().MultiSelect().Name( "spMsMembers" ).DataTextField( "Name" ).DataValueField( "UId" ).DataSource( "SuplexAdmin.spMsMembersDataSource" )
+                                            .HtmlAttributes( new { style = "flex-grow:1" } ).ItemTemplateId( "spNameTemplate" ).TagTemplateId( "spNameTemplate" )
                                         )
-                                        @(Html.Kendo().Button().Name( "spBtnMembersAdd" ).Content( "Add" ).HtmlAttributes( new { style = "width:40px;margin-left:5px;" } )
-                                                                                                                                                                            .Events( e => e.Click( "SuplexAdmin.spBtnMembersAddClick" ) ))
+                                        @(Html.Kendo().Button().Name( "spBtnMembersAdd" ).Content( "Add" ).HtmlAttributes( new { style = "width:40px;margin-left:5px;" } ).Events( e => e.Click( "SuplexAdmin.spBtnMembersAddClick" ) ))
                                     </div>
                                     @(Html.Kendo().ListBox().Name( "spLbMembers" ).DataSource( "SuplexAdmin.spLbMembersDataSource" ).DataTextField( "Name" ).DataValueField( "UId" ).TemplateId( "spGroupMembershipItemTemplate" )
-                                                                                                                                    .HtmlAttributes( new { style = "margin-top:5px;width:100%;" } ))
+                                        .HtmlAttributes( new { style = "margin-top:5px;width:100%;" } ))
 
                                 </div>
                             </div>
@@ -336,12 +330,13 @@
                                 </div>
                             </div>
                             <div class="formElement">
-                                <div class="formLabel">Status</div>
+                                <div class="formLabel">Enabled</div>
                                 <div class="formInput">
-                                    <input type="radio" name="soIsEnabled" id="soStatusIsEnabled" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
-                                    <label class="k-radio-label" for="soStatusIsEnabled">Enabled</label>
-                                    <input type="radio" name="soIsEnabled" id="soStatusIsDisabled" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
-                                    <label class="k-radio-label" for="soStatusIsDisabled">Disabled</label>
+                                    @(Html.Kendo().Switch().Name( "soEnabled" ).Messages( c => c.Checked( "Yes" ).Unchecked( "No" ) ).HtmlAttributes( new { data_bind = "checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" } ) )
+                                    @*<input type="radio" name="soIsEnabled" id="soStatusIsEnabled" class="k-radio" value="true" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
+        <label class="k-radio-label" for="soStatusIsEnabled">Enabled</label>
+        <input type="radio" name="soIsEnabled" id="soStatusIsDisabled" class="k-radio" value="false" data-type="boolean" data-bind="checked: editor.model.IsEnabled, events: {change: editor.raiseChange}" />
+        <label class="k-radio-label" for="soStatusIsDisabled">Disabled</label>*@
                                 </div>
                             </div>
                             <div class="clearfix"></div>
@@ -353,9 +348,12 @@
                                     Permissions (<span data-bind="text: editor.daclItemCount"></span>)
                                 </div>
                                 <div class="subHdrRight">
-                                    <input id="daclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.DaclAllowInherit, events: {  change: editor.raiseChange }" />
-                                    <label class="k-checkbox-label va-mid bold" for="daclAllowInherit">Inherit Permission</label>
+                                    @*<input id="daclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.DaclAllowInherit, events: {  change: editor.raiseChange }" />
+                                    <label class="k-checkbox-label va-mid bold" for="daclAllowInherit">Inherit Permission</label>*@
+                                    <label class="va-mid bold">Inherit Permission</label>
+                                    @(Html.Kendo().Switch().Name( "daclAllowInherit" ).Messages( c => c.Checked( "Yes" ).Unchecked( "No" ) ).HtmlAttributes( new { data_bind = "checked: editor.model.DaclAllowInherit, events: {change: editor.raiseChange}" } ) )
                                     <button id="soBtnDaclAdd" class="k-button w105" style="margin-left: 10px;">New Permission</button>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -384,8 +382,10 @@
                                             <button class="k-button" data-bind="disabled: editor.saclAuditTypeFilterIsDefault, events: { click: editor.setSaclAuditTypeFilterToDefault }">Use Default Filter</button>
                                         </div>
                                     </div>
-                                    <input id="saclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
-                                    <label class="k-checkbox-label va-mid bold" for="saclAllowInherit">Inherit Audit</label>
+                                    @*<input id="saclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
+                                    <label class="k-checkbox-label va-mid bold" for="saclAllowInherit">Inherit Audit</label>*@
+                                    <label class="va-mid bold">Inherit Permission</label>
+                                    @(Html.Kendo().Switch().Name( "saclAllowInherit" ).Messages( c => c.Checked( "Yes" ).Unchecked( "No" ) ).HtmlAttributes( new { data_bind = "checked: editor.model.SaclAllowInherit, events: {change: editor.raiseChange}" } ) )
                                     <btn id="soBtnSaclAdd" class="k-button w105" style="margin-left: 10px;">New Audit</btn>
                                 </div>
                             </div>

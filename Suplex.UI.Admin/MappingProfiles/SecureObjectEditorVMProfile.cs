@@ -15,12 +15,13 @@ namespace Suplex.UI.Modules.Admin.MappingProfiles
 
             CreateMap<IAccessControlEntry, DaclVM>()
                 .ForMember(d => d.Right, opts => opts.MapFrom(s => s.RightData.Value))
-                .ForMember(d => d.RightType, opts => opts.MapFrom(s => s.RightData.FriendlyTypeName));
+                //.ForMember(d => d.RightType, opts => opts.MapFrom(s => s.RightData.FriendlyTypeName));
+                .ForMember( d => d.RightType, opts => opts.MapFrom( s => s.RightData.RightType.Name ) );
 
             CreateMap<IAccessControlEntryAudit, SaclVM>()
                 .ForMember(d => d.Right, opts => opts.MapFrom(s => s.RightData.Value))
-                .ForMember(d => d.RightType, opts => opts.MapFrom(s => s.RightData.FriendlyTypeName));
-
+                //.ForMember(d => d.RightType, opts => opts.MapFrom(s => s.RightData.FriendlyTypeName));
+                .ForMember( d => d.RightType, opts => opts.MapFrom( s => s.RightData.RightType.Name ) );
             //CreateMap<IAccessControlEntryConverter, DaclConverterVM>()
             //    //.ForMember( d => d.SourceRightValue, opts => opts.MapFrom( s => s.SourceRightValue ) )
             //    .ForMember( d => d.SourceRightType, opts => opts.MapFrom( s => s.SourceRightType.GetFriendlyRightTypeName() ) )

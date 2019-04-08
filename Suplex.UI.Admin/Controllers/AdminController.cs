@@ -31,7 +31,9 @@ namespace Suplex.UI.Modules.Admin.Controllers
         private readonly string _apiUrl;
         private SuplexSecurityHttpApiClient _svc;
 
-        private static List<RightVM> _rights = null;
+        //private static List<RightVM> _rights = null;
+        private static List<RightsVM> _rights = null;
+        private static Dictionary<string, string> _rightTypeLookup = null;
         private static List<EnumVM> _auditTypes = null;
         private static Dictionary<string, Object> _secureObjectDefaults = null;
         const string SUCCESS = "success";
@@ -49,6 +51,8 @@ namespace Suplex.UI.Modules.Admin.Controllers
             _auditTypes = _auditTypes ?? EnumHelpers.ToList( typeof( AuditType ) );
 
             _rights = _rights ?? SetupRightsValues();
+
+            _rightTypeLookup = _rightTypeLookup ?? SetupRightTypeLookup();
 
             _secureObjectDefaults = _secureObjectDefaults ?? SetupSecureObjectDefaults();
 
@@ -89,15 +93,41 @@ namespace Suplex.UI.Modules.Admin.Controllers
 
             return defaultValues;
         }
-        public List<RightVM> SetupRightsValues()
+        //public List<RightVM> SetupRightsValues()
+        public List<RightsVM> SetupRightsValues()
         {
-            List<Type> types = new List<Type>() { typeof( UIRight ), typeof( RecordRight ), typeof( FileSystemRight ), typeof( SynchronizationRight ) };
-            List<RightVM> rights = new List<RightVM>();
+            List<Type> types = EnumUtilities.GetRightTypes();
+            //List<Type> types = new List<Type>() { typeof( UIRight ), typeof( RecordRight ), typeof( FileSystemRight ), typeof( SynchronizationRight ) };
+            //List<RightVM> rights = new List<RightVM>();
+            //List<RightTypeVM> rightTypes = new List<RightTypeVM>();
+            //foreach( Type t in types )
+            //{
+            //    rights.AddRange( EnumHelpers.ToList( t ).Select( s => new RightVM { RightType = t.Name, RightId = s.Id, RightName = s.Name } ).OrderBy( o => o.RightType ).ThenByDescending( o => o.RightId ).ToList() );
+            //    rightTypes.Add( new RightTypeVM { RightType = t.Name, RightTypeFriendlyName = t.GetFriendlyRightTypeName() } );
+            //}
+            List<RightsVM> rights = new List<RightsVM>();
             foreach( Type t in types )
             {
-                rights.AddRange( EnumHelpers.ToList( t ).Select( s => new RightVM { RightType = t.GetFriendlyRightTypeName(), RightId = s.Id, RightName = s.Name } ).OrderBy( o => o.RightType ).ThenByDescending( o => o.RightId ).ToList() );
+                rights.Add( new RightsVM
+                {
+                    RightType = t.Name,
+                    RightTypeFriendlyName = t.GetFriendlyRightTypeName(),
+                    Rights = EnumHelpers.ToList( t ).Select( s => new RightVM { RightId = s.Id, RightName = s.Name } ).OrderByDescending( o => o.RightId ).ToList()
+                } );
+
             }
+            _logger.LogInformation( $"In SetupRightsValues" );
             return rights;
+        }
+        public Dictionary<string, string> SetupRightTypeLookup()
+        {
+            List<Type> types = EnumUtilities.GetRightTypes();
+            Dictionary<string, string> lookup = new Dictionary<string, string>();
+            foreach( Type t in types)
+            {
+                lookup.Add( t.Name, t.AssemblyQualifiedName );   
+            }
+            return lookup;
         }
         public IActionResult GetRights()
         {
@@ -813,51 +843,72 @@ namespace Suplex.UI.Modules.Admin.Controllers
                         so = (SecureObject)await _svc.GetSecureObjectByUIdAsync( model.UId.Value, includeChildren: false, includeDisabled: true );
                     }
 
-                    // existing collection will be totally replaced
+                    // existing dacl, sacl collection will be totally replaced
                     // if really want to handle mapping to existing collection refer to https://cpratt.co/using-automapper-mapping-instances/
-                    model.Dacl.ForEach( ace => ace.UId = ace.UId ?? Guid.NewGuid() );
-                    model.Sacl.ForEach( ace => ace.UId = ace.UId ?? Guid.NewGuid() );
+                    //model.Dacl.ForEach( ace => ace.UId = ace.UId ?? Guid.NewGuid() );
+                    //model.Sacl.ForEach( ace => ace.UId = ace.UId ?? Guid.NewGuid() );
+                    foreach( DaclVM ace in model.Dacl)
+                    {
+                        ace.UId = ace.UId ?? Guid.NewGuid();
+                        if( _rightTypeLookup.TryGetValue( ace.RightType, out string typeName ) )
+                        {
+                            ace.RightType = typeName;
+                        }
+                    }
+                    foreach( SaclVM ace in model.Sacl )
+                    {
+                        ace.UId = ace.UId ?? Guid.NewGuid();
+                        if( _rightTypeLookup.TryGetValue( ace.RightType, out string typeName ) )
+                        {
+                            ace.RightType = typeName;
+                        }
+                    }
 
                     _mapper.Map<SecureObjectEditorVM, SecureObject>( model, so );
 
                     DiscretionaryAcl dacl = new DiscretionaryAcl();
                     foreach( var item in model.Dacl )
                     {
-                        switch( item.RightType )
-                        {
-                            case "FileSystem":
-                                dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<FileSystemRight>>( item ) );
-                                break;
-                            case "Record":
-                                dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<RecordRight>>( item ) );
-                                break;
-                            case "UI":
-                                dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<UIRight>>( item ) );
-                                break;
-                            case "Synchronization":
-                                dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<SynchronizationRight>>( item ) );
-                                break;
-                        }
+                        
+                        //switch( item.RightType )
+                        //{
+                        //    case "FileSystem":
+                        //        dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<FileSystemRight>>( item ) );
+                        //        break;
+                        //    case "Record":
+                        //        dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<RecordRight>>( item ) );
+                        //        break;
+                        //    case "UI":
+                        //        dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<UIRight>>( item ) );
+                        //        break;
+                        //    case "Synchronization":
+                        //        dacl.Add( _mapper.Map<DaclVM, AccessControlEntry<SynchronizationRight>>( item ) );
+                        //        break;
+                        //}
 
+                        IAccessControlEntry ace = AccessControlEntryUtilities.MakeAceFromRightType( item.RightType );
+                        dacl.Add( _mapper.Map( item, ace ) );
                     }
                     SystemAcl sacl = new SystemAcl();
                     foreach( var item in model.Sacl )
                     {
-                        switch( item.RightType )
-                        {
-                            case "FileSystem":
-                                sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<FileSystemRight>>( item ) );
-                                break;
-                            case "Record":
-                                sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<RecordRight>>( item ) );
-                                break;
-                            case "UI":
-                                sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<UIRight>>( item ) );
-                                break;
-                            case "Synchronization":
-                                sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<SynchronizationRight>>( item ) );
-                                break;
-                        }
+                        //switch( item.RightType )
+                        //{
+                        //    case "FileSystem":
+                        //        sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<FileSystemRight>>( item ) );
+                        //        break;
+                        //    case "Record":
+                        //        sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<RecordRight>>( item ) );
+                        //        break;
+                        //    case "UI":
+                        //        sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<UIRight>>( item ) );
+                        //        break;
+                        //    case "Synchronization":
+                        //        sacl.Add( _mapper.Map<SaclVM, AccessControlEntryAudit<SynchronizationRight>>( item ) );
+                        //        break;
+                        //}
+                        IAccessControlEntryAudit ace = (IAccessControlEntryAudit)AccessControlEntryUtilities.MakeAceFromRightType( rightTypeName:item.RightType, isAuditAce:true );
+                        sacl.Add( _mapper.Map( item, ace ) );
 
                     }
                     so.Security.Dacl = dacl;

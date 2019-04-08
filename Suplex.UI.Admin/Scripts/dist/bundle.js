@@ -5976,7 +5976,7 @@ module.exports = function(originalModule) {
 /*!********************!*\
   !*** ./src/ids.ts ***!
   \********************/
-/*! exports provided: TB_MAIN, TBB_SHOW_SECURITY_PRINCIPALS, TBB_SHOW_SECURE_OBJECTS, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SP_BTN_CLEAR_TXT_GRD_FILTER, SO_VIEW, SO_SPLITTER, SO_TB, SO_TBB_NEW, SO_TBB_NEW_ROOT, SO_TBB_NEW_CHILD, SO_TBB_COPY, SO_TBB_COPY_AS_ROOT, SO_TBB_COPY_AS_CHILD, SO_TBB_DELETE, SO_TBB_EXPAND, SO_TBB_EXPAND_NODE, SO_TBB_EXPAND_TREE, SO_TBB_COLLAPSE, SO_TBB_COLLAPSE_TREE, SO_TBB_COLLAPSE_NODE, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW_ROOT, SO_TREELIST_CTX_MENU_NEW_CHILD, SO_TREELIST_CTX_MENU_COPY_AS_ROOT, SO_TREELIST_CTX_MENU_COPY_AS_CHILD, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND_TREE, SO_TREELIST_CTX_MENU_EXPAND_NODE, SO_TREELIST_CTX_MENU_COLLAPSE_TREE, SO_TREELIST_CTX_MENU_COLLAPSE_NODE, SO_DROPDOWNLIST_AUDIT_FILTER, SO_POPUP_AUDIT_FILTER_CONTAINER, SO_POPUP_AUDIT_FILTER */
+/*! exports provided: TB_MAIN, TBB_SHOW_SECURITY_PRINCIPALS, TBB_SHOW_SECURE_OBJECTS, SP_VIEW, SP_SPLITTER, SP_GRID, SP_TXT_GRD_FILTER, SP_EDITOR, SP_EDITOR_ERROR, SP_LISTBOX_MEMBER_OF, SP_LISTBOX_MEMBERS, SP_MULTISELECT_MEMBER_OF, SP_MULTISELECT_MEMBERS, SP_BTN_MEMBER_OF_ADD, SP_BTN_MEMBERS_ADD, SP_TREELIST_GROUP_HIERARCHY, SP_BTN_NEW, SP_BTN_NEW_USER, SP_BTN_NEW_GROUP, SP_BTN_CLEAR_TXT_GRD_FILTER, SO_VIEW, SO_SPLITTER, SO_TB, SO_TBB_NEW, SO_TBB_NEW_ROOT, SO_TBB_NEW_CHILD, SO_TBB_COPY, SO_TBB_COPY_AS_ROOT, SO_TBB_COPY_AS_CHILD, SO_TBB_DELETE, SO_TBB_EXPAND, SO_TBB_EXPAND_NODE, SO_TBB_EXPAND_TREE, SO_TBB_COLLAPSE, SO_TBB_COLLAPSE_TREE, SO_TBB_COLLAPSE_NODE, SO_BTN_DACL_ADD, SO_POP_DACL_ADD, SO_POP_DACL_ADD_CONTAINER, SO_LISTBOX_DACL_ADD_RIGHT_TYPE, SO_BTN_SACL_ADD, SO_POP_SACL_ADD, SO_POP_SACL_ADD_CONTAINER, SO_LISTBOX_SACL_ADD_RIGHT_TYPE, SO_TREELIST, SO_EDITOR, SO_EDITOR_ERROR, SO_GRD_DACL, SO_GRD_SACL, SO_TREELIST_CTX_MENU, SO_TREELIST_CTX_MENU_NEW_ROOT, SO_TREELIST_CTX_MENU_NEW_CHILD, SO_TREELIST_CTX_MENU_COPY_AS_ROOT, SO_TREELIST_CTX_MENU_COPY_AS_CHILD, SO_TREELIST_CTX_MENU_DELETE, SO_TREELIST_CTX_MENU_EXPAND_TREE, SO_TREELIST_CTX_MENU_EXPAND_NODE, SO_TREELIST_CTX_MENU_COLLAPSE_TREE, SO_TREELIST_CTX_MENU_COLLAPSE_NODE, SO_DROPDOWNLIST_AUDIT_FILTER, SO_POPUP_AUDIT_FILTER_CONTAINER, SO_POPUP_AUDIT_FILTER */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6017,6 +6017,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_COLLAPSE", function() { return SO_TBB_COLLAPSE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_COLLAPSE_TREE", function() { return SO_TBB_COLLAPSE_TREE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TBB_COLLAPSE_NODE", function() { return SO_TBB_COLLAPSE_NODE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_DACL_ADD", function() { return SO_BTN_DACL_ADD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_POP_DACL_ADD", function() { return SO_POP_DACL_ADD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_POP_DACL_ADD_CONTAINER", function() { return SO_POP_DACL_ADD_CONTAINER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_LISTBOX_DACL_ADD_RIGHT_TYPE", function() { return SO_LISTBOX_DACL_ADD_RIGHT_TYPE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_BTN_SACL_ADD", function() { return SO_BTN_SACL_ADD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_POP_SACL_ADD", function() { return SO_POP_SACL_ADD; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_POP_SACL_ADD_CONTAINER", function() { return SO_POP_SACL_ADD_CONTAINER; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_LISTBOX_SACL_ADD_RIGHT_TYPE", function() { return SO_LISTBOX_SACL_ADD_RIGHT_TYPE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_TREELIST", function() { return SO_TREELIST; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_EDITOR", function() { return SO_EDITOR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SO_EDITOR_ERROR", function() { return SO_EDITOR_ERROR; });
@@ -6071,6 +6079,14 @@ var SO_TBB_EXPAND_TREE = "#soTbbExpandTree";
 var SO_TBB_COLLAPSE = "#soTbbCollapse";
 var SO_TBB_COLLAPSE_TREE = "#soTbbCollapseTree";
 var SO_TBB_COLLAPSE_NODE = "#soTbbCollapseNode";
+var SO_BTN_DACL_ADD = "#soBtnDaclAdd";
+var SO_POP_DACL_ADD = "#soPopDaclAdd";
+var SO_POP_DACL_ADD_CONTAINER = "#soPopDaclAddContainer";
+var SO_LISTBOX_DACL_ADD_RIGHT_TYPE = "#soLbDaclAddRightType";
+var SO_BTN_SACL_ADD = "#soBtnSaclAdd";
+var SO_POP_SACL_ADD = "#soPopSaclAdd";
+var SO_POP_SACL_ADD_CONTAINER = "#soPopSaclAddContainer";
+var SO_LISTBOX_SACL_ADD_RIGHT_TYPE = "#soLbSaclAddRightType";
 var SO_TREELIST = "#soTl";
 var SO_EDITOR = "#soEditor";
 var SO_EDITOR_ERROR = "#soEditorError";
@@ -6339,7 +6355,17 @@ var k$soCtxMnu = null;
 var $soDdlAuditFilter = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_DROPDOWNLIST_AUDIT_FILTER"]);
 var $soPopAuditFilterContainer = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_POPUP_AUDIT_FILTER_CONTAINER"]);
 var $soPopAuditFilter = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_POPUP_AUDIT_FILTER"]);
+var $soBtnDaclAdd = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_DACL_ADD"]);
+var $soPopDaclAdd = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_POP_DACL_ADD"]);
+var $soLbDaclAddRightType = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_LISTBOX_DACL_ADD_RIGHT_TYPE"]);
+var $soBtnSaclAdd = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_BTN_SACL_ADD"]);
+var $soPopSaclAdd = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_POP_SACL_ADD"]);
+var $soLbSaclAddRightType = $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_LISTBOX_SACL_ADD_RIGHT_TYPE"]);
 var k$soPopAuditFilter = null;
+var k$soPopDaclAdd = null;
+var k$soLbDaclAddRightType = null;
+var k$soPopSaclAdd = null;
+var k$soLbSaclAddRightType = null;
 var auditTypes = [];
 var rightTypes = [];
 var rights = {};
@@ -6377,10 +6403,8 @@ function soGetInitialData() {
         rights = {};
         $.each(data, function (index, item) {
             rights[item.RightType] = rights[item.RightType] || [];
-            rights[item.RightType].push(item);
-            if (rightTypes.indexOf(item.RightType) < 0) {
-                rightTypes.push(item.RightType);
-            }
+            rights[item.RightType] = item.Rights;
+            rightTypes.push({ RightType: item.RightType, RightTypeFriendlyName: item.RightTypeFriendlyName });
         });
     })
         .fail(function (jqXHR, textStatus, errorThrown) {
@@ -6448,6 +6472,18 @@ var soDaclDataSource = new kendo.data.DataSource({
                     validation: {
                         righttypevalidation: validateRightType,
                     },
+                    defaultValue: function (e) {
+                        if (rightTypes.length == 0 || !k$soLbDaclAddRightType)
+                            return "";
+                        else {
+                            var selectedRightType = k$soLbDaclAddRightType.select();
+                            if (selectedRightType.length == 0)
+                                return rightTypes[0].RightType;
+                            else {
+                                return k$soLbDaclAddRightType.dataItem(selectedRightType.first()).get("RightType");
+                            }
+                        }
+                    }
                 },
                 Right: {
                     defaultValue: [],
@@ -6516,6 +6552,18 @@ var soSaclDataSource = new kendo.data.DataSource({
                     validation: {
                         righttypevalidation: validateRightType,
                     },
+                    defaultValue: function (e) {
+                        if (rightTypes.length == 0 || !k$soLbSaclAddRightType)
+                            return "";
+                        else {
+                            var selectedRightType = k$soLbSaclAddRightType.select();
+                            if (selectedRightType.length == 0)
+                                return rightTypes[0].RightType;
+                            else {
+                                return k$soLbSaclAddRightType.dataItem(selectedRightType.first()).get("RightType");
+                            }
+                        }
+                    }
                 },
                 Right: {
                     defaultValue: [],
@@ -6674,16 +6722,10 @@ function setupWidgets() {
                 template: getTrusteeName,
             },
             {
-                field: "RightType",
-                title: "Right Type",
-                width: "120px",
-                editor: rightTypeDropDownListEditor,
-            },
-            {
                 field: "Right",
                 title: "Right",
-                width: "120px",
-                template: getRightAsString,
+                width: "200px",
+                template: getRightDisplayName,
             },
             {
                 field: "Allowed",
@@ -6753,16 +6795,10 @@ function setupWidgets() {
                 template: getTrusteeName,
             },
             {
-                field: "RightType",
-                title: "Right Type",
-                width: "120px",
-                editor: rightTypeDropDownListEditor,
-            },
-            {
                 field: "Right",
                 title: "Right",
-                width: "120px",
-                template: getRightAsString,
+                width: "200px",
+                template: getRightDisplayName,
             },
             {
                 field: "Allowed",
@@ -6884,10 +6920,10 @@ function setupWidgets() {
             ctxMnuEle.find(".tree-node-selected").each(function (idx, ele) {
                 k$soCtxMnu.enable(ele, !headerSelected);
             });
-            $("body").addClass("no-scroll");
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(false);
         },
         close: function (e) {
-            $("body").removeClass("no-scroll");
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(true);
         },
         select: function (e) {
             var target = $(e.target);
@@ -6971,14 +7007,56 @@ function setupWidgets() {
         },
     })
         .data("kendoValidator");
+    $soPopDaclAdd.kendoPopup({
+        anchor: $soBtnDaclAdd,
+        appendTo: $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_POP_DACL_ADD_CONTAINER"]),
+        open: function (e) {
+            k$soLbDaclAddRightType.clearSelection();
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(false);
+        },
+        close: function (e) {
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(true);
+        }
+    });
+    $soLbDaclAddRightType.kendoListBox({
+        selectable: "single",
+        dataSource: rightTypes,
+        dataValueField: "RightType",
+        dataTextField: "RightType",
+        change: function (e) {
+            k$soGrdDacl.addRow();
+            k$soPopDaclAdd.close();
+        }
+    });
+    $soPopSaclAdd.kendoPopup({
+        anchor: $soBtnSaclAdd,
+        appendTo: $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_POP_SACL_ADD_CONTAINER"]),
+        open: function (e) {
+            k$soLbSaclAddRightType.clearSelection();
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(false);
+        },
+        close: function (e) {
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(true);
+        }
+    });
+    $soLbSaclAddRightType.kendoListBox({
+        selectable: "single",
+        dataSource: rightTypes,
+        dataValueField: "RightType",
+        dataTextField: "RightType",
+        change: function (e) {
+            k$soGrdSacl.addRow();
+            k$soPopSaclAdd.close();
+        }
+    });
     $soPopAuditFilter.kendoPopup({
         anchor: $soDdlAuditFilter,
         appendTo: $soPopAuditFilterContainer,
         open: function (e) {
-            $("body").addClass("no-scroll");
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(false);
         },
         close: function (e) {
-            $("body").removeClass("no-scroll");
+            Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(true);
         }
     });
     $soDdlAuditFilter
@@ -6999,6 +7077,10 @@ function setupVariables() {
     k$soCtxMnu = $soCtxMnu.data("kendoContextMenu");
     k$soSpltr = $soSpltr.data("kendoSplitter");
     k$soPopAuditFilter = $soPopAuditFilter.data("kendoPopup");
+    k$soLbDaclAddRightType = $soLbDaclAddRightType.data("kendoListBox");
+    k$soPopDaclAdd = $soPopDaclAdd.data("kendoPopup");
+    k$soLbSaclAddRightType = $soLbSaclAddRightType.data("kendoListBox");
+    k$soPopSaclAdd = $soPopSaclAdd.data("kendoPopup");
 }
 function setupEventHandlers() {
     $(window)
@@ -7011,11 +7093,11 @@ function setupEventHandlers() {
         }
         ;
     });
-    $("#soBtnDaclAdd").on('click', function (e) {
-        k$soGrdDacl.addRow();
+    $soBtnDaclAdd.on('click', function (e) {
+        k$soPopDaclAdd.toggle();
     });
-    $("#soBtnSaclAdd").on('click', function (e) {
-        k$soGrdSacl.addRow();
+    $soBtnSaclAdd.on('click', function (e) {
+        k$soPopSaclAdd.toggle();
     });
     $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_DACL"] + "," + _ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_SACL"]).on('mouseenter', '.k-grid-edit', { title: "Edit" }, setCommandButtonTitle);
     $(_ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_DACL"] + "," + _ids__WEBPACK_IMPORTED_MODULE_0__["SO_GRD_SACL"]).on('mouseenter', '.k-grid-customdelete', { title: "Delete" }, setCommandButtonTitle);
@@ -7095,11 +7177,11 @@ function soTbbExpandClick(e) {
             var popup = $btn.data("kendoPopup");
             if (popup) {
                 if (popup.visible()) {
-                    $("body").removeClass("no-scroll");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(true);
                     popup.close();
                 }
                 else {
-                    $("body").addClass("no-scroll");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(false);
                     popup.open();
                 }
             }
@@ -7120,11 +7202,11 @@ function soTbbCollapseClick(e) {
             var popup = $btn.data("kendoPopup");
             if (popup) {
                 if (popup.visible()) {
-                    $("body").removeClass("no-scroll");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(true);
                     popup.close();
                 }
                 else {
-                    $("body").addClass("no-scroll");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(false);
                     popup.open();
                 }
             }
@@ -7178,11 +7260,11 @@ function soTbbNewClick(e) {
             var popup = $btn.data("kendoPopup");
             if (popup) {
                 if (popup.visible()) {
-                    $("body").removeClass("no-scroll");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(true);
                     popup.close();
                 }
                 else {
-                    $("body").addClass("no-scroll");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(false);
                     popup.open();
                 }
             }
@@ -7214,11 +7296,11 @@ function soTbbCopyClick(e) {
             var popup = $btn.data("kendoPopup");
             if (popup) {
                 if (popup.visible()) {
-                    $("body").removeClass("no-scroll");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(true);
                     popup.close();
                 }
                 else {
-                    $("body").addClass("no-scroll");
+                    Object(_utils__WEBPACK_IMPORTED_MODULE_2__["bodyScroll"])(false);
                     popup.open();
                 }
             }
@@ -7562,28 +7644,13 @@ function boolEditor(container, options) {
         '">').appendTo(container);
     $('<label class="k-checkbox-label" for="' + guid + '">&#8203;</label>').appendTo(container);
 }
-function rightTypeDropDownListEditor(container, options) {
-    console.log("In rightTypeDropDownListEditor...");
-    $('<input data-bind="value:' + options.field + '" name="' + options.field + '" />')
-        .appendTo(container)
-        .kendoDropDownList({
-        dataSource: rightTypes,
-        change: function (e) {
-            options.model.set("Right", 0);
-            var rightContainer = container.closest("tr.k-grid-edit-row").find("[data-container-for=Right]");
-            createRightCheckBoxList(rightContainer, options.model);
-            kendo.bind(rightContainer, options.model);
-        },
-    });
-    $('<span class="k-invalid-msg" data-for="' + options.field + '"></span>').appendTo(container);
-}
 function createRightCheckBoxList(container, model) {
     container.empty();
     if (model.RightType == "")
         return;
     var fieldName = "Right";
     var rightsArr = rights[model.RightType];
-    var ele = '<ul class="gridEditor">';
+    var ele = '<ul class="gridEditor"><li>' + model.RightType + '</li>';
     $.each(rightsArr, function (index, item) {
         ele +=
             '<li><input type="checkbox" class="k-checkbox" name="' +
@@ -7620,14 +7687,14 @@ function createRightCheckBoxList(container, model) {
             }
         }
         else {
-            if (!isCompositeValue) {
-                container.find("input:checked").each(function () {
-                    var bitFlag2 = parseInt($(this).val());
+            container.find("input:checked").each(function () {
+                var bitFlag2 = parseInt($(this).val());
+                if (bitFlag2 > bitFlag1) {
                     if ((bitFlag1 & bitFlag2) == bitFlag1) {
                         $(this).prop("checked", false);
                     }
-                });
-            }
+                }
+            });
         }
         var newRightVal = 0;
         container.find("input:checked").each(function () {
@@ -7638,11 +7705,11 @@ function createRightCheckBoxList(container, model) {
         }
     });
 }
-function getRightAsString(dataItem) {
+function getRightDisplayName(dataItem) {
     var rightVal = dataItem.Right;
     var allRightsArr = rights[dataItem.RightType];
     var rightArr = [];
-    while (rightVal > 0) {
+    if (rightVal > 0) {
         $.each(allRightsArr, function (index, item) {
             if ((rightVal & item.RightId) == item.RightId) {
                 rightArr.push(item.RightName);
@@ -7653,7 +7720,7 @@ function getRightAsString(dataItem) {
             }
         });
     }
-    return rightArr.join(", ");
+    return dataItem.RightType + "\\" + rightArr.join(", ");
 }
 function validateTrustee(input) {
     if (input.is('[name="TrusteeUId"]')) {
@@ -7661,6 +7728,19 @@ function validateTrustee(input) {
             input.attr("data-trusteevalidation-msg", "Group is required.");
             return false;
         }
+        var row = input.closest("tr");
+        var grid = row.closest("[data-role=grid]").data("kendoGrid");
+        var dataItem = grid.dataItem(row);
+        var data = grid.dataSource.data();
+        var ok = true;
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].uid != dataItem.uid && data[i].TrusteeUId == input.val() && data[i].RightType == dataItem.RightType) {
+                input.attr("data-trusteevalidation-msg", "There is already an entry with the same Group and Right Type");
+                ok = false;
+                break;
+            }
+        }
+        return ok;
     }
     return true;
 }
@@ -7669,9 +7749,6 @@ function validateRight(input) {
         if (input.closest("td").find("input[type=checkbox]:checked").length == 0) {
             input.attr("data-rightvalidation-msg", "Select at least 1 right.");
             return false;
-        }
-        else {
-            return true;
         }
     }
     return true;
@@ -8682,7 +8759,7 @@ function spBtnMembersAddClick(e) {
 /*!**********************!*\
   !*** ./src/utils.ts ***!
   \**********************/
-/*! exports provided: notifyError, notifyInfo, notifySuccess, notifyWarning, showNotification, getActionUrl, dataSourceError, decipherJqXhrError, DialogResponse, showYesNoCancelDialog, showYesNoDialog, showAlert, showProgress, hideProgress, isPowerOfTwo, AjaxResponseStatus */
+/*! exports provided: notifyError, notifyInfo, notifySuccess, notifyWarning, showNotification, getActionUrl, dataSourceError, decipherJqXhrError, DialogResponse, showYesNoCancelDialog, showYesNoDialog, showAlert, showProgress, hideProgress, isPowerOfTwo, bodyScroll, AjaxResponseStatus */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8702,6 +8779,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "showProgress", function() { return showProgress; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hideProgress", function() { return hideProgress; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPowerOfTwo", function() { return isPowerOfTwo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bodyScroll", function() { return bodyScroll; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AjaxResponseStatus", function() { return AjaxResponseStatus; });
 function notifyError(msg, allowHideAfter, autoHideAfter) {
     showNotification(msg, "error", allowHideAfter, autoHideAfter);
@@ -8892,6 +8970,12 @@ function hideProgress() {
 }
 function isPowerOfTwo(x) {
     return (x & (x - 1)) == 0 ? true : false;
+}
+function bodyScroll(enable) {
+    if (enable)
+        $('body').css('overflow', 'auto');
+    else
+        $('body').css('overflow', 'hidden');
 }
 var AjaxResponseStatus;
 (function (AjaxResponseStatus) {

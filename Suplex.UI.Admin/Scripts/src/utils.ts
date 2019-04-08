@@ -244,8 +244,18 @@ export function hideProgress() {
 //    maskDiv.remove();
 //}
 
-export function isPowerOfTwo(x: number) : boolean {
-    return (x & (x - 1)) == 0 ? true : false;
+export function isPowerOfTwo( x: number ): boolean {
+    return ( x & ( x - 1 ) ) == 0 ? true : false;
+}
+// stops background from scrolling when dialog is open */
+// https://stackoverflow.com/questions/22257104/kendo-window-scrolling-background-window */
+export function bodyScroll( enable: boolean) {
+    if ( enable )
+        $( 'body' ).css( 'overflow', 'auto' );
+        //$( "body" ).removeClass( "no-scroll" );
+    else
+        $( 'body' ).css( 'overflow', 'hidden' );
+        //$( "body" ).addClass( "no-scroll" ); 
 }
 
 export interface AjaxResponse {

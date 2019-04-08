@@ -349,11 +349,15 @@
                                 </div>
                                 <div class="subHdrRight">
                                     @*<input id="daclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.DaclAllowInherit, events: {  change: editor.raiseChange }" />
-                                    <label class="k-checkbox-label va-mid bold" for="daclAllowInherit">Inherit Permission</label>*@
+            <label class="k-checkbox-label va-mid bold" for="daclAllowInherit">Inherit Permission</label>*@
                                     <label class="va-mid bold">Inherit Permission</label>
                                     @(Html.Kendo().Switch().Name( "daclAllowInherit" ).Messages( c => c.Checked( "Yes" ).Unchecked( "No" ) ).HtmlAttributes( new { data_bind = "checked: editor.model.DaclAllowInherit, events: {change: editor.raiseChange}" } ) )
-                                    <button id="soBtnDaclAdd" class="k-button w105" style="margin-left: 10px;">New Permission</button>
-                                    
+                                    <button id="soBtnDaclAdd" class="k-button w130" style="margin-left: 10px;">New Permission&nbsp;<span class="k-icon k-i-arrow-60-down"></span></button>
+                                    <div id="soPopDaclAddContainer" style="position:relative;display:inline-block;">
+                                        <div id="soPopDaclAdd" class="k-container k-popup w130" style="padding:3px;box-sizing: border-box;">
+                                            <select id="soLbDaclAddRightType" style="width:100%;height:auto;"></select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -383,10 +387,15 @@
                                         </div>
                                     </div>
                                     @*<input id="saclAllowInherit" type="checkbox" class="k-checkbox" data-bind="checked: editor.model.SaclAllowInherit, events: {  change: editor.raiseChange }" />
-                                    <label class="k-checkbox-label va-mid bold" for="saclAllowInherit">Inherit Audit</label>*@
+        <label class="k-checkbox-label va-mid bold" for="saclAllowInherit">Inherit Audit</label>*@
                                     <label class="va-mid bold">Inherit Permission</label>
                                     @(Html.Kendo().Switch().Name( "saclAllowInherit" ).Messages( c => c.Checked( "Yes" ).Unchecked( "No" ) ).HtmlAttributes( new { data_bind = "checked: editor.model.SaclAllowInherit, events: {change: editor.raiseChange}" } ) )
-                                    <btn id="soBtnSaclAdd" class="k-button w105" style="margin-left: 10px;">New Audit</btn>
+                                    <btn id="soBtnSaclAdd" class="k-button w130" style="margin-left: 10px;">New Audit&nbsp;<span class="k-icon k-i-arrow-60-down"></span></btn>
+                                    <div id="soPopSaclAddContainer" style="position:relative;display:inline-block;">
+                                        <div id="soPopSaclAdd" class="k-container k-popup w130" style="padding:3px;box-sizing: border-box;">
+                                            <select id="soLbSaclAddRightType" style="width:100%;height:auto;"></select>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

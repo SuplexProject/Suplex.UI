@@ -250,10 +250,10 @@ ul li .k-checkbox-label {
 }*/
 #soTl th:nth-child(n+2),
 #soTl td:nth-child(n+2),
-#soGrdDacl th:nth-child(n+4):nth-child(-n+5),
-#soGrdDacl td:nth-child(n+4):nth-child(-n+5),
-#soGrdSacl th:nth-child(n+4):nth-child(-n+6),
-#soGrdSacl td:nth-child(n+4):nth-child(-n+6) {
+#soGrdDacl th:nth-child(n+3):nth-child(-n+4),
+#soGrdDacl td:nth-child(n+3):nth-child(-n+4),
+#soGrdSacl th:nth-child(n+3):nth-child(-n+5),
+#soGrdSacl td:nth-child(n+3):nth-child(-n+5) {
     text-align: center;
 }
 #daclAllowInherit.k-checkbox:checked + label,
@@ -367,8 +367,8 @@ ul.gridEditor {
 .m3 {
     margin:3px;
 }
-.w105 {
-    width: 105px;
+.w130 {
+    width: 130px;
 }
 .full-height {
     height: 100%;
@@ -385,6 +385,6 @@ ul.gridEditor {
 }
 /* stops background from scrolling when dialog is open */
 /* https://stackoverflow.com/questions/22257104/kendo-window-scrolling-background-window */
-.no-scroll {
+/*.no-scroll {
     overflow: hidden;
-}
+}*/

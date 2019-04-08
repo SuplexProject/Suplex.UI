@@ -39,6 +39,14 @@ export const SO_TBB_EXPAND_TREE = "#soTbbExpandTree";
 export const SO_TBB_COLLAPSE = "#soTbbCollapse";
 export const SO_TBB_COLLAPSE_TREE = "#soTbbCollapseTree";
 export const SO_TBB_COLLAPSE_NODE = "#soTbbCollapseNode";
+export const SO_BTN_DACL_ADD = "#soBtnDaclAdd";
+export const SO_POP_DACL_ADD = "#soPopDaclAdd";
+export const SO_POP_DACL_ADD_CONTAINER = "#soPopDaclAddContainer"
+export const SO_LISTBOX_DACL_ADD_RIGHT_TYPE = "#soLbDaclAddRightType";
+export const SO_BTN_SACL_ADD = "#soBtnSaclAdd";
+export const SO_POP_SACL_ADD = "#soPopSaclAdd";
+export const SO_POP_SACL_ADD_CONTAINER = "#soPopSaclAddContainer"
+export const SO_LISTBOX_SACL_ADD_RIGHT_TYPE = "#soLbSaclAddRightType";
 
 export const SO_TREELIST = "#soTl";
 export const SO_EDITOR = "#soEditor";

@@ -14,9 +14,14 @@ import {
     DialogResponse,
     AjaxResponse,
     AjaxResponseStatus,
+    bodyScroll,
 } from "./utils";
 import { spGrdDataSource } from "./sp"
 
+interface IRightType {
+    RightType: string,
+    RightTypeFriendlyName: string
+}
 let $soView = $( ID.SO_VIEW );
 let $soTl = $( ID.SO_TREELIST );
 let $soSpltr = $( ID.SO_SPLITTER );
@@ -41,10 +46,22 @@ let k$soCtxMnu: kendo.ui.ContextMenu = null;
 let $soDdlAuditFilter = $( ID.SO_DROPDOWNLIST_AUDIT_FILTER );
 let $soPopAuditFilterContainer = $( ID.SO_POPUP_AUDIT_FILTER_CONTAINER );
 let $soPopAuditFilter = $( ID.SO_POPUP_AUDIT_FILTER );
-let k$soPopAuditFilter: kendo.ui.Popup = null
+let $soBtnDaclAdd = $( ID.SO_BTN_DACL_ADD );
+let $soPopDaclAdd = $( ID.SO_POP_DACL_ADD );
+let $soLbDaclAddRightType = $( ID.SO_LISTBOX_DACL_ADD_RIGHT_TYPE );
+let $soBtnSaclAdd = $( ID.SO_BTN_SACL_ADD );
+let $soPopSaclAdd = $( ID.SO_POP_SACL_ADD );
+let $soLbSaclAddRightType = $( ID.SO_LISTBOX_SACL_ADD_RIGHT_TYPE );
+
+let k$soPopAuditFilter: kendo.ui.Popup = null;
+let k$soPopDaclAdd: kendo.ui.Popup = null;
+let k$soLbDaclAddRightType: kendo.ui.ListBox = null;
+let k$soPopSaclAdd: kendo.ui.Popup = null;
+let k$soLbSaclAddRightType: kendo.ui.ListBox = null;
 
 let auditTypes: string[] = [];
-let rightTypes: string[] = [];
+//let rightTypes: string[] = [];
+let rightTypes: IRightType[] = [];
 let rights = {};
 let secureObjectDefaults = {};
 
@@ -122,6 +139,7 @@ export function soGetInitialData() {
             let msg = decipherJqXhrError( jqXHR, textStatus );
             notifyError( `There is a problem getting information from the server.<br/>${msg}` );
         } );
+    
     let dfdRights = $
         .get( getActionUrl( "GetRights", "Admin" ) )
         .done( function ( data ) {
@@ -129,10 +147,12 @@ export function soGetInitialData() {
             rights = {};
             $.each( data, function ( index, item ) {
                 rights[item.RightType] = rights[item.RightType] || [];
-                rights[item.RightType].push( item );
-                if ( rightTypes.indexOf( item.RightType ) < 0 ) {
-                    rightTypes.push( item.RightType );
-                }
+                //rights[item.RightType].push( item );
+                rights[item.RightType] = item.Rights;
+                rightTypes.push( { RightType: item.RightType, RightTypeFriendlyName: item.RightTypeFriendlyName } as IRightType);
+                //if ( rightTypes.indexOf( item.RightType ) < 0 ) {
+                //    rightTypes.push( item.RightType );
+                //}
             } );
         } )
         .fail( function ( jqXHR, textStatus, errorThrown ) {
@@ -212,6 +232,18 @@ let soDaclDataSource = new kendo.data.DataSource( {
                         //required: true,
                         righttypevalidation: validateRightType,
                     },
+                    defaultValue: function ( e: any ) {
+                        if ( rightTypes.length == 0 || !k$soLbDaclAddRightType )
+                            return "";
+                        else {
+                            let selectedRightType: JQuery<HTMLElement> = k$soLbDaclAddRightType.select()
+                            if ( selectedRightType.length == 0 )
+                                return rightTypes[0].RightType;
+                            else {
+                                return k$soLbDaclAddRightType.dataItem( selectedRightType.first() ).get( "RightType" );
+                            }
+                        }
+                    }
                 },
                 Right: {
                     defaultValue: [],
@@ -285,6 +317,18 @@ let soSaclDataSource = new kendo.data.DataSource( {
                         //required: true,
                         righttypevalidation: validateRightType,
                     },
+                    defaultValue: function ( e: any ) {
+                        if ( rightTypes.length == 0 || !k$soLbSaclAddRightType )
+                            return "";
+                        else {
+                            let selectedRightType: JQuery<HTMLElement> = k$soLbSaclAddRightType.select()
+                            if ( selectedRightType.length == 0 )
+                                return rightTypes[0].RightType;
+                            else {
+                                return k$soLbSaclAddRightType.dataItem( selectedRightType.first() ).get( "RightType" );
+                            }
+                        }
+                    }
                 },
                 Right: {
                     defaultValue: [],
@@ -479,29 +523,30 @@ function setupWidgets() {
                 editor: trusteeDropDownEditor,
                 template: getTrusteeName,
             },
-            {
-                field: "RightType",
-                title: "Right Type",
-                width: "120px",
-                editor: rightTypeDropDownListEditor,
-            },
+            //{
+            //    field: "RightType",
+            //    title: "Right Type",
+            //    width: "120px",
+            //    editor: rightTypeDropDownListEditor,
+            //},
             {
                 field: "Right",
                 title: "Right",
-                width: "120px",
-                template: getRightAsString,
+                width: "200px",
+                template: getRightDisplayName,
             }, // editor is created in the grid edit event. We will bind the value manually
             {
                 field: "Allowed",
                 title: "Allowed",
-                width: "75px",
                 template: "<input id='1#=UId#' type='checkbox' class='k-checkbox' #: Allowed ? 'checked=\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='1#=UId#' />",
-                editor: boolEditor
+                editor: boolEditor//,
+                //attributes: {
+                //    style: "text-align: center; "
+                //}
             },
             {
                 field: "Inheritable",
                 title: "Inheritable",
-                width: "85px",
                 template: "<input id='2#=UId#' type='checkbox' class='k-checkbox' #: Inheritable ? 'checked =\"checked\"' : '' # disabled='disabled' /><label class='k-checkbox-label' for='2#=UId#' />",
                 editor: boolEditor
             },
@@ -574,17 +619,17 @@ function setupWidgets() {
                 editor: trusteeDropDownEditor,
                 template: getTrusteeName,
             },
-            {
-                field: "RightType",
-                title: "Right Type",
-                width: "120px",
-                editor: rightTypeDropDownListEditor,
-            },
+            //{
+            //    field: "RightType",
+            //    title: "Right Type",
+            //    width: "120px",
+            //    editor: rightTypeDropDownListEditor,
+            //},
             {
                 field: "Right",
                 title: "Right",
-                width: "120px",
-                template: getRightAsString,
+                width: "200px",
+                template: getRightDisplayName,
             }, // editor is created in the grid edit event. We will bind the value manually
             {
                 field: "Allowed",
@@ -728,10 +773,12 @@ function setupWidgets() {
 
                 k$soCtxMnu.enable( ele, !headerSelected );
             } );
-            $( "body" ).addClass( "no-scroll" );    // prevent scrollbar from appearing unnecessarily in the <body> 
+            //$( "body" ).addClass( "no-scroll" );    // prevent scrollbar from appearing unnecessarily in the <body> 
+            bodyScroll( false );
         },
         close: function ( e: kendo.ui.ContextMenuCloseEvent ) {
-            $( "body" ).removeClass( "no-scroll" );
+            //$( "body" ).removeClass( "no-scroll" );
+            bodyScroll( true );
         },
         select: function ( e: kendo.ui.ContextMenuSelectEvent ) {
             let target = $( e.target );
@@ -827,14 +874,60 @@ function setupWidgets() {
         } )
         .data( "kendoValidator" );
 
+    $soPopDaclAdd.kendoPopup( {
+        anchor: $soBtnDaclAdd,
+        appendTo: $( ID.SO_POP_DACL_ADD_CONTAINER ),
+        open: function ( e ) {
+            k$soLbDaclAddRightType.clearSelection();
+            bodyScroll( false );
+            //$( "body" ).addClass( "no-scroll" );    // prevent scrollbar from appearing unnecessarily in the <body> 
+        },
+        close: function ( e ) {
+            bodyScroll( true );
+            //$( "body" ).removeClass( "no-scroll" );
+        }
+    } );
+    $soLbDaclAddRightType.kendoListBox( {
+        selectable: "single",
+        dataSource: rightTypes,
+        dataValueField: "RightType",
+        dataTextField: "RightType",
+        change: function ( e: kendo.ui.ListBoxEvent ) {
+            k$soGrdDacl.addRow();
+            k$soPopDaclAdd.close();
+        }
+    } );
+    $soPopSaclAdd.kendoPopup( {
+        anchor: $soBtnSaclAdd,
+        appendTo: $( ID.SO_POP_SACL_ADD_CONTAINER ),
+        open: function ( e ) {
+            k$soLbSaclAddRightType.clearSelection();
+            bodyScroll( false );
+        },
+        close: function ( e ) {
+            bodyScroll( true );
+        }
+    } );
+    $soLbSaclAddRightType.kendoListBox( {
+        selectable: "single",
+        dataSource: rightTypes,
+        dataValueField: "RightType",
+        dataTextField: "RightType",
+        change: function ( e: kendo.ui.ListBoxEvent ) {
+            k$soGrdSacl.addRow();
+            k$soPopSaclAdd.close();
+        }
+    } );
     $soPopAuditFilter.kendoPopup( {
         anchor: $soDdlAuditFilter,
         appendTo: $soPopAuditFilterContainer,
         open: function ( e ) {
-            $( "body" ).addClass( "no-scroll" );    // prevent scrollbar from appearing unnecessarily in the <body> 
+            //$( "body" ).addClass( "no-scroll" );    // prevent scrollbar from appearing unnecessarily in the <body> 
+            bodyScroll( false );
         },
         close: function ( e ) {
-            $( "body" ).removeClass( "no-scroll" );
+            //$( "body" ).removeClass( "no-scroll" );
+            bodyScroll( true );
         }
     } );
     $soDdlAuditFilter
@@ -847,7 +940,6 @@ function setupWidgets() {
     $( ID.SO_DROPDOWNLIST_AUDIT_FILTER + " .k-dropdown-wrap" ).hover( function () {
         $( this ).toggleClass( "k-state-hover" );
     } );
-    
 }
 function setupVariables() {
     $soTb = $( ID.SO_TB );
@@ -859,6 +951,10 @@ function setupVariables() {
     k$soCtxMnu = $soCtxMnu.data( "kendoContextMenu" );
     k$soSpltr = $soSpltr.data( "kendoSplitter" );
     k$soPopAuditFilter = $soPopAuditFilter.data( "kendoPopup" );
+    k$soLbDaclAddRightType = $soLbDaclAddRightType.data( "kendoListBox" );
+    k$soPopDaclAdd = $soPopDaclAdd.data( "kendoPopup" );
+    k$soLbSaclAddRightType = $soLbSaclAddRightType.data( "kendoListBox" );
+    k$soPopSaclAdd = $soPopSaclAdd.data( "kendoPopup" );
 }
 function setupEventHandlers() {
     $( window )
@@ -872,13 +968,18 @@ function setupEventHandlers() {
             enableDisableToolBarButtons( this.secureObjectSelected() );
         };
     } )
-
-    $( "#soBtnDaclAdd" ).on( 'click', function ( e ) {
-        k$soGrdDacl.addRow();
+    $soBtnDaclAdd.on( 'click', function ( e ) {
+        //k$soGrdDacl.addRow();
+        ( k$soPopDaclAdd as any).toggle();
     } )
-    $( "#soBtnSaclAdd" ).on( 'click', function ( e ) {
-        k$soGrdSacl.addRow();
+    $soBtnSaclAdd.on( 'click', function ( e ) {
+        //k$soGrdSacl.addRow();
+        ( k$soPopSaclAdd as any ).toggle();
     } )
+    //k$soLbDaclAddRightType.bind( 'change', function ( e: kendo.ui.ListBoxEvent ) {
+    //    k$soGrdDacl.addRow();
+    //    k$soPopDaclAdd.close();
+    //} )
 
     // binding to cancel event doesn't work - at that point, the edit and delete buttons are not present yet
     //$( ID.SO_GRD_DACL ).data( 'kendoGrid' ).bind( "dataBound", setEditDeleteCommandButtonToolTip );
@@ -1001,11 +1102,13 @@ export function soTbbExpandClick( e: any ) {
             let popup = $btn.data( "kendoPopup" );
             if ( popup ) {
                 if ( popup.visible() ) {
-                    $( "body" ).removeClass( "no-scroll" );
+                    //$( "body" ).removeClass( "no-scroll" );
+                    bodyScroll( true )
                     popup.close();
                 }
                 else {
-                    $( "body" ).addClass( "no-scroll" );
+                    //$( "body" ).addClass( "no-scroll" );
+                    bodyScroll( false );
                     popup.open();
                 }
             }
@@ -1034,11 +1137,13 @@ export function soTbbCollapseClick( e: any ) {
             let popup = $btn.data( "kendoPopup" );
             if ( popup ) {
                 if ( popup.visible() ) {
-                    $( "body" ).removeClass( "no-scroll" );
+                    //$( "body" ).removeClass( "no-scroll" );
+                    bodyScroll( true );
                     popup.close();
                 }
                 else {
-                    $( "body" ).addClass( "no-scroll" );
+                    //$( "body" ).addClass( "no-scroll" );
+                    bodyScroll( false );
                     popup.open();
                 }
             }
@@ -1100,11 +1205,13 @@ export function soTbbNewClick( e: any ) {
             let popup = $btn.data( "kendoPopup" );
             if ( popup ) {
                 if ( popup.visible() ) {
-                    $( "body" ).removeClass( "no-scroll" );
+                    //$( "body" ).removeClass( "no-scroll" );
+                    bodyScroll( true );
                     popup.close();
                 }
                 else {
-                    $( "body" ).addClass( "no-scroll" );
+                    //$( "body" ).addClass( "no-scroll" );
+                    bodyScroll( false );
                     popup.open();
                 }
             }
@@ -1145,11 +1252,13 @@ export function soTbbCopyClick( e: any ): void {
             let popup = $btn.data( "kendoPopup" );
             if ( popup ) {
                 if ( popup.visible() ) {
-                    $( "body" ).removeClass( "no-scroll" );
+                    //$( "body" ).removeClass( "no-scroll" );
+                    bodyScroll( true );
                     popup.close();
                 }
                 else {
-                    $( "body" ).addClass( "no-scroll" );
+                    //$( "body" ).addClass( "no-scroll" );
+                    bodyScroll( false );
                     popup.open();
                 }
             }
@@ -1575,26 +1684,26 @@ function boolEditor( container: JQuery<HTMLElement>, options: kendo.ui.GridColum
     $( '<label class="k-checkbox-label" for="' + guid + '">&#8203;</label>' ).appendTo( container );
 }
 
-function rightTypeDropDownListEditor( container: JQuery<HTMLElement>, options: kendo.ui.GridColumnEditorOptions ) {
-    // TODO: Put explicit type
-    console.log( "In rightTypeDropDownListEditor..." );
+//function rightTypeDropDownListEditor( container: JQuery<HTMLElement>, options: kendo.ui.GridColumnEditorOptions ) {
+//    // TODO: Put explicit type
+//    console.log( "In rightTypeDropDownListEditor..." );
 
-    //$( '<input data-bind="value:' + options.field + '" name="' + options.field + '" required="required" data-required-msg="Right Type is required"/>')
-    $( '<input data-bind="value:' + options.field + '" name="' + options.field + '" />' )
-        .appendTo( container )
-        .kendoDropDownList( {
-            dataSource: rightTypes,
-            change: function ( e ) {
-                options.model.set( "Right", 0 );
+//    //$( '<input data-bind="value:' + options.field + '" name="' + options.field + '" required="required" data-required-msg="Right Type is required"/>')
+//    $( '<input data-bind="value:' + options.field + '" name="' + options.field + '" />' )
+//        .appendTo( container )
+//        .kendoDropDownList( {
+//            dataSource: rightTypes,
+//            change: function ( e ) {
+//                options.model.set( "Right", 0 );
 
-                let rightContainer = container.closest( "tr.k-grid-edit-row" ).find( "[data-container-for=Right]" );
+//                let rightContainer = container.closest( "tr.k-grid-edit-row" ).find( "[data-container-for=Right]" );
 
-                createRightCheckBoxList( rightContainer, options.model );
-                kendo.bind( rightContainer, options.model );
-            },
-        } );
-    $( '<span class="k-invalid-msg" data-for="' + options.field + '"></span>' ).appendTo( container );
-}
+//                createRightCheckBoxList( rightContainer, options.model );
+//                kendo.bind( rightContainer, options.model );
+//            },
+//        } );
+//    $( '<span class="k-invalid-msg" data-for="' + options.field + '"></span>' ).appendTo( container );
+//}
 
 function createRightCheckBoxList( container: JQuery<HTMLElement>, model: any ) {
     // TODO: Put explicit type
@@ -1604,7 +1713,7 @@ function createRightCheckBoxList( container: JQuery<HTMLElement>, model: any ) {
     let fieldName = "Right";
     let rightsArr = rights[model.RightType];
 
-    let ele = '<ul class="gridEditor">';
+    let ele = '<ul class="gridEditor"><li>' + model.RightType + '</li>';
     $.each( rightsArr, function ( index, item ) {
         ele +=
             '<li><input type="checkbox" class="k-checkbox" name="' +
@@ -1645,17 +1754,30 @@ function createRightCheckBoxList( container: JQuery<HTMLElement>, model: any ) {
                 } );
             }
         } else {
-            if ( !isCompositeValue ) {
-                // do nothing if the value unchecked is a composite value
-                // loop thru all checked checkboxes and see which ones to uncheck
+            //if ( !isCompositeValue ) {
+            //    // do nothing if the value unchecked is a composite value
+            //    // loop thru all checked checkboxes and see which ones to uncheck
+            //    container.find( "input:checked" ).each( function () {
+            //        let bitFlag2 = parseInt( $( this ).val() as string );
+            //        if ( ( bitFlag1 & bitFlag2 ) == bitFlag1 ) {
+            //            $( this ).prop( "checked", false );
+            //            // $( this ).trigger( 'click' )
+            //        }
+            //    } );
+            //}
+            // testing
+                // check all checkboxes with higher value than the unchecked checkbox value
+                // and see if we need to uncheck
                 container.find( "input:checked" ).each( function () {
                     let bitFlag2 = parseInt( $( this ).val() as string );
-                    if ( ( bitFlag1 & bitFlag2 ) == bitFlag1 ) {
-                        $( this ).prop( "checked", false );
-                        // $( this ).trigger( 'click' )
+                    if ( bitFlag2 > bitFlag1 ) {
+                        if ( ( bitFlag1 & bitFlag2 ) == bitFlag1 ) {
+                            $( this ).prop( "checked", false );
+                            // $( this ).trigger( 'click' )
+                        }
                     }
                 } );
-            }
+            
         }
         // now update the model
         let newRightVal = 0;
@@ -1668,12 +1790,12 @@ function createRightCheckBoxList( container: JQuery<HTMLElement>, model: any ) {
     } );
 }
 
-function getRightAsString( dataItem: any ) {
+function getRightDisplayName( dataItem: any ) {
     // TODO: Put explicit type
     let rightVal = dataItem.Right;
     let allRightsArr = rights[dataItem.RightType];
     let rightArr: string[] = [];
-    while ( rightVal > 0 ) {
+    if ( rightVal > 0 ) {
         $.each( allRightsArr, function ( index, item ) {
             if ( ( rightVal & item.RightId ) == item.RightId ) {
                 rightArr.push( item.RightName );
@@ -1684,7 +1806,8 @@ function getRightAsString( dataItem: any ) {
             }
         } );
     }
-    return rightArr.join( ", " );
+    //return rightArr.join( ", " );
+    return dataItem.RightType + "\\" + rightArr.join( ", " ) ;
 }
 function validateTrustee( input: JQuery ) {
     if ( input.is( '[name="TrusteeUId"]' ) ) {
@@ -1692,6 +1815,24 @@ function validateTrustee( input: JQuery ) {
             input.attr( "data-trusteevalidation-msg", "Group is required." );
             return false;
         }
+        // trusteeuid + right type must be unique
+        let row = input.closest( "tr" );
+        let grid = row.closest( "[data-role=grid]" ).data( "kendoGrid" );
+        let dataItem = grid.dataItem( row );
+
+        let data = grid.dataSource.data();
+        let ok = true;
+
+        for ( let i = 0; i < data.length; i++ ) {
+            // not we are comparing "uid"
+            if ( data[i].uid != dataItem.uid && data[i].TrusteeUId == input.val() && data[i].RightType == ( dataItem as any ).RightType ) {
+                input.attr( "data-trusteevalidation-msg", "There is already an entry with the same Group and Right Type" );
+                ok = false;
+                break;
+            }
+        }
+
+        return ok;
     }
     return true;
 }
@@ -1700,9 +1841,7 @@ function validateRight( input: JQuery ) {
         if ( input.closest( "td" ).find( "input[type=checkbox]:checked" ).length == 0 ) {
             input.attr( "data-rightvalidation-msg", "Select at least 1 right." );
             return false;
-        } else {
-            return true;
-        }
+        } 
     }
     return true;
 }

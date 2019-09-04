@@ -786,7 +786,7 @@ typings/
 # User-specific files
 *.dll
 package-lock.json
-Scripts/dist/
+**/Scripts/dist/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 

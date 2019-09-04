@@ -116,7 +116,6 @@ namespace Suplex.UI.Modules.Admin.Controllers
                 } );
 
             }
-            _logger.LogInformation( $"In SetupRightsValues" );
             return rights;
         }
         public Dictionary<string, string> SetupRightTypeLookup()
